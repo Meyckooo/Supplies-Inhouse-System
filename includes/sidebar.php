@@ -51,32 +51,70 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
             </li>
         <?php endif; ?>
 
-        <!-- Module 2: RENTAL MONITORING  -->
+        <!-- Module 2: HOME PAGE  -->
         <?php if (hasAccess(2, $isSuperAdmin, $allowedModules)): ?>
             <li class="menu-item mb-2 has-submenu">
                 <a href="<?php echo BASE_URL; ?>views/landing_page.php" class="my_acc menu-link d-flex align-items-center justify-content-between">
-                    <span>Landing Page</span>
-                    <span class="submenu-arrow" style="cursor: pointer; padding: 5px;">&#9662;</span>
+                    <span>Home</span>
+                </a>
+                
+            </li>
+        <?php endif; ?>
+
+
+        <!-- Module 4: Supplies PAGE  -->
+        <?php if (hasAccess(2, $isSuperAdmin, $allowedModules)): ?>
+            <li class="menu-item mb-2 has-submenu">
+                <a href="<?php echo BASE_URL; ?>views/supplies_main.php" class="my_acc menu-link d-flex align-items-center justify-content-between">
+                    <span>Supplies</span>
+                    <span class="submenu-arrow">&#9662;</span>
                 </a>
 
                 <ul class="sub-menu list-unstyled ps-3 mt-2">
+                    <li class="menu-item mb-1">
+                        <a href="#" class="menu-link">Requisition</a>
+                    </li>
+                    <li class="menu-item mb-1">
+                        <a href="#" class="menu-link">Approval</a>
+                    </li>
+                </ul>
+            </li>
+        <?php endif; ?>
 
+
+          <!-- Module 5: PURCHASE NON-TRADE PAGE  -->
+        <?php if (hasAccess(2, $isSuperAdmin, $allowedModules)): ?>
+            <li class="menu-item mb-2 has-submenu">
+                <a href="javascript:void(0);" class="my_acc menu-link d-flex align-items-center justify-content-between">
+                    <span>Purchase NON-TRADE</span>
+                </a>
+            </li>
+        <?php endif; ?>
+
+        <!-- Module 6: INHOUSE PAGE  -->
+        <?php if (hasAccess(2, $isSuperAdmin, $allowedModules)): ?>
+            <li class="menu-item mb-2 has-submenu">
+                <a href="<?php echo BASE_URL; ?>views/inhouse_main.php" class="my_acc menu-link d-flex align-items-center justify-content-between">
+                    <span>Inhouse</span>
+                    <span class="submenu-arrow">&#9662;</span>
+                </a>
+
+                <ul class="sub-menu list-unstyled ps-3 mt-2">
                     <li class="menu-item mb-1">
                         <a href="<?php echo BASE_URL; ?>views/dashboard.php" class="menu-link">Dashboard</a>
                     </li>
-
                     <!-- Nested Submenu  -->
                     <li class="menu-item mb-1 has-submenu">
                         <a href="javascript:void(0);" class="menu-link d-flex align-items-center justify-content-between">
-                            <span>Reports</span>
-                            <span class="submenu-arrow" style="cursor: pointer; padding: 5px;">&#9662;</span>
+                            <span>Supplies REL. &amp; REC.</span>
+                            <span class="submenu-arrow">&#9662;</span>
                         </a>
                         <ul class="sub-menu list-unstyled ps-3 mt-2">
                             <li class="menu-item mb-1">
-                                <a href="<?php echo BASE_URL; ?>views/reports_daily.php" class="menu-link">Daily Reports</a>
+                                <a href="<?php echo BASE_URL; ?>views/reports_daily.php" class="menu-link">Releasing</a>
                             </li>
                             <li class="menu-item mb-1">
-                                <a href="<?php echo BASE_URL; ?>views/reports_monthly.php" class="menu-link">Monthly Reports</a>
+                                <a href="<?php echo BASE_URL; ?>views/reports_monthly.php" class="menu-link">Receiving</a>
                             </li>
                         </ul>
                     </li>

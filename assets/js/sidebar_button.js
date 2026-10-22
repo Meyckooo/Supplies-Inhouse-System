@@ -46,11 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 3. Parent-Child Page Mapper
     const pageRelations = {
-        'landing_page.php': [
-            'dashboard.php',
-            'reports_daily.php', 
-            'reports_monthly.php'
-        ],
         'user_accounts.php': [
             'add_user_account.php', 
             'edit_user_account.php', 
