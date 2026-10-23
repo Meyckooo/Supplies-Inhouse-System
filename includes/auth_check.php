@@ -9,7 +9,9 @@ require_once __DIR__ . '/../config/db.php';
 
 $isLoggedIn = isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'] === true;
 
-// Force Login Check (Redirect to views/login.php)
+/*=========================================================
+// Force Login Check (Redirect to views/login.php)       //
+==========================================================*/
 if (!$isLoggedIn) {
     header('HTTP/1.1 403 Forbidden');
     header('Location: ' . $base_path . 'views/login.php'); 
@@ -23,7 +25,9 @@ $currentDate   = date("F d, Y");
 
 $conn = getDBConnection();
 
-// Fetch current user's allowed module IDs
+/*=========================================================
+// Fetch current user's allowed module IDs and permissions //
+==========================================================*/
 $allowedModules = [];
 if ($isLoggedIn && !$isSuperAdmin) {
     $queryAllowed = "SELECT oModuleid 
@@ -40,8 +44,9 @@ if ($isLoggedIn && !$isSuperAdmin) {
         $stmt->close();
     }
 }
-
-// Helper function to verify permissions
+/*=========================================================
+//         Helper function to verify permissions         //
+=========================================================*/
 if (!function_exists('hasAccess')) {
     function hasAccess(int $moduleId, bool $isSuperAdmin, array $allowedModules): bool {
         return $isSuperAdmin || in_array($moduleId, $allowedModules);
