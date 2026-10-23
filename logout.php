@@ -1,7 +1,9 @@
 <?php
 session_start();
 
-// Clear all session variables
+/*=========================================================== //
+// Clear all session variables                                //
+//===========================================================*/
 $_SESSION = array();
 
 //  Delete the session cookie from the browser

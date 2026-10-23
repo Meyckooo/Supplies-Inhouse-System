@@ -1,8 +1,3 @@
-
-/*==============================================================
-//   User Accounts Manager                                    //
-=============================================================*/   
-
 document.addEventListener('DOMContentLoaded', function() {
     
     const modalElement = new bootstrap.Modal(document.getElementById('viewUserModal'));

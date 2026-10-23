@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
-    
-    // 1. Sidebar Toggle Logic
+    /*========================================================= //
+    //                 Sidebar Toggle Logic                     //      
+    //=========================================================*/
     const sidebar = document.querySelector('.sidebar');
     if (sidebar) {
         if (sidebar.dataset.sidebarInitialized === 'true') {
@@ -27,7 +28,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 2. Submenu Arrow Click Logic (Event Delegation for flexible open/close)
+    /* ========================================================================== //
+    //  Submenu Arrow Click Logic (Event Delegation for flexible open/close)      //
+    // ========================================================================== */
     const menuList = document.querySelector('.menu-list');
     if (menuList) {
         menuList.addEventListener('click', function(e) {
@@ -44,7 +47,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 3. Parent-Child Page Mapper
+    /* ========================================================================== //
+    //  Parent-Child Page Mapper                                                //
+    // ========================================================================== */
     const pageRelations = {
         'user_accounts.php': [
             'add_user_account.php', 
@@ -58,8 +63,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const currentPage = rawFilename.split('?')[0].toLowerCase() || 'index.php';
 
     const menuItems = document.querySelectorAll('.menu-list li');
-
-    // Function to set the active item and open parent submenus
+    
+    /*========================================================================== //
+    //  Function to Set Active Item and Open Parent Submenus                     //
+    //==========================================================================*/
     function setActiveItem(item) {
         item.classList.add('current_page_item');
         
@@ -86,14 +93,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const hrefFilename = href.split('/').pop();
         const hrefPage = hrefFilename.split('?')[0].toLowerCase();
 
-        // Condition A: Exact Match
+        // Condition Exact Match
         const isExactMatch = (hrefPage === currentPage);
 
-        // Condition B: Sub-page Match
+        // Condition Sub-page Match
         const subPages = pageRelations[hrefPage] || [];
         const isSubpageMatch = subPages.map(p => p.toLowerCase()).includes(currentPage);
 
-        // Condition C: Root/Index Match
+        // Condition Root/Index Match
         const isIndexMatch = (currentPage === 'index.php' || currentPage === '') && hrefPage === 'index.php';
 
         if (isExactMatch || isSubpageMatch || isIndexMatch) {
