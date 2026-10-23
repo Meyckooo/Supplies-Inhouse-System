@@ -286,5 +286,7 @@ padding: 0 20px;
 }
 
 @media only screen and (max-width: 600px) {
-
+ .header_title h1{
+  font-size: 35px;
+ }
 }

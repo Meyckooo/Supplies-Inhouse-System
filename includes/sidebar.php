@@ -54,7 +54,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
         <!-- Module 2: HOME PAGE  -->
         <?php if (hasAccess(2, $isSuperAdmin, $allowedModules)): ?>
             <li class="menu-item mb-2 has-submenu">
-                <a href="<?php echo BASE_URL; ?>views/landing_page.php" class="my_acc menu-link d-flex align-items-center justify-content-between">
+                <a href="<?php echo BASE_URL; ?>views/home.php" class="home menu-link d-flex align-items-center justify-content-between">
                     <span>Home</span>
                 </a>
                 
@@ -65,17 +65,17 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
         <!-- Module 4: Supplies PAGE  -->
         <?php if (hasAccess(2, $isSuperAdmin, $allowedModules)): ?>
             <li class="menu-item mb-2 has-submenu">
-                <a href="<?php echo BASE_URL; ?>views/supplies_main.php" class="my_acc menu-link d-flex align-items-center justify-content-between">
+                <a href="<?php echo BASE_URL; ?>views/supplies_main.php" class="supplies menu-link d-flex align-items-center justify-content-between">
                     <span>Supplies</span>
                     <span class="submenu-arrow">&#9662;</span>
                 </a>
 
                 <ul class="sub-menu list-unstyled ps-3 mt-2">
                     <li class="menu-item mb-1">
-                        <a href="#" class="menu-link">Requisition</a>
+                        <a href="<?php echo BASE_URL; ?>views/requisition.php" class="menu-link">Requisition</a>
                     </li>
                     <li class="menu-item mb-1">
-                        <a href="#" class="menu-link">Approval</a>
+                        <a href="<?php echo BASE_URL; ?>views/approval.php" class="menu-link">Approval</a>
                     </li>
                 </ul>
             </li>
@@ -94,7 +94,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
         <!-- Module 6: INHOUSE PAGE  -->
         <?php if (hasAccess(2, $isSuperAdmin, $allowedModules)): ?>
             <li class="menu-item mb-2 has-submenu">
-                <a href="<?php echo BASE_URL; ?>views/inhouse_main.php" class="my_acc menu-link d-flex align-items-center justify-content-between">
+                <a href="<?php echo BASE_URL; ?>views/inhouse_main.php" class="inhouse menu-link d-flex align-items-center justify-content-between">
                     <span>Inhouse</span>
                     <span class="submenu-arrow">&#9662;</span>
                 </a>
@@ -105,16 +105,16 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
                     </li>
                     <!-- Nested Submenu  -->
                     <li class="menu-item mb-1 has-submenu">
-                        <a href="javascript:void(0);" class="menu-link d-flex align-items-center justify-content-between">
+                        <a href="<?php echo BASE_URL; ?>views/supplies_rel_rec.php" class="menu-link d-flex align-items-center justify-content-between">
                             <span>Supplies REL. &amp; REC.</span>
                             <span class="submenu-arrow">&#9662;</span>
                         </a>
                         <ul class="sub-menu list-unstyled ps-3 mt-2">
                             <li class="menu-item mb-1">
-                                <a href="<?php echo BASE_URL; ?>views/reports_daily.php" class="menu-link">Releasing</a>
+                                <a href="<?php echo BASE_URL; ?>views/releasing.php" class="menu-link">Releasing</a>
                             </li>
                             <li class="menu-item mb-1">
-                                <a href="<?php echo BASE_URL; ?>views/reports_monthly.php" class="menu-link">Receiving</a>
+                                <a href="<?php echo BASE_URL; ?>views/receiving.php" class="menu-link">Receiving</a>
                             </li>
                         </ul>
                     </li>

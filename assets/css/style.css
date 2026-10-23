@@ -356,7 +356,7 @@ input:placeholder {
 }
 .header_title h1 {
   color: #fff;
-  font: 800 45px/100% var(--headingTxt);
+  font: 800 43px/100% var(--headingTxt);
   position: relative;
   padding-left: 17px;
 }
@@ -1110,16 +1110,6 @@ footer.footer_intro {
   position: relative;
 }
 
-.index_btn:hover {
-  transform: scale(0.9);
-  background: #fff !important;
-  box-shadow: 0 0 5px rgba(0 0 0/0.5);
-}
-
-.index_btn:hover:before {
-  filter: unset;
-}
-/* END OF INDEX */
 
 .header {
   background: transparent;
@@ -1131,6 +1121,137 @@ footer.footer_intro {
 /*==========================================
    INDEX PAGE
 ==========================================*/
+
+.index_btn:hover {
+  transform: scale(0.9);
+  background: #fff !important;
+  box-shadow: 0 0 5px rgba(0 0 0/0.5);
+}
+
+.index_btn:hover:before {
+  filter: unset;
+}
+
+.top_index_info:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1920px;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  height: 100%;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(4, 35, 90, 1) 0%,
+      rgba(4, 35, 90, 0.9) 30%,
+      rgba(4, 35, 90, 0) 60%
+    ),
+    url("../images/index_top_img.jpg") no-repeat center/cover;
+  background-position-y: 0;
+  max-width: 100%;
+}
+
+.top_index_info {
+  position: relative;
+  width: 100%;
+  text-align: left;
+  min-height: 260px;
+  border-radius: 22px;
+  overflow: hidden;
+  padding: 50px;
+  display: flex;
+  align-items: center;
+}
+
+.top_index_info h2 {
+  position: relative;
+  font-size: 60px;
+  font-weight: 700;
+  line-height: 100%;
+  margin: 0;
+  color: #fff;
+  font-style: italic;
+  text-transform: uppercase;
+}
+
+.top_index_info h2 span {
+  display: block;
+  line-height: 100%;
+  margin-top: 10px;
+  color: #218c3c;
+}
+
+.top_index_info p {
+  margin: 20px 0 0;
+  font-size: 17px;
+  line-height: 100%;
+  color: #fff;
+  padding-left: 50px;
+  position: relative;
+}
+
+.top_index_info p:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 35px;
+  height: 3px;
+  background: #218c3c;
+}
+
+
+.index_bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 45px;
+  position: relative;
+  margin-top: 80px;
+  align-items: center;
+}
+
+.index_right_content {
+position: relative;
+width: calc(100% - 965px);
+margin-right: 65px;
+}
+.index_right_content h2 {
+font: 700 50px/100% var(--headingTxt);
+color: var(--lBlue);
+}
+
+.index_right_content h2 span{
+  color: var(--sYellow);
+}
+
+.index_right_content h2 cite{
+  color: var(--lGreen)
+}
+.index_right_content p {
+margin-block: 25px;
+font-size: 18px;
+font-weight: 500;
+line-height: 27px;
+}
+
+.index_video {
+  position: relative;
+  width: fit-content;
+  max-width: 47%;
+  height: 450px;
+  overflow: hidden;
+  border-radius: 15px;
+  outline: solid 15px var(--secondaryColor);
+  margin-left: 10px;
+}
+
+.index_video video {
+  width: auto;
+  height: 450px;
+}
 
 /* =========================================
     SIDEBAR SIZING LAYOUT
@@ -1255,6 +1376,15 @@ footer.footer_intro {
 }
 .sidebar li .admin_tools:before {
   content: url(../images/icon/tools.png);
+}
+.sidebar li .home:before {
+  content: url(../images/icon/home.png);
+}
+.sidebar li .inhouse:before {
+  content: url(../images/icon/inhouse.png);
+}
+.sidebar li .supplies:before {
+  content: url(../images/icon/supplies.png);
 }
 .sidebar li .user_acc:before {
   content: url(../images/icon/user.png);
