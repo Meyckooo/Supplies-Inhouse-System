@@ -65,7 +65,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
         <!-- Module 4: Supplies PAGE  -->
         <?php if (hasAccess(2, $isSuperAdmin, $allowedModules)): ?>
             <li class="menu-item mb-2 has-submenu">
-                <a href="<?php echo BASE_URL; ?>views/supplies_main.php" class="supplies menu-link d-flex align-items-center justify-content-between">
+                <a href="javascript:void(0);" class="supplies menu-link d-flex align-items-center justify-content-between">
                     <span>Supplies</span>
                     <span class="submenu-arrow">&#9662;</span>
                 </a>

@@ -1423,9 +1423,37 @@ line-height: 27px;
   padding-left: 0 !important;
 }
 
+.sidebar ul li .sub-menu li{
+  position: relative;
+}
+
+.sidebar ul li .sub-menu li:before{
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5px;
+  aspect-ratio: 1/1;
+  background: var(--White);
+  border-radius: 100vw;
+  z-index: 5;
+}
+
+.sidebar ul li .sub-menu li:active:before, 
+.sidebar ul li .sub-menu li:hover:before, 
+.sidebar ul li .sub-menu li.current_page_item:before{
+  background: var(--Black);
+}
+
+.sidebar ul li .sub-menu li.open:before{
+  top: 21px;
+}
+
 
 .sidebar ul li .sub-menu li a {
-  padding: 11px 16px;
+  padding-block: 11px;
+  padding-inline: 20px 15px;
 }
 
 
