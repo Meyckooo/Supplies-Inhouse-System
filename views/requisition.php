@@ -39,7 +39,7 @@ $dbConn = getDBConnection();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supplies Main</title>
+    <title>Requisition</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/media.css">
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
@@ -56,7 +56,7 @@ $dbConn = getDBConnection();
         <div class="wrapper">
             <div class="header_title">
                 <div class="header_info">
-                    <h1>Supplies</h1>
+                    <h1>Requisition</h1>
                 </div>
             </div>
         </div>
@@ -65,7 +65,7 @@ $dbConn = getDBConnection();
       <div class="main_content_body">
         <div class="wrapper">
             <div class="main_content_body_con">
-                <p>This is a simple Supplies.</p>
+                <p>This is a simple Requisition.</p>
             </div>
         </div>
     </div>
