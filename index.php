@@ -3,12 +3,12 @@ $base_path = '';
 require_once __DIR__ . '/includes/auth_check.php';
 
 if (hasAccess(2, $isSuperAdmin, $allowedModules)) {
-    header('Location: views/landing_page.php');
+    header('Location: views/home.php');
     exit;
 }
 
 if (hasAccess(3, $isSuperAdmin, $allowedModules)) {
-    header('Location: views/landing_page.php');
+    header('Location: views/home.php');
     exit;
 }
 
