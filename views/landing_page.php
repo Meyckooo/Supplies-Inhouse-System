@@ -7,7 +7,9 @@ require_once __DIR__ . '/../config/db.php';
 
 $moduleId = 2;
 
-// Enforce Main Module Access
+/*========================================================== //
+//             Enforce Main Module Access                   //
+//==========================================================*/
 if (!hasAccess($moduleId, $isSuperAdmin, $allowedModules)) {
     header('HTTP/1.1 403 Forbidden');
     header('Location: ' . $base_path . '403.php');

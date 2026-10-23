@@ -1,8 +1,3 @@
-
-/*==============================================================
-//   User Permission Sync                                     //
-=============================================================*/   
-
 document.addEventListener('DOMContentLoaded', function() {
     
     const statusSpan = document.getElementById('syncStatus');
@@ -31,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     body: formData.toString()
                 })
-                .then(response => response.json()) // Parse the raw text response from the server as a JSON object
+                .then(response => response.json())
                 .then(data => {
                     if (data.success === true) {
                         statusSpan.textContent = "Saved.";

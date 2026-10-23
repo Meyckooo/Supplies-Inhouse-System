@@ -7,7 +7,7 @@
 
 require_once __DIR__ . '/auth_check.php';
 
-// Sigurohon nga naa ang BASE_URL kung pananglitan wala ma-define
+
 if (!defined('BASE_URL')) {
     define('BASE_URL', '/landing_page/');
 }
