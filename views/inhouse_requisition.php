@@ -41,7 +41,7 @@ $dbConn = getDBConnection();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Requisition</title>
+    <title>In-House Requisition</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/media.css">
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
@@ -58,7 +58,7 @@ $dbConn = getDBConnection();
         <div class="wrapper">
             <div class="header_title">
                 <div class="header_info">
-                    <h1>Requisition</h1>
+                    <h1>In-House Requisition</h1>
                 </div>
             </div>
         </div>
