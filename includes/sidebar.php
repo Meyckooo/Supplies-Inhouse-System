@@ -101,7 +101,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
 
                 <ul class="sub-menu list-unstyled ps-3 mt-2">
                     <li class="menu-item mb-1">
-                        <a href="<?php echo BASE_URL; ?>views/dashboard.php" class="menu-link">Dashboard</a>
+                        <a href="<?php echo BASE_URL; ?>views/inhouse_requisition.php" class="menu-link">Requisition</a>
+                    </li>
+                    <li class="menu-item mb-1">
+                        <a href="<?php echo BASE_URL; ?>views/inhouse_approval.php" class="menu-link">Approval</a>
                     </li>
                     <!-- Nested Submenu  -->
                     <li class="menu-item mb-1 has-submenu">
