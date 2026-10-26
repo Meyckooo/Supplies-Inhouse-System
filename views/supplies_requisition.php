@@ -173,9 +173,7 @@ $userid = $_SESSION['oUserid'] ?? 0;
 </head>
 
 <body>
-
     <?php include $base_path . '../includes/sidebar.php'; ?>
-
     <div class="main_content">
         <div class="wrapper">
             <div class="header_title">
