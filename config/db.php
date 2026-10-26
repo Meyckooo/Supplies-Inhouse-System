@@ -5,11 +5,11 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 function getDBConnection() {
-    $host     = "192.168.12.11";
+    $host     = "192.168.12.7";
     $username = "root";
     $password = "atlantic123";
 
-    $dbname   = "db_store_dashboard_tdiy"; 
+    $dbname   = "db_inhouse_supplies"; 
 
     $conn = mysqli_connect($host, $username, $password, $dbname);
 
