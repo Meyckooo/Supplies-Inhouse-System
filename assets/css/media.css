@@ -193,6 +193,13 @@ object-position: 33px 0;
         padding: 40px 15px;
     }
 
+    .global_form_grid_sections {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .form_section_card.full_width_card {
+    grid-column: span 2;
+  }
+
 }
 
 @media only screen and (max-width: 1000px) {
@@ -283,6 +290,17 @@ padding: 0 20px;
     max-width: 100%;
   }
 
+}
+
+@media only screen and (max-width: 800px) {
+
+  .global_form_grid_sections {
+    grid-template-columns: 1fr;
+  }
+  .form_section_card.full_width_card {
+    grid-column: span 1;
+  }
+  
 }
 
 @media only screen and (max-width: 600px) {

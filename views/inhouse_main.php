@@ -78,7 +78,6 @@ $dbConn = getDBConnection();
 
     <script src="../assets/js/sweetalert.js"></script>
     <script src="../assets/js/access.js"></script>
-    <script src="../assets/js/pos_viewing.js"></script>
     <script src="../assets/js/sidebar_button.js"></script>
 </body>
 
