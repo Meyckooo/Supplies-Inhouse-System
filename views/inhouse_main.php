@@ -57,7 +57,7 @@ $dbConn = getDBConnection();
         <div class="wrapper">
             <div class="header_title">
                 <div class="header_info">
-                    <h1>In-House</h1>
+                    <h1>Dashboard</h1>
                 </div>
                 
                 <div class="ph_realtime_clock_wrapper" id="phRealtimeClock">
@@ -71,7 +71,7 @@ $dbConn = getDBConnection();
       <div class="main_content_body">
         <div class="wrapper">
             <div class="main_content_body_con">
-                <p>This is a simple In-House.</p>
+                <p>This is a simple Dashboard.</p>
             </div>
         </div>
     </div>
