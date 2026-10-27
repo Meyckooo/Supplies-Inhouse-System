@@ -30,7 +30,7 @@ function updatePhilippineDateTime() {
     // I-inject sa HTML elements
     clockContainer.innerHTML = `
         <span class="ph_clock_date">${formattedDate}</span>
-        <span class="ph_clock_time">${formattedTime} PH</span>
+        <span class="ph_clock_time">${formattedTime}</span>
     `;
 }
 
