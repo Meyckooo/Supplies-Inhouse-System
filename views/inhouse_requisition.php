@@ -60,6 +60,11 @@ $dbConn = getDBConnection();
                 <div class="header_info">
                     <h1>In-House Requisition</h1>
                 </div>
+                
+                <div class="ph_realtime_clock_wrapper" id="phRealtimeClock">
+                    <span class="ph_clock_date">Loading date...</span>
+                    <span class="ph_clock_time">Loading time...</span>
+                </div>
             </div>
         </div>
     </div>
@@ -202,9 +207,9 @@ $dbConn = getDBConnection();
                     </section>
                 </div>
 
-                <div class="inhouse_requisition_child_tbl global_child_table_wrapper">
-                    <div class="global_child_table_container">
-                        <table class="global_child_table">
+                <div class="inhouse_requisition_child_tbl global_display_table_wrapper">
+                    <div class="global_display_table_container">
+                        <table class="global_display_table">
                             <thead>
                                 <tr>
                                     <th class="text_center" style="width: 60px;">#</th>
@@ -219,8 +224,8 @@ $dbConn = getDBConnection();
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="text_center index_col">1</td>
-                                    <td class="item_code">X1007-049</td>
+                                    <td class="text_center">1</td>
+                                    <td>X1007-049</td>
                                     <td>ZZ. ALBATROSS</td>
                                     <td>PCS</td>
                                     <td class="text_right">10</td>
@@ -230,7 +235,7 @@ $dbConn = getDBConnection();
                                 </tr>
                                 <tr>
                                     <td class="text_center index_col">2</td>
-                                    <td class="item_code">X4-464</td>
+                                    <td>X4-464</td>
                                     <td>ZZ. ALBATROSS</td>
                                     <td>PCS</td>
                                     <td class="text_right">1</td>
@@ -240,7 +245,7 @@ $dbConn = getDBConnection();
                                 </tr>
                                 <tr>
                                     <td class="text_center index_col">3</td>
-                                    <td class="item_code">X4-378</td>
+                                    <td>X4-378</td>
                                     <td>ZZ. TOILET BOWL CLEANER</td>
                                     <td>GAL</td>
                                     <td class="text_right">1</td>
@@ -250,7 +255,7 @@ $dbConn = getDBConnection();
                                 </tr>
                                 <tr>
                                     <td class="text_center index_col">4</td>
-                                    <td class="item_code">X4-466</td>
+                                    <td>X4-466</td>
                                     <td>ZZ. DETERGENT POWDER</td>
                                     <td>PCS</td>
                                     <td class="text_right">2</td>
@@ -275,6 +280,7 @@ $dbConn = getDBConnection();
     <script src="../assets/js/access.js"></script>
     <script src="../assets/js/inhouse_requisition.js"></script>
     <script src="../assets/js/sidebar_button.js"></script>
+    <script src="../assets/js/ph_time.js"></script>
 </body>
 
 </html>

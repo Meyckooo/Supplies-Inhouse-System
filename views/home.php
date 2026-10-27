@@ -85,10 +85,15 @@ $dbConn = getDBConnection();
 
     <div class="main_content">
         <div class="wrapper">
-            <div class="header_title">
+            <div class="header_title home_title">
                 <h1 class="text-capitalize">
                     Atlantic <?php echo $timeContext; ?>, <?php echo htmlspecialchars($userName); ?>
                 </h1>
+
+                <div class="ph_realtime_clock_wrapper" id="phRealtimeClock">
+                    <span class="ph_clock_date">Loading date...</span>
+                    <span class="ph_clock_time">Loading time...</span>
+                </div>
             </div>
         </div>
     </div>
@@ -128,6 +133,7 @@ $dbConn = getDBConnection();
     <script src="../assets/js/swal.js"></script>
     <script src="../assets/js/access.js"></script>
     <script src="../assets/js/sidebar_button.js"></script>
+    <script src="../assets/js/ph_time.js"></script>
 
 </body>
 
