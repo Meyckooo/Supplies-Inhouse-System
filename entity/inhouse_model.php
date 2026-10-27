@@ -207,4 +207,31 @@ class InhouseModel
             return false;
         }
     }
+
+    // public function getSuppliesHeader(): array
+    // {
+    //     $query = "SELECT * FROM tbl_supplies_header";
+    //     $result = mysqli_query($this->db, $query);
+
+    //     if ($result) {
+    //         return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    //     }
+    //     return [];
+    // }
+
+    // public function getSuppliesDetails(string $headerId): array
+    // {
+    //     $stmt = $this->db->prepare("SELECT * FROM tbl_supplies_details WHERE oparentid = ?");
+    //     $stmt->bind_param("s", $headerId);
+    //     $stmt->execute();
+    //     $result = $stmt->get_result();
+
+    //     $details = [];
+    //     while ($row = $result->fetch_assoc()) {
+    //         $details[] = $row;
+    //     }
+    //     $stmt->close();
+    //     return $details;
+    // }
+    
 }

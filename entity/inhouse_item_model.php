@@ -1,5 +1,6 @@
 <?php
-class InhouseItemModel {
+class InhouseItemModel
+{
     private mysqli $db;
 
     public ?int $itemNo;
@@ -54,26 +55,44 @@ class InhouseItemModel {
     public ?float $owmsTotal;
     public ?int $displayCritical;
     public ?int $criticalPercentage;
-    public ?float $diyBalance; 
+    public ?float $diyBalance;
 
-    public function __construct(mysqli $conn) {
+    public function __construct(mysqli $conn)
+    {
         $this->db = $conn;
     }
 
-    public function getLookUpItems(string $searchTerm): array {
-        $query = "SELECT * FROM tbl_item 
-                  WHERE oitemcode LIKE ? 
-                     OR obarcode LIKE ? 
-                     OR oitemdesc LIKE ?
-                     OR itemno LIKE ?
-                  LIMIT 25";
+    public function getLookUpItems(string $searchTerm, string $searchType = 'all'): array
+    {
+        $searchItem = "%" . $searchTerm . "%";
+
+        if ($searchType === 'item_code') {
+            $query = "SELECT * FROM tbl_item WHERE oitemcode LIKE ? LIMIT 25";
+        } elseif ($searchType === 'barcode') {
+            $query = "SELECT * FROM tbl_item WHERE obarcode LIKE ? LIMIT 25";
+        } elseif ($searchType === 'item_description') {
+            $query = "SELECT * FROM tbl_item WHERE oitemdesc LIKE ? LIMIT 25";
+        } elseif ($searchType === 'item_no') {
+            $query = "SELECT * FROM tbl_item WHERE oitemno LIKE ? LIMIT 25";
+        } else {
+            $query = "SELECT * FROM tbl_item 
+                      WHERE oitemcode LIKE ? 
+                         OR obarcode LIKE ? 
+                         OR oitemdesc LIKE ?
+                         OR oitemno LIKE ?
+                      LIMIT 10";
+        }
 
         if ($stmt = $this->db->prepare($query)) {
-            $searchItem = "%" . $searchTerm . "%";
-            $stmt->bind_param("ssss", $searchItem, $searchItem, $searchItem, $searchItem);
+            if ($searchType === 'all' || empty($searchType)) {
+                $stmt->bind_param("ssss", $searchItem, $searchItem, $searchItem, $searchItem);
+            } else {
+                $stmt->bind_param("s", $searchItem);
+            }
+
             $stmt->execute();
             $result = $stmt->get_result();
-            
+
             $items = [];
             while ($row = $result->fetch_assoc()) {
                 $items[] = $row;
@@ -81,8 +100,7 @@ class InhouseItemModel {
             $stmt->close();
             return $items;
         }
-        
+
         return [];
     }
 }
-?>

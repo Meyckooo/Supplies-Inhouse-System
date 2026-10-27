@@ -84,5 +84,17 @@ class InhouseController
         $inhouseModel = new InhouseModel($this->dbConn);
         return $inhouseModel->getInhouseDetails($headerId);
     }
+
+    // public function getSuppliesHeader(): array
+    // {
+    //     $inhouseModel = new InhouseModel($this->dbConn);
+    //     return $inhouseModel->getSuppliesHeader();
+    // }
+
+    // public function getSuppliesDetails(string $headerId): array
+    // {
+    //     $inhouseModel = new InhouseModel($this->dbConn);
+    //     return $inhouseModel->getSuppliesDetails($headerId);
+    // }
 }
 ?>
