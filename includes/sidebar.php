@@ -63,7 +63,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
 
 
         <!-- Module 4: Supplies PAGE  -->
-        <?php if (hasAccess(2, $isSuperAdmin, $allowedModules)): ?>
+        <!-- <!?php if (hasAccess(2, $isSuperAdmin, $allowedModules)): ?>
             <li class="menu-item mb-2 has-submenu">
                 <a href="javascript:void(0);" class="supplies menu-link d-flex align-items-center justify-content-between">
                     <span>Supplies</span>
@@ -72,14 +72,14 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
 
                 <ul class="sub-menu list-unstyled ps-3 mt-2">
                     <li class="menu-item mb-1">
-                        <a href="<?php echo BASE_URL; ?>views/supplies_requisition.php" class="menu-link">Requisition</a>
+                        <a href="<!?php echo BASE_URL; ?>views/supplies_requisition.php" class="menu-link">Requisition</a>
                     </li>
                     <li class="menu-item mb-1">
-                        <a href="<?php echo BASE_URL; ?>views/supplies_approval.php" class="menu-link">Approval</a>
+                        <a href="<!?php echo BASE_URL; ?>views/supplies_approval.php" class="menu-link">Approval</a>
                     </li>
                 </ul>
             </li>
-        <?php endif; ?>
+        <!?php endif; ?> -->
 
 
           <!-- Module 5: PURCHASE NON-TRADE PAGE  -->
@@ -91,11 +91,11 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
             </li>
         <?php endif; ?>
 
-        <!-- Module 6: INHOUSE PAGE  -->
+        <!-- Module 6: SUPPLIES & INHOUSE PAGE  -->
         <?php if (hasAccess(2, $isSuperAdmin, $allowedModules)): ?>
             <li class="menu-item mb-2 has-submenu">
                 <a href="<?php echo BASE_URL; ?>views/inhouse_main.php" class="inhouse menu-link d-flex align-items-center justify-content-between">
-                    <span>Inhouse</span>
+                    <span>Supplies &amp; Inhouse</span>
                     <span class="submenu-arrow">&#9662;</span>
                 </a>
 
