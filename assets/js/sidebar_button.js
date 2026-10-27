@@ -56,6 +56,9 @@ document.addEventListener('DOMContentLoaded', function() {
             'edit_user_account.php', 
             'user_permission_account.php'
         ],
+        'inhouse_requisition.php': [
+            'inhouse_requisition_add.php'
+        ]
     };
 
     const currentPath = window.location.pathname;
