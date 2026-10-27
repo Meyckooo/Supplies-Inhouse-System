@@ -76,7 +76,7 @@ $dbConn = getDBConnection();
     <?php include $base_path . '../includes/footer.php'; ?>
 
 
-    <script src="../assets/js/sweetalert.js"></script>
+    <script src="../assets/js/swal.js"></script>
     <script src="../assets/js/access.js"></script>
     <script src="../assets/js/sidebar_button.js"></script>
 </body>
