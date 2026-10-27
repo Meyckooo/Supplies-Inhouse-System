@@ -150,6 +150,10 @@ width: 120px;
 
 /* End */
 
+.header_title h1 {
+font: 800 35px/100% var(--headingTxt);
+}
+
 }
 
 @media only screen and (max-width :1100px) {
@@ -195,100 +199,105 @@ object-position: 33px 0;
 
     .global_form_grid_sections {
     grid-template-columns: repeat(2, 1fr);
-  }
-  .form_section_card.full_width_card {
-    grid-column: span 2;
-  }
+    }
+
+   .full_width_card {
+    grid-column: span 1;
+    }
 
 }
 
 @media only screen and (max-width: 1000px) {
 
-/* Index */
+  /* Index */
 
-footer.footer_intro {
-padding: 0 20px;
-}
-/* End */
-
-
-/* Login CSS */
-  .login-wrapper{
-    height: 100vdh;
+  footer.footer_intro {
+  padding: 0 20px;
   }
-  .login-wrapper::before {
-      display: none;
-  }
-
-  .card_parent {
-  justify-content: center;
-  align-items: center;
-  padding: 40px 25px;
-  }
-
-  .login-card{
-    padding: 50px 7% 50px 7%;
-    align-items: center;
-    max-width: 750px;
-    width: 100%;
-  }
-
-  .card_box {
-  max-width: 500px;
-  }
-
-  .login_left_img{display: none;}
-
-  .login-wrapper{
-    background: url("../images/login-left-img2.jpg") no-repeat center/cover;
-  }
-
-  .login_left_img figure img {
-  object-position: unset;
-  }
-
   /* End */
-  
-  /* Intro Page */
-  .footer_info {
-    text-align: center;
-    flex-direction: column;
-    gap: 40px;
+
+
+  /* Login CSS */
+    .login-wrapper{
+      height: 100vdh;
+    }
+    .login-wrapper::before {
+        display: none;
+    }
+
+    .card_parent {
+    justify-content: center;
     align-items: center;
-  }
+    padding: 40px 25px;
+    }
 
-  .footer_container{
-    gap: 30px;
-  }
+    .login-card{
+      padding: 50px 7% 50px 7%;
+      align-items: center;
+      max-width: 750px;
+      width: 100%;
+    }
 
-  .footer_info > div::before {
-    width: 115px;
-    height: 1px;
-    top: -21px;
-    transform: translateX(-50%);
-    left: 50%;
-  }
+    .card_box {
+    max-width: 500px;
+    }
 
-  .footer_help p::before {
-    position: relative;
-    transform: scale(0.9);
-    inset: 0;
-    display: block;
-    text-align: center;
-  }
-  .footer_help p {
-    padding-left: 0;
-  }
+    .login_left_img{display: none;}
 
-  .footer_soc p {
-    margin: 0 0 20px;
-  }
-  /* End Of Intro */
+    .login-wrapper{
+      background: url("../images/login-left-img2.jpg") no-repeat center/cover;
+    }
 
-  .search-bar{
-    width: 100%;
-    max-width: 100%;
-  }
+    .login_left_img figure img {
+    object-position: unset;
+    }
+
+    /* End */
+    
+    /* Intro Page */
+    .footer_info {
+      text-align: center;
+      flex-direction: column;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .footer_container{
+      gap: 30px;
+    }
+
+    .footer_info > div::before {
+      width: 115px;
+      height: 1px;
+      top: -21px;
+      transform: translateX(-50%);
+      left: 50%;
+    }
+
+    .footer_help p::before {
+      position: relative;
+      transform: scale(0.9);
+      inset: 0;
+      display: block;
+      text-align: center;
+    }
+    .footer_help p {
+      padding-left: 0;
+    }
+
+    .footer_soc p {
+      margin: 0 0 20px;
+    }
+    /* End Of Intro */
+
+    .search-bar{
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .header_title h1 {
+    font: 800 25px/100% var(--headingTxt);
+    }
 
 }
 
@@ -297,14 +306,14 @@ padding: 0 20px;
   .global_form_grid_sections {
     grid-template-columns: 1fr;
   }
-  .form_section_card.full_width_card {
-    grid-column: span 1;
-  }
   
+  .header_title h1 {
+    font: 800 17px/100% var(--headingTxt);
+    }
 }
 
 @media only screen and (max-width: 600px) {
  .header_title h1{
-  font-size: 35px;
+  font-size: 30px;
  }
 }

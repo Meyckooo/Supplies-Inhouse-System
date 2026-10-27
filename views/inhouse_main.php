@@ -59,6 +59,11 @@ $dbConn = getDBConnection();
                 <div class="header_info">
                     <h1>In-House</h1>
                 </div>
+                
+                <div class="ph_realtime_clock_wrapper" id="phRealtimeClock">
+                    <span class="ph_clock_date">Loading date...</span>
+                    <span class="ph_clock_time">Loading time...</span>
+                </div>
             </div>
         </div>
     </div>
@@ -79,6 +84,7 @@ $dbConn = getDBConnection();
     <script src="../assets/js/swal.js"></script>
     <script src="../assets/js/access.js"></script>
     <script src="../assets/js/sidebar_button.js"></script>
+    <script src="../assets/js/ph_time.js"></script>
 </body>
 
 </html>
