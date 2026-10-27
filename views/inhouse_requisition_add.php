@@ -60,6 +60,11 @@ $dbConn = getDBConnection();
                 <div class="header_info">
                     <h1>In-House Requisition</h1>
                 </div>
+
+                <div class="ph_realtime_clock_wrapper" id="phRealtimeClock">
+                    <span class="ph_clock_date">Loading date...</span>
+                    <span class="ph_clock_time">Loading time...</span>
+                </div>
             </div>
         </div>
     </div>
@@ -76,7 +81,7 @@ $dbConn = getDBConnection();
 
                 <div class="global_form_wrapper">
                     <div class="form_page_header">
-                        <h3>Add Inhouse Requisition</h3>
+                        <h3 class="h3_repeat">Add Inhouse Requisition</h3>
                     </div>
 
                     <div class="form_body_content">
@@ -120,6 +125,11 @@ $dbConn = getDBConnection();
                                         <option value="logistics">Logistics</option>
                                     </select>
                                 </div>
+
+                                <div class="form_group">
+                                    <label>Attachemnt <span class="required">*</span></label>
+                                    <input type="file" class="global_input" required>
+                                </div>
                             </div>
 
                             <!-- Section 2: Purpose & Operations -->
@@ -128,7 +138,7 @@ $dbConn = getDBConnection();
 
                                 <div class="form_group">
                                     <label>Mode <span class="required">*</span></label>
-                                    <input type="text" class="global_input has-value" value="Inhouse Standard" readonly required>
+                                    <input type="text" class="global_input has-value" value="Inhouse Standard" disabled="true" required>
                                 </div>
 
                                 <div class="form_group">
@@ -214,7 +224,7 @@ $dbConn = getDBConnection();
 
                                 <div class="form_group">
                                     <label>Requested By <span class="required">*</span></label>
-                                    <input type="text" class="global_input has-value" value="Current User (Admin)" readonly required>
+                                    <input type="text" class="global_input has-value" value="Admin" disabled="true" required>
                                 </div>
 
                                 <div class="form_group">
@@ -239,12 +249,12 @@ $dbConn = getDBConnection();
 
                                 <div class="form_group">
                                     <label>Odometer <span class="required">*</span></label>
-                                    <input type="text" class="global_input has-value" value="45,200 km" readonly required>
+                                    <input type="text" class="global_input has-value" value="45,200 km" disabled="true" required>
                                 </div>
 
                                 <div class="form_group">
                                     <label>Total Amount <span class="required">*</span></label>
-                                    <input type="text" class="global_input has-value" value="₱ 0.00" readonly required>
+                                    <input type="text" class="global_input has-value" value="₱ 0.00" disabled="true" required>
                                 </div>
                             </div>
 
@@ -253,19 +263,136 @@ $dbConn = getDBConnection();
                                 <div class="section_title">Instructions</div>
                                 <div class="form_group delivery_instruct full_width">
                                     <label>Delivery Instructions <span class="required">*</span></label>
-                                    <textarea class="global_textarea" rows="3" placeholder="Enter delivery instructions..." required></textarea>
+                                    <textarea class="global_textarea" rows="3" placeholder="Enter delivery instructions..."></textarea>
                                 </div>
                             </div>
 
-                            <!-- Form Footer Actions -->
-                            <div class="form_footer_actions full_width_card">
-                                <button type="submit" class="global_btn_save">Save</button>
-                                <button type="submit" class="global_btn_submit">Post</button>
-                            </div>
                         </form>
                     </div>
                 </div>
 
+
+                <div class="inhouse_requisition_child_tbl global_display_table_wrapper">
+                    <div class="table_action">
+                        <h2 class="h3_repeat">Added Item</h2>
+                        <button type="button" class="global_add_btn">+ Add Item</button>
+                    </div>
+
+                    <div class="global_display_table_container">
+                        <table class="ir_add_display_tbl global_display_table">
+                            <thead>
+                                <tr>
+                                    <th class="text_center" style="width: 60px;">#</th>
+                                    <th>Item Code</th>
+                                    <th>Barcode</th>
+                                    <th>Item Description</th>
+                                    <th>Item No</th>
+                                    <th>UOM</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Concession ID</th>
+                                    <th>Req Qty</th>
+                                    <th>Unit Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text_center">1</td>
+                                    <td>X1007-049</td>
+                                    <td>4800123456789</td>
+                                    <td>ZZ. ALBATROSS</td>
+                                    <td>137297</td>
+                                    <td>PCS</td>
+                                    <td>Inhouse</td>
+                                    <td>Pending</td>
+                                    <td>0123</td>
+                                    <td><input type="text" class="global_input has-value" disabled="true"></td>
+                                    <td><input type="text" class="global_input has-value" disabled="true"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Form Footer Actions -->
+                <div class="form_footer_actions">
+                    <button type="submit" class="global_btn_save btn-tool-tip ir_btn_save"><span>Save</span></button>
+                    <button type="submit" class="global_btn_submit btn-tool-tip ir_btn_submit"><span>Post</span></button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- LOOKUP ITEM MODAL -->
+    <div class="global_modal_overlay" id="lookupItemModal">
+        <div class="lookup_modal_content">
+            <div class="lookup_modal_header">
+                <h3>LOOKUP ITEM</h3>
+                <button type="button" class="lookup_modal_close" id="btnCloseLookupModal">&times;</button>
+            </div>
+
+            <div class="lookup_modal_body">
+                <div class="lookup_search_bar">
+                    <input type="text" class="lookup_search_input" placeholder="Search Item Here">
+
+                    <select class="lookup_search_select">
+                        <option value="item_description">ITEM DESCRIPTION</option>
+                        <option value="item_code">ITEM CODE</option>
+                        <option value="barcode">BARCODE</option>
+                        <option value="barcode">UOM</option>
+                    </select>
+
+                    <button type="button" class="lookup_btn_search">SEARCH</button>
+                </div>
+
+                <div class="lookup_table_wrapper">
+                    <table class="lookup_table">
+                        <thead>
+                            <tr>
+                                <th class="text_center" style="width: 50px;">
+                                    <input type="checkbox" id="selectAllLookupItems"> All
+                                </th>
+                                <th>ITEM CODE</th>
+                                <th>BARCODE</th>
+                                <th>ITEM DESCRIPTION</th>
+                                <th>ITEM NO</th>
+                                <th>UOM</th>
+                                <th class="text_right">STOCK ONHAND</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text_center">
+                                    <input type="checkbox" class="lookup_item_checkbox">
+                                </td>
+                                <td class="item_code_cell">1301-02</td>
+                                <td>1301-02</td>
+                                <td>GI PIPE EAGLES S-40(LG)1-1/2#40MM x6M 150/BNDL</td>
+                                <td>8091</td>
+                                <td>LENGTH</td>
+                                <td class="text_right font_bold">0.00</td>
+                            </tr>
+                            <tr>
+                                <td class="text_center">
+                                    <input type="checkbox" class="lookup_item_checkbox">
+                                </td>
+                                <td class="item_code_cell">1301-04</td>
+                                <td>1301-04</td>
+                                <td>GI PIPE EAGLES S-40(LG)1-1/2#32MM x6M 180/BNDL</td>
+                                <td>8093</td>
+                                <td>LENGTH</td>
+                                <td class="text_right font_bold">28.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="lookup_modal_footer_actions">
+                    <button type="button" class="global_add_selected_btn" id="btnAddSelected">Add Selected</button>
+                </div>
+                
             </div>
         </div>
     </div>
@@ -279,6 +406,7 @@ $dbConn = getDBConnection();
     <script src="../assets/js/access.js"></script>
     <script src="../assets/js/inhouse_requisition_add.js"></script>
     <script src="../assets/js/sidebar_button.js"></script>
+    <script src="../assets/js/ph_time.js"></script>
 </body>
 
 </html>
