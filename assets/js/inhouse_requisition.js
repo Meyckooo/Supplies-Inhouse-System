@@ -287,6 +287,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //Initiate Function syncGlobalFloatongActionHeights
     syncGlobalFloatongActionHeights();
+
+    setTimeout(() => {
+      const container = document.querySelector(".global_table_container");
+      if (container) {
+        container.scrollLeft = 0;
+
+        if (typeof syncGlobalFloatingAction === "function") {
+          syncGlobalFloatingAction();
+        }
+      }
+    }, 150);
 });
 
 
