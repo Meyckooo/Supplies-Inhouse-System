@@ -41,7 +41,7 @@ $dbConn = getDBConnection();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>In-House Requisition</title>
+    <title>In-House & Supplies Requisition</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/media.css">
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
@@ -58,7 +58,7 @@ $dbConn = getDBConnection();
         <div class="wrapper">
             <div class="header_title">
                 <div class="header_info">
-                    <h1>In-House Requisition</h1>
+                    <h1>Requisition</h1>
                 </div>
 
                 <div class="ph_realtime_clock_wrapper" id="phRealtimeClock">
@@ -287,28 +287,17 @@ $dbConn = getDBConnection();
                                     <th>Barcode</th>
                                     <th>Item Description</th>
                                     <th>Item No</th>
+                                    <th>Concession ID</th>
+                                    <th>Unit Price</th>
                                     <th>UOM</th>
                                     <th>Type</th>
                                     <th>Status</th>
-                                    <th>Concession ID</th>
                                     <th>Req Qty</th>
-                                    <th>Unit Price</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="text_center">1</td>
-                                    <td>X1007-049</td>
-                                    <td>4800123456789</td>
-                                    <td>ZZ. ALBATROSS</td>
-                                    <td>137297</td>
-                                    <td>PCS</td>
-                                    <td>Inhouse</td>
-                                    <td>Pending</td>
-                                    <td>0123</td>
-                                    <td><input type="text" class="global_input has-value" disabled="true"></td>
-                                    <td><input type="text" class="global_input has-value" disabled="true"></td>
-                                </tr>
+                                
                             </tbody>
                         </table>
                     </div>
@@ -341,7 +330,7 @@ $dbConn = getDBConnection();
                         <option value="item_description">ITEM DESCRIPTION</option>
                         <option value="item_code">ITEM CODE</option>
                         <option value="barcode">BARCODE</option>
-                        <option value="barcode">UOM</option>
+                        <option value="uom">UOM</option>
                     </select>
 
                     <button type="button" class="lookup_btn_search">SEARCH</button>
@@ -363,28 +352,7 @@ $dbConn = getDBConnection();
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="text_center">
-                                    <input type="checkbox" class="lookup_item_checkbox">
-                                </td>
-                                <td class="item_code_cell">1301-02</td>
-                                <td>1301-02</td>
-                                <td>GI PIPE EAGLES S-40(LG)1-1/2#40MM x6M 150/BNDL</td>
-                                <td>8091</td>
-                                <td>LENGTH</td>
-                                <td class="text_right font_bold">0.00</td>
-                            </tr>
-                            <tr>
-                                <td class="text_center">
-                                    <input type="checkbox" class="lookup_item_checkbox">
-                                </td>
-                                <td class="item_code_cell">1301-04</td>
-                                <td>1301-04</td>
-                                <td>GI PIPE EAGLES S-40(LG)1-1/2#32MM x6M 180/BNDL</td>
-                                <td>8093</td>
-                                <td>LENGTH</td>
-                                <td class="text_right font_bold">28.00</td>
-                            </tr>
+                            
                         </tbody>
                     </table>
                 </div>
