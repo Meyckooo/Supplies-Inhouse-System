@@ -1,6 +1,6 @@
 <?php
 session_start();
-$base_path = "./";
+$base_path = "../";
 
 require_once __DIR__ . '/../includes/auth_check.php';
 require_once __DIR__ . '/../config/db.php';
@@ -45,13 +45,13 @@ $dbConn = getDBConnection();
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/media.css">
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
-    <link rel="icon" href="<?php echo $base_path; ?>../assets/images/favicon.png">
+    <link rel="icon" href="<?php echo $base_path; ?>/assets/images/favicon.png">
 
 </head>
 
 <body>
 
-    <?php include $base_path . '../includes/sidebar.php'; ?>
+    <?php include $base_path . 'includes/sidebar.php'; ?>
 
 
     <div class="main_content">

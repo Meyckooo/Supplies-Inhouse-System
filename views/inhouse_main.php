@@ -44,7 +44,7 @@ $dbConn = getDBConnection();
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/media.css">
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
-    <link rel="icon" href="<?php echo $base_path; ?>../assets/images/favicon.png">
+    <link rel="icon" href="<?php echo $base_path; ?>/assets/images/favicon.png">
 
 </head>
 
