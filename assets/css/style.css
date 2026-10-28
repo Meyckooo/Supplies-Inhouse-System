@@ -1535,7 +1535,9 @@ line-height: 27px;
 .sidebar li .sidebar_logout:before {
   content: url(../images/icon/logout.png);
 }
-
+.sidebar li .otherfunction:before {
+  content: url(../images/icon/otherfunction.png);
+}
 .sidebar ul li a:after {
   content: "";
   position: absolute;
