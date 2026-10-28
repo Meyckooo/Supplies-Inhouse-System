@@ -1,6 +1,6 @@
 <?php
 session_start();
-$base_path = "./";
+$base_path = "../";
 
 require_once __DIR__ . '/../includes/auth_check.php';
 require_once __DIR__ . '/../config/db.php';
@@ -26,6 +26,7 @@ if ($hour >= 5 && $hour < 12) {
 }
 
 $dbConn = getDBConnection();
+
 
 // Check specific action permissions for frontend buttons
 // $canAdd   = hasActionAccess($moduleId, 'Add', $isSuperAdmin, $userId, $dbConn);
@@ -77,11 +78,12 @@ $dbConn = getDBConnection();
             return true;
         }
     </script>
+
 </head>
 
 <body>
 
-    <?php include $base_path . '../includes/sidebar.php'; ?>
+    <?php include $base_path . 'includes/sidebar.php'; ?>
 
     <div class="main_content">
         <div class="wrapper">
