@@ -1,6 +1,6 @@
 <?php
 session_start();
-$base_path = "./";
+$base_path = "../";
 
 require_once __DIR__ . '/../includes/auth_check.php';
 require_once __DIR__ . '/../config/db.php';
@@ -50,7 +50,7 @@ $dbConn = getDBConnection();
 
 <body>
 
-    <?php include $base_path . '../includes/sidebar.php'; ?>
+    <?php include $base_path . 'includes/sidebar.php'; ?>
 
 
     <div class="main_content">
