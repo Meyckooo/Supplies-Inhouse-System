@@ -51,7 +51,7 @@ $dbConn = getDBConnection();
 
 <body>
 
-    <?php include $base_path . '../includes/sidebar.php'; ?>
+    <?php include $base_path . 'includes/sidebar.php'; ?>
 
 
     <div class="main_content">
