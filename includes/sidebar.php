@@ -21,6 +21,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
 
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/style.css">
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/media.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/bootstrap-icons.css">
 <script src="<?php echo BASE_URL; ?>assets/js/sidebar_button.js"></script>
 
 <div class="sidebar bg-dark-slate text-white flex-shrink-0 p-3 shadow">
@@ -122,6 +123,17 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
                         </ul>
                     </li>
                 </ul>
+            </li>
+        <?php endif; ?>
+
+        <!-- Other Functions -->
+        <?php if (hasAccess(2, $isSuperAdmin, $allowedModules)): ?>
+            <li class="menu-item mb-2 has-submenu">
+                <a href="other_config.php" class="otherfunction menu-link d-flex align-items-center justify-content-between submenu-toggle">
+                    <span class="d-flex align-items-center">
+                        <span>Other Functions</span>
+                    </span>
+                </a>
             </li>
         <?php endif; ?>
 
