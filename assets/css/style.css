@@ -1537,6 +1537,7 @@ line-height: 27px;
 }
 .sidebar li .otherfunction:before {
   content: url(../images/icon/otherfunction.png);
+  transform: translateY(-50%) scale(0.8);
 }
 .sidebar ul li a:after {
   content: "";
@@ -1990,7 +1991,7 @@ line-height: 27px;
 /* Filter Bar */
 .global_filter_bar {
   background-color: var(--secondaryColor);
-  padding: 12px 18px;
+  padding: 15px 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -2825,3 +2826,195 @@ line-height: 27px;
 }
 
 /* END */
+
+
+
+/* ==========================================
+   RECEIVING MODULE CARD DESIGN STYLES
+   ========================================== */
+
+.receiving_container {
+    font-family: var(--parag);
+    padding: 20px 15px;
+}
+
+.receiving_items_count {
+  font-family: var(--headingTxt);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--White);
+  letter-spacing: 0.5px;
+  width: fit-content;
+  background: var(--primaryColor);
+  border-radius: 6px;
+  display: flex;
+  justify-content: start;
+  gap: 8px;
+  align-items: center;
+  position: relative;
+  padding: 13px 20px;
+}
+
+.receiving_items_count span {
+    min-width: 24px;     
+    height: 24px;        
+    padding: 0 6px;      
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100vw;
+    background: var(--wRed);
+    font-size: 11px;
+    white-space: nowrap;
+    position: absolute;
+    top: -10px;
+    right: -7px;
+}
+
+.receiving_card_list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.receiving_card_list section {
+    background: var(--White);
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    overflow: hidden;
+    transition: all 0.2s ease;
+    padding: 0 ;
+}
+
+.receiving_card_list section:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.receiving_card_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    border-bottom: 1px solid #e9ecef;
+    background-color: #fafbfc;
+}
+
+.receiving_item_title {
+    font-family: var(--headingTxt);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--Black);
+    margin: 0;
+    position: relative;
+    padding-left: 12px;
+}
+
+.receiving_item_title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 18px;
+    background-color: var(--primaryColor);
+    border-radius: 2px;
+}
+
+.receiving_btn_receive {
+    position: relative;
+    width: 120px;
+    background-color: var(--primaryColor);
+    color: var(--White);
+    font-family: var(--headingTxt);
+    font-weight: 700;
+    font-size: 13px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.receiving_btn_receive:hover {
+    background-color: var(--dGreen);
+}
+
+.receiving_card_body {
+    padding: 20px 24px;
+}
+
+.receiving_info_grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px 24px;
+    align-items: center;
+}
+
+.receiving_info_col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.receiving_label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--Gray);
+    letter-spacing: 0.5px;
+    font-family: var(--headingTxt);
+}
+
+.receiving_value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--Black);
+}
+
+.receiving_value_bold {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--Black);
+    font-family: var(--headingTxt);
+}
+
+.receiving_badge_box {
+    background-color: #e8f8ed;
+    border: 1px solid #c3e6cb;
+    border-radius: 6px;
+    padding: 10px 14px;
+}
+
+.receiving_badge_val {
+    font-family: var(--headingTxt);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--dGreen);
+}
+
+.receiving_badge_val small {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--Gray);
+}
+
+.receiving_card_footer {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--primaryColor);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.receiving_date_val {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--Black);
+}
+
+/* ==========================================
+   END RECEIVING MODULE CARD STYLES
+   ========================================== */
