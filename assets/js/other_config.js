@@ -13,11 +13,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const approverButton = document.getElementById("toggleApproverConfig");
   const approverForm = document.getElementById("registerApproverForm");
   const approverModalElement = document.getElementById("registerApproverModal");
-  const approverSelect = document.getElementById("approverUserSelect");
+  const approverSearchInput = document.getElementById("approverSearchInput");
+  const approverUserId = document.getElementById("approverUserId");
+  const approverSearchResults = document.getElementById("approverSearchResults");
   const departmentSelect = document.getElementById("approverDepartmentSelect");
   const locationSelect = document.getElementById("approverLocationSelect");
   const approverMessage = document.getElementById("registerApproverMessage");
   const approverSubmitButton = document.getElementById("registerApproverSubmit");
+  let approverSearchTimer;
+  let approverSearchController;
 
   function showTableMessage(tableBody, columnCount, message) {
     const row = document.createElement("tr");
@@ -115,24 +119,92 @@ document.addEventListener("DOMContentLoaded", () => {
       headers: { Accept: "application/json" },
     });
     const result = await readResponse(response);
-    if (
-      !result.data ||
-      !Array.isArray(result.data.users) ||
-      !Array.isArray(result.data.departments) ||
-      !Array.isArray(result.data.locations)
-    ) {
-      throw new Error("The server returned invalid approver registration options.");
+    const options = result.data;
+    if (!options || typeof options !== "object" || Array.isArray(options)) {
+      throw new Error("The server returned approver options in an invalid format.");
     }
 
-    populateSelect(approverSelect, result.data.users, "oUserid", "oFullname", "Select an approver");
-    populateSelect(departmentSelect, result.data.departments, "otableid", "odepartment_name", "Select a department");
+    if (!Array.isArray(options.departments)) {
+      throw new Error("The server did not return a valid department list.");
+    }
+    if (!Array.isArray(options.locations)) {
+      throw new Error("The server did not return a valid location list.");
+    }
+
+    populateSelect(departmentSelect, options.departments, "otableid", "odepartment_name", "Select a department");
     populateSelect(
       locationSelect,
-      result.data.locations.map((locationId) => ({ id: locationId, name: `Location #${locationId}` })),
+      options.locations.map((locationId) => ({ id: locationId, name: `Location #${locationId}` })),
       "id",
       "name",
       "Select a location",
     );
+  }
+
+  function showApproverSearchMessage(message) {
+    const item = document.createElement("div");
+    item.className = "list-group-item text-muted";
+    item.textContent = message;
+    approverSearchResults.replaceChildren(item);
+    approverSearchResults.hidden = false;
+    approverSearchInput.setAttribute("aria-expanded", "true");
+  }
+
+  function renderApproverSearchResults(users) {
+    const items = users.map((user) => {
+      const item = document.createElement("button");
+      item.type = "button";
+      item.className = "list-group-item list-group-item-action";
+      item.setAttribute("role", "option");
+      item.dataset.userId = user.oUserid;
+      item.textContent = user.oFullname;
+      return item;
+    });
+
+    approverSearchResults.replaceChildren(...items);
+    approverSearchResults.hidden = items.length === 0;
+    approverSearchInput.setAttribute("aria-expanded", String(items.length > 0));
+  }
+
+  async function searchApprovers(query) {
+    approverSearchController?.abort();
+    const controller = new AbortController();
+    approverSearchController = controller;
+    const url = new URL(approverForm.dataset.endpoint, window.location.href);
+    url.searchParams.set("action", "search");
+    url.searchParams.set("q", query);
+
+    try {
+      const response = await fetch(url, {
+        headers: { Accept: "application/json" },
+        signal: controller.signal,
+      });
+      const result = await readResponse(response);
+      if (approverSearchInput.value.trim() !== query) {
+        return;
+      }
+      if (!Array.isArray(result.data)) {
+        throw new Error("The server returned invalid approver search results.");
+      }
+
+      if (result.data.length === 0) {
+        showApproverSearchMessage("No matching approvers found.");
+        return;
+      }
+
+      renderApproverSearchResults(result.data);
+    } catch (error) {
+      if (error.name === "AbortError") {
+        return;
+      }
+      if (approverSearchInput.value.trim() === query) {
+        showApproverSearchMessage(error.message);
+      }
+    } finally {
+      if (approverSearchController === controller) {
+        approverSearchController = null;
+      }
+    }
   }
 
   function populateSelect(select, options, valueKey, labelKey, placeholder) {
@@ -243,6 +315,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (approverForm && approverModalElement && approverMessage && approverSubmitButton) {
     approverModalElement.addEventListener("show.bs.modal", async () => {
+      clearTimeout(approverSearchTimer);
+      approverSearchController?.abort();
+      approverSearchResults.replaceChildren();
+      approverSearchResults.hidden = true;
+      approverSearchInput.setAttribute("aria-expanded", "false");
       approverMessage.textContent = "";
       approverMessage.className = "mt-2";
       approverForm.reset();
@@ -255,12 +332,48 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
+    approverModalElement.addEventListener("hide.bs.modal", () => {
+      clearTimeout(approverSearchTimer);
+      approverSearchController?.abort();
+    });
+
+    approverSearchInput.addEventListener("input", () => {
+      approverUserId.value = "";
+      clearTimeout(approverSearchTimer);
+      approverSearchController?.abort();
+
+      const query = approverSearchInput.value.trim();
+      if (!query) {
+        approverSearchResults.replaceChildren();
+        approverSearchResults.hidden = true;
+        approverSearchInput.setAttribute("aria-expanded", "false");
+        return;
+      }
+
+      showApproverSearchMessage("Searching...");
+      approverSearchTimer = setTimeout(() => searchApprovers(query), 250);
+    });
+
+    approverSearchResults.addEventListener("click", (event) => {
+      const resultButton = event.target.closest("button[data-user-id]");
+      if (!resultButton || !approverSearchResults.contains(resultButton)) {
+        return;
+      }
+
+      approverUserId.value = resultButton.dataset.userId;
+      approverSearchInput.value = resultButton.textContent;
+      approverSearchResults.replaceChildren();
+      approverSearchResults.hidden = true;
+      approverSearchInput.setAttribute("aria-expanded", "false");
+      approverSearchInput.focus();
+    });
+
     approverForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       approverMessage.textContent = "";
       approverMessage.className = "mt-2";
 
-      if (!approverSelect.value || !departmentSelect.value || !locationSelect.value) {
+      if (!approverUserId.value || !departmentSelect.value || !locationSelect.value) {
         setStatus(approverMessage, "Select an approver, department, and location.", false);
         return;
       }
