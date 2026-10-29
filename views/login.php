@@ -53,10 +53,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/media.css">
-    <link rel="icon" href="../assets/images/favicon.png">
+    <link rel="stylesheet" href="<?php echo $base_path ?>assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo $base_path ?>assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo $base_path ?>assets/css/media.css">
+    <link rel="icon" href="<?php echo $base_path ?>assets/images/favicon.png">
 </head>
 
 <body class="login-wrapper">
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="card_parent">
 
         <div class="login_left_img">
-            <figure><img src="../assets/images/login-left-img2.jpg" alt="Login Image"></img></figure>
+            <figure><img src="<?php echo $base_path ?>assets/images/login-left-img2.jpg" alt="Login Image"></img></figure>
         </div>
 
         <div class="card login-card ">
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="card-body card_box">
 
                 <div class="d-flex flex-column align-items-center gap-3 mb-5">
-                    <img src="../assets/images/nong_atoy_head.png" alt="Logo" class="form-logo">
+                    <img src="<?php echo $base_path ?>assets/images/nong_atoy_head.png" alt="Logo" class="form-logo">
                     <div>
                         <h2>Welcome Back! <small>Sign in to your Atlantic Hardware Account</small></h2>
                     </div>
@@ -86,13 +86,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <form class="login_form" action="login.php" method="POST">
                     <div class="login_input_field">
                         <input type="text" name="username" placeholder="Username" class="form-control form-control-lg custom-input" autocomplete="off">
-                        <i><img src="../assets/images/login-icon.png"></i>
+                        <i><img src="<?php echo $base_path ?>assets/images/login-icon.png"></i>
                     </div>
 
                     <div class="login_input_field">
                         <input type="password" name="password" id="password" placeholder="Password" class="form-control form-control-lg custom-input" required>
-                        <i><img src="../assets/images/password-icon.png"></i>
-                        <cite><img src="../assets/images/eyeclose.png" id="eyeicon"></cite>
+                        <i><img src="<?php echo $base_path ?>assets/images/password-icon.png"></i>
+                        <cite><img src="<?php echo $base_path ?>assets/images/eyeclose.png" id="eyeicon"></cite>
                     </div>
 
                     <div class="check_info">
@@ -132,10 +132,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         eyeicon.onclick = function() {
             if (password.type == "password") {
                 password.type = "text";
-                eyeicon.src = "../assets/images/eyeopen.png"
+                eyeicon.src = "<?php echo $base_path ?>assets/images/eyeopen.png"
             } else {
                 password.type = "password";
-                eyeicon.src = "../assets/images/eyeclose.png"
+                eyeicon.src = "<?php echo $base_path ?>assets/images/eyeclose.png"
             }
         }
     </script>

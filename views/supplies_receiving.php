@@ -1,0 +1,121 @@
+<?php
+session_start();
+$base_path = "../";
+
+require_once __DIR__ . '/../includes/auth_check.php';
+require_once __DIR__ . '/../config/db.php';
+
+$moduleId = 2;
+
+/*========================================================== //
+//             Enforce Main Module Access                   //
+//==========================================================*/
+if (!hasAccess($moduleId, $isSuperAdmin, $allowedModules)) {
+    header('HTTP/1.1 403 Forbidden');
+    header('Location: ' . $base_path . '403.php');
+    exit();
+}
+
+$dbConn = getDBConnection();
+
+// Check specific action permissions for frontend buttons
+// $canAdd   = hasActionAccess($moduleId, 'Add', $isSuperAdmin, $userId, $dbConn);
+// $canEdit  = hasActionAccess($moduleId, 'Edit', $isSuperAdmin, $userId, $dbConn);
+// $canView  = hasActionAccess($moduleId, 'View', $isSuperAdmin, $userId, $dbConn);
+// $canSave  = hasActionAccess($moduleId, 'Save', $isSuperAdmin, $userId, $dbConn);
+// $canPost  = hasActionAccess($moduleId, 'Post', $isSuperAdmin, $userId, $dbConn);
+// $canCancel = hasActionAccess($moduleId, 'Cancel', $isSuperAdmin, $userId, $dbConn);
+// $canPrint = hasActionAccess($moduleId, 'Print', $isSuperAdmin, $userId, $dbConn);
+// $canDiscount = hasActionAccess($moduleId, 'Discount', $isSuperAdmin, $userId, $dbConn);
+// $canSend = hasActionAccess($moduleId, 'Send', $isSuperAdmin, $userId, $dbConn);
+// $canSA = hasActionAccess($moduleId, 'SA', $isSuperAdmin, $userId, $dbConn);
+// $canSupervisor = hasActionAccess($moduleId, 'Supervisor', $isSuperAdmin, $userId, $dbConn);
+// $canManager = hasActionAccess($moduleId, 'Manager', $isSuperAdmin, $userId, $dbConn);
+// $canAudit = hasActionAccess($moduleId, 'Audit', $isSuperAdmin, $userId, $dbConn);
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receiving</title>
+    <link rel="stylesheet" href="<?php echo $base_path ?>assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo $base_path ?>assets/css/media.css">
+    <link rel="stylesheet" href="<?php echo $base_path ?>assets/css/bootstrap.min.css">
+    <link rel="icon" href="<?php echo $base_path; ?>/assets/images/favicon.png">
+
+</head>
+
+<body>
+
+    <?php include $base_path . 'includes/sidebar.php'; ?>
+
+
+    <div class="main_content">
+        <div class="wrapper">
+            <div class="header_title">
+                <div class="header_info">
+                    <h1>Receiving</h1>
+                </div>
+
+                <div class="ph_realtime_clock_wrapper" id="phRealtimeClock">
+                    <span class="ph_clock_date">Loading date...</span>
+                    <span class="ph_clock_time">Loading time...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main_content_body">
+        <div class="wrapper">
+            <div class="main_content_body_con">
+                <div class="header_buttons">
+                    <ul>
+                        <li><a class="global_back_btn" href="inhouse_main.php">← Back</a></li>
+                    </ul>
+                </div>
+
+                <!-- INHOUSE REQUISITION TABLE SECTION -->
+                <div class="inhouse_requisition global_table_wrapper">
+                    <section class="global_filter_bar">
+                        <div class="filter_group left">
+                            <div class="search_box">
+                                <input type="text" placeholder="Search..." class="global_input" id="SearchInput">
+                            </div>
+
+                            <div class="filter_dropdown">
+                                <select class="global_select" id="filterMonitoredCategory">
+                                    <option value="" disabled selected>All Monitored By</option>
+                                    <option value="diy_indust">Diy_Indust</option>
+                                </select>
+                            </div>
+
+                            <div class="filter_dropdown">
+                                <select class="global_select" id="filterDescriptionCategory">
+                                    <option value="" disabled selected>Description</option>
+                                    <option value="desc">Sample Description</option>
+                                </select>
+                            </div>
+                    </section>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <?php include $base_path . 'includes/footer.php'; ?>
+
+    <script src="<?php echo $base_path ?>assets/js/swal.js"></script>
+    <script src="<?php echo $base_path ?>assets/js/access.js"></script>
+    <script src="<?php echo $base_path ?>assets/js/supplies_receiving.js"></script>
+    <script src="<?php echo $base_path ?>assets/js/sidebar_button.js"></script>
+    <script src="<?php echo $base_path ?>assets/js/ph_time.js"></script>
+</body>
+
+</html>

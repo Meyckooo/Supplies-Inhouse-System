@@ -52,9 +52,9 @@ $dbConn = getDBConnection();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/media.css">
-    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo $base_path ?>assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo $base_path ?>assets/css/media.css">
+    <link rel="stylesheet" href="<?php echo $base_path ?>assets/css/bootstrap.min.css">
     <link rel="icon" href="<?php echo $base_path; ?>/assets/images/favicon.png">
 
     <script>
@@ -114,7 +114,7 @@ $dbConn = getDBConnection();
 
                     <div class="index_video">
                         <video autoplay muted loop playsinline controls>
-                            <source src="../assets/video/atlantic-video.mp4" type="video/mp4">
+                            <source src="<?php echo $base_path ?>assets/video/atlantic-video.mp4" type="video/mp4">
                         </video>
                     </div>
 
@@ -130,12 +130,12 @@ $dbConn = getDBConnection();
         </div>
     </div>
 
-    <?php include $base_path . '../includes/footer.php'; ?>
+    <?php include $base_path . 'includes/footer.php'; ?>
 
-    <script src="../assets/js/swal.js"></script>
-    <script src="../assets/js/access.js"></script>
-    <script src="../assets/js/sidebar_button.js"></script>
-    <script src="../assets/js/ph_time.js"></script>
+    <script src="<?php echo $base_path ?>assets/js/swal.js"></script>
+    <script src="<?php echo $base_path ?>assets/js/access.js"></script>
+    <script src="<?php echo $base_path ?>assets/js/sidebar_button.js"></script>
+    <script src="<?php echo $base_path ?>assets/js/ph_time.js"></script>
 
 </body>
 

@@ -115,10 +115,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
                         </a>
                         <ul class="sub-menu list-unstyled ps-3 mt-2">
                             <li class="menu-item mb-1">
-                                <a href="<?php echo BASE_URL; ?>views/releasing.php" class="menu-link">Releasing</a>
+                                <a href="<?php echo BASE_URL; ?>views/supplies_releasing.php" class="menu-link">Releasing</a>
                             </li>
                             <li class="menu-item mb-1">
-                                <a href="<?php echo BASE_URL; ?>views/receiving.php" class="menu-link">Receiving</a>
+                                <a href="<?php echo BASE_URL; ?>views/supplies_receiving.php" class="menu-link">Receiving</a>
                             </li>
                         </ul>
                     </li>

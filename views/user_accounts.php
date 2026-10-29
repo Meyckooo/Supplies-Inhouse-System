@@ -118,12 +118,12 @@ mysqli_close($conn);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Accounts Management</title>
-    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo $base_path ?>assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo $base_path; ?>assets/css/style.css">
     <link rel="stylesheet" href="<?php echo $base_path; ?>assets/css/media.css">
     <link rel="icon" href="<?php echo $base_path; ?>assets/images/favicon.png">
-    <script src="../assets/js/bootstrap.bundle.min.js"></script>
-    <script src="../assets/js/user_accounts_manager.js"></script>
+    <script src="<?php echo $base_path ?>assets/js/bootstrap.bundle.min.js"></script>
+    <script src="<?php echo $base_path ?>assets/js/user_accounts_manager.js"></script>
     <script>
         if (localStorage.getItem('sidebarCollapsed') === 'true') {
             document.documentElement.classList.add('sidebar-collapsed-preload');
@@ -132,7 +132,7 @@ mysqli_close($conn);
 </head>
 
 <body class="bg-light text-dark">
-    <?php require __DIR__ . '/../includes/sidebar.php'; ?>
+    <?php include $base_path . 'includes/sidebar.php'; ?>
 
     <nav class="navbar navbar-dark navbar-header px-4 py-3 mb-5 shadow-sm">
 
@@ -274,7 +274,7 @@ mysqli_close($conn);
                             <p>Need Help? <span><a href="#">Contact IT Support</a></span></p>
                         </div>
                         <div class="footer_values">
-                            <figure><img src="../assets/images/footer-img.png" alt="Values"></figure>
+                            <figure><img src="<?php echo $base_path ?>assets/images/footer-img.png" alt="Values"></figure>
                         </div>
                         <div class="copyright">
                             &copy; Copyright
