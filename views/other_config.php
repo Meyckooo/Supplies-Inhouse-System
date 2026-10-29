@@ -59,12 +59,9 @@ $_SESSION['csrf_token'] ??= bin2hex(random_bytes(32));
         <div class="wrapper">
             <div class="main_content_body_con">
                 <div class="header_buttons">
-                    <ul>
-                        <li><a class="global_back_btn" href="inhouse_main.php">← Back</a></li>
-                    </ul>
+                   
                 </div>
 
-                <!-- INHOUSE REQUISITION TABLE SECTION -->
                 <div class="inhouse_requisition global_table_wrapper">
                     <section class="global_filter_bar">
                         <div class="filter_group left">
@@ -84,10 +81,10 @@ $_SESSION['csrf_token'] ??= bin2hex(random_bytes(32));
                             </div>
 
                             <div class="date_picker_container">
-                                <button type="button" class="date_picker_trigger" id="datePickerBtn">
+                                <!-- <button type="button" class="date_picker_trigger" id="datePickerBtn">
                                     <figure><img src="<?php echo $base_path ?>assets/images/icon/calendar.png" alt="calendar"></figure>
                                     <span id="selectedDateRangeText">Select Date</span>
-                                </button>
+                                </button> -->
 
                                 <div class="calendar_dropdown" id="calendarDropdown">
                                     <div class="calendar_header">
@@ -100,7 +97,6 @@ $_SESSION['csrf_token'] ??= bin2hex(random_bytes(32));
                                     </div>
 
                                     <div class="calendar_grid" id="calendarGrid">
-                                        <!-- Rendered Dynamically via JS -->
                                     </div>
 
                                     <div class="calendar_footer">
@@ -184,10 +180,12 @@ $_SESSION['csrf_token'] ??= bin2hex(random_bytes(32));
                                     </div>
                                     <div class="modal-body">
                                         <div class="mb-3">
-                                            <label for="approverUserSelect" class="form-label">Approver</label>
-                                            <select class="form-select" id="approverUserSelect" name="approver_id" required>
-                                                <option value="">Loading approvers...</option>
-                                            </select>
+                                            <label for="approverSearchInput" class="form-label">Approver</label>
+                                            <input type="text" class="form-control" id="approverSearchInput" autocomplete="off"
+                                                placeholder="Search approver by name" aria-autocomplete="list"
+                                                aria-controls="approverSearchResults" aria-expanded="false">
+                                            <input type="hidden" id="approverUserId" name="approver_id">
+                                            <div id="approverSearchResults" class="list-group mt-1" role="listbox" hidden></div>
                                         </div>
                                         <div class="mb-3">
                                             <label for="approverDepartmentSelect" class="form-label">Department</label>

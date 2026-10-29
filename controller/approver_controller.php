@@ -44,34 +44,13 @@ function parseApproverId($value): ?int
 
 function getApproverOptions(mysqli $conn): array
 {
-    $users = [];
-    $userResult = $conn->query(
-        "SELECT oUserid, oFullname
-         FROM tbl_user
-         WHERE oActive = 1
-         ORDER BY oFullname ASC"
-    );
-    if (!$userResult) {
-        error_log('Unable to fetch approver users: ' . $conn->error);
-        approverError(500, 'Unable to load available approvers.');
-    }
-
-    while ($row = $userResult->fetch_assoc()) {
-        $userId = parseApproverId($row['oUserid']);
-        if ($userId !== null) {
-            $users[] = [
-                'oUserid' => $userId,
-                'oFullname' => $row['oFullname'],
-            ];
-        }
-    }
-
     $departments = [];
     $departmentResult = $conn->query(
-        "SELECT otableid, odepartment_name
+        "SELECT MIN(otableid) AS otableid, odepartment_name
          FROM tbl_ihsup_department
          WHERE odepartment_name IS NOT NULL
            AND odepartment_name <> ''
+         GROUP BY odepartment_name
          ORDER BY odepartment_name ASC"
     );
     if (!$departmentResult) {
@@ -88,7 +67,7 @@ function getApproverOptions(mysqli $conn): array
 
     $locations = [];
     $locationResult = $conn->query(
-        'SELECT otableid FROM tbl_supplies_location ORDER BY otableid ASC'
+        'SELECT otableid FROM tbl_ihsup_location ORDER BY otableid ASC'
     );
     if (!$locationResult) {
         error_log('Unable to fetch approver locations: ' . $conn->error);
@@ -100,10 +79,48 @@ function getApproverOptions(mysqli $conn): array
     }
 
     return [
-        'users' => $users,
         'departments' => $departments,
         'locations' => $locations,
     ];
+}
+
+function searchApprovers(mysqli $conn, string $search): array
+{
+    $escapedSearch = strtr($search, ['!' => '!!', '%' => '!%', '_' => '!_']);
+    $pattern = '%' . $escapedSearch . '%';
+    $stmt = $conn->prepare(
+        "SELECT oUserid, oFullname
+         FROM tbl_user
+         WHERE oActive = 1
+           AND oFullname LIKE ? ESCAPE '!'
+         ORDER BY oFullname ASC
+         LIMIT 20"
+    );
+    if (!$stmt) {
+        error_log('Unable to prepare approver search: ' . $conn->error);
+        approverError(500, 'Unable to search available approvers.');
+    }
+    $stmt->bind_param('s', $pattern);
+    if (!$stmt->execute()) {
+        error_log('Unable to search approver users: ' . $stmt->error);
+        $stmt->close();
+        approverError(500, 'Unable to search available approvers.');
+    }
+
+    $users = [];
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+        $userId = parseApproverId($row['oUserid']);
+        if ($userId !== null) {
+            $users[] = [
+                'oUserid' => $userId,
+                'oFullname' => $row['oFullname'],
+            ];
+        }
+    }
+    $stmt->close();
+
+    return $users;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -164,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $locationStmt = $conn->prepare(
-        'SELECT 1 FROM tbl_supplies_location WHERE otableid = ? LIMIT 1'
+        'SELECT 1 FROM tbl_ihsup_location WHERE otableid = ? LIMIT 1'
     );
     if (!$locationStmt) {
         error_log('Unable to prepare approver location lookup: ' . $conn->error);
@@ -243,6 +260,20 @@ if (($_GET['action'] ?? '') === 'options') {
     exit;
 }
 
+if (($_GET['action'] ?? '') === 'search') {
+    $search = $_GET['q'] ?? '';
+    if (!is_string($search)) {
+        approverError(422, 'Enter a valid approver name to search.');
+    }
+    $search = trim($search);
+    if (strlen($search) > 100) {
+        approverError(422, 'Approver search must be 100 characters or fewer.');
+    }
+
+    echo json_encode(['success' => true, 'data' => $search === '' ? [] : searchApprovers($conn, $search)]);
+    exit;
+}
+
 $stmt = $conn->prepare(
     'SELECT a.otableid, a.oapprover_name, a.oapprover_id, a.olocation_id,
             a.odepartment_id, d.odepartment_name
@@ -263,12 +294,21 @@ if (!$stmt->execute()) {
 $result = $stmt->get_result();
 $approvers = [];
 while ($row = $result->fetch_assoc()) {
+
+    switch ((int) $row['olocation_id']) {
+        case 1:
+            $location = 'TABOAN';
+            break;
+        default:
+            $location = '';
+    }
+
     $approvers[] = [
-        'otableid' => (int) $row['otableid'],
-        'oapprover_name' => $row['oapprover_name'],
-        'oapprover_id' => (int) $row['oapprover_id'],
-        'olocation_id' => (int) $row['olocation_id'],
-        'odepartment_name' => $row['odepartment_name'] ?? 'Unassigned',
+        'otableid'         => (int) $row['otableid'],
+        'oapprover_name'   => $row['oapprover_name'],
+        'oapprover_id'     => (int) $row['oapprover_id'],
+        'olocation_id'     => $location,
+        'odepartment_name' => $row['odepartment_name'] ?? 'ALL',
     ];
 }
 $stmt->close();
