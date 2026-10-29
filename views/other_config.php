@@ -28,9 +28,9 @@ $_SESSION['csrf_token'] ??= bin2hex(random_bytes(32));
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Other Config</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/media.css">
-    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo $base_path ?>assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo $base_path ?>assets/css/media.css">
+    <link rel="stylesheet" href="<?php echo $base_path ?>assets/css/bootstrap.min.css">
     <link rel="icon" href="<?php echo $base_path; ?>/assets/images/favicon.png">
 
 </head>
@@ -85,7 +85,7 @@ $_SESSION['csrf_token'] ??= bin2hex(random_bytes(32));
 
                             <div class="date_picker_container">
                                 <button type="button" class="date_picker_trigger" id="datePickerBtn">
-                                    <figure><img src="../assets/images/icon/calendar.png" alt="calendar"></figure>
+                                    <figure><img src="<?php echo $base_path ?>assets/images/icon/calendar.png" alt="calendar"></figure>
                                     <span id="selectedDateRangeText">Select Date</span>
                                 </button>
 
@@ -218,15 +218,15 @@ $_SESSION['csrf_token'] ??= bin2hex(random_bytes(32));
 
 
 
-    <?php include $base_path . '../includes/footer.php'; ?>
+    <?php include $base_path . 'includes/footer.php'; ?>
 
-    <script src="../assets/js/swal.js"></script>
-    <script src="../assets/js/access.js"></script>
-    <script src="../assets/js/inhouse_requisition.js"></script>
-    <script src="../assets/js/bootstrap.bundle.min.js"></script>
-    <script src="../assets/js/other_config.js"></script>
-    <script src="../assets/js/sidebar_button.js"></script>
-    <script src="../assets/js/ph_time.js"></script>
+    <script src="<?php echo $base_path ?>assets/js/swal.js"></script>
+    <script src="<?php echo $base_path ?>assets/js/access.js"></script>
+    <script src="<?php echo $base_path ?>assets/js/inhouse_requisition.js"></script>
+    <script src="<?php echo $base_path ?>assets/js/bootstrap.bundle.min.js"></script>
+    <script src="<?php echo $base_path ?>assets/js/other_config.js"></script>
+    <script src="<?php echo $base_path ?>assets/js/sidebar_button.js"></script>
+    <script src="<?php echo $base_path ?>assets/js/ph_time.js"></script>
 </body>
 
 </html>

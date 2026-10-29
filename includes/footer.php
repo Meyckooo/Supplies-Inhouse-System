@@ -3,7 +3,7 @@
                     <div class="wrapper">
                         <div class="footer_container">
                             <div class="footer_img_content">
-                                <figure><img src="../assets/images/nong_atoy_head.png" alt="Footer Logo"></figure>
+                                <figure><img src="<?php echo $base_path ?>assets/images/nong_atoy_head.png" alt="Footer Logo"></figure>
                                 <p>To become the customer's TOP OF MIND for building materials and home improvement needs in Cebu in 2027</p>
                             </div>
 
@@ -12,7 +12,7 @@
                                     <p>Need Help? <span><a href="#">Contact IT Support</a></span></p>
                                 </div>
                                 <div class="footer_values">
-                                    <figure><img src="../assets/images/footer-img.png" alt="Values"></figure>
+                                    <figure><img src="<?php echo $base_path ?>assets/images/footer-img.png" alt="Values"></figure>
                                 </div>
                                 <div class="copyright">
                                     &copy; Copyright
