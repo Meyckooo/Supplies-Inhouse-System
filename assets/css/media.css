@@ -299,6 +299,12 @@ object-position: 33px 0;
     font: 800 25px/100% var(--headingTxt);
     }
 
+    /* RECEIVING */
+
+     .receiving_info_grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
 }
 
 
@@ -317,4 +323,18 @@ object-position: 33px 0;
  .header_title h1{
   font-size: 30px;
  }
+
+ /* RECEIVING */
+
+  .receiving_info_grid {
+        grid-template-columns: 1fr;
+    }
+    .receiving_card_header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .receiving_btn_receive {
+        width: 100%;
+    }
 }
