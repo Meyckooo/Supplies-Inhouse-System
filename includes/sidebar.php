@@ -109,7 +109,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
                     </li>
                     <!-- Nested Submenu  -->
                     <li class="menu-item mb-1 has-submenu">
-                        <a href="<?php echo BASE_URL; ?>views/supplies_rel_rec.php" class="menu-link d-flex align-items-center justify-content-between">
+                        <a href="javascript:void(0)"; class="menu-link d-flex align-items-center justify-content-between">
                             <span>Supplies REL. &amp; REC.</span>
                             <span class="submenu-arrow">&#9662;</span>
                         </a>
