@@ -36,9 +36,9 @@ $dbConn = getDBConnection();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>INHOUSE APPROVAL</title>
 
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <link rel="stylesheet" href="../assets/css/media.css">
-    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo $base_path ?>assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo $base_path ?>assets/css/media.css">
+    <link rel="stylesheet" href="<?php echo $base_path ?>assets/css/bootstrap.min.css">
     <link rel="icon" href="<?php echo $base_path; ?>/assets/images/favicon.png">
 
     <script>
@@ -159,7 +159,7 @@ $dbConn = getDBConnection();
         </div>
     </div>
 
-    <?php include $base_path . '../includes/footer.php'; ?>
+    <?php include $base_path . 'includes/footer.php'; ?>
 
 </body>
 
