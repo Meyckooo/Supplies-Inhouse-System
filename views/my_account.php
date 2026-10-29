@@ -65,7 +65,7 @@ mysqli_close($conn);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Account Profile</title>
-    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo $base_path ?>assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo $base_path; ?>assets/css/style.css">
     <link rel="stylesheet" href="<?php echo $base_path; ?>assets/css/media.css">
     <link rel="icon" href="<?php echo $base_path; ?>assets/images/favicon.png">
@@ -178,7 +178,7 @@ mysqli_close($conn);
             <div class="wrapper">
                 <div class="footer_container">
                     <div class="footer_img_content">
-                        <figure><img src="../assets/images/nong_atoy_head.png" alt="Footer Logo"></figure>
+                        <figure><img src="<?php echo $base_path ?>assets/images/nong_atoy_head.png" alt="Footer Logo"></figure>
                         <p>To become the customer's TOP OF MIND for building materials and home improvement needs in Cebu in 2027</p>
                     </div>
 
@@ -187,7 +187,7 @@ mysqli_close($conn);
                             <p>Need Help? <span><a href="#">Contact IT Support</a></span></p>
                         </div>
                         <div class="footer_values">
-                            <figure><img src="../assets/images/footer-img.png" alt="Values"></figure>
+                            <figure><img src="<?php echo $base_path ?>assets/images/footer-img.png" alt="Values"></figure>
                         </div>
                         <div class="copyright">
                             &copy; Copyright
