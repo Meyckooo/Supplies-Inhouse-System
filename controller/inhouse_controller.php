@@ -10,31 +10,69 @@ class InhouseController
         $this->dbConn = $conn;
     }
 
-    public function addInhouseRequest(array $formData): bool
+    public function getCompanyLocation(): array
     {
         $inhouseModel = new InhouseModel($this->dbConn);
+        return $inhouseModel->getCompanyLocation();
+    }
+
+    public function addInhouseRequest(array $formData, array $fileData = []): bool
+    {
+        $inhouseModel = new InhouseModel($this->dbConn);
+
+        // Handle file upload if present
+        $attachmentName = null;
+        if (!empty($fileData['attachment']['name']) && $fileData['attachment']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = __DIR__ . '/../uploads/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            $fileName = time() . '_' . basename($fileData['attachment']['name']);
+            $uploadFile = $uploadDir . $fileName;
+            if (move_uploaded_file($fileData['attachment']['tmp_name'], $uploadFile)) {
+                $attachmentName = $fileName;
+            }
+        }
 
         $this->dbConn->begin_transaction();
 
         try {
-            // Add header data mapping
+            //status based on button clicked: 1 = to approved, 2 = save
+            $actionType = $formData['action'] ?? 'save';
+            $statusValue = ($actionType === 'post') ? 1 : 2;
+
+            // Explicitly set Philippine Timezone
+            $phTz = new DateTimeZone('Asia/Manila');
+            $nowPh = new DateTime('now', $phTz);
+
+            $rawPostDate = $formData['postDate'] ?? $nowPh->format('Y-m-d');
+            if (strlen($rawPostDate) === 10) {
+                $postDateValue = $rawPostDate . ' ' . $nowPh->format('H:i:s');
+            } else {
+                $postDateValue = $rawPostDate;
+            }
+
             $headerData = [
                 'department' => $formData['department'] ?? null,
-                'dateNeed' => $formData['dateNeed'] ?? null,
                 'approver' => $formData['approver'] ?? null,
                 'approverId' => isset($formData['approverId']) ? (int)$formData['approverId'] : null,
                 'section' => $formData['section'] ?? null,
-                'remarks' => $formData['remarks'] ?? null,
-                'type' => $formData['type'] ?? null,
+                'remarks' => $formData['remarks'] ?? '',
+                'type' => $formData['type'] ?? 'INHOUSE',
                 'location' => $formData['location'] ?? null,
                 'purpose' => $formData['purpose'] ?? null,
                 'mode' => $formData['mode'] ?? null,
-                'status' => isset($formData['status']) ? (int)$formData['status'] : null,
-                'postDate' => $formData['postDate'] ?? null,
-                'postBy' => $formData['postBy'] ?? null,
-                'postById' => isset($formData['postById']) ? (int)$formData['postById'] : null,
+                'ostatus' => $statusValue,
+                'postDate' => $postDateValue,
+                'postBy' => $formData['postBy'] ?? ($_SESSION['user_name'] ?? 'Admin'),
+                'postById' => isset($formData['postById']) ? (int)$formData['postById'] : (int)($_SESSION['user_id'] ?? $_SESSION['id'] ?? 0),
                 'company' => $formData['company'] ?? null,
-                'prioLvl' => isset($formData['prioLvl']) ? (int)$formData['prioLvl'] : null,
+                'stockRoomId' => 0,
+                'prioLvl' => isset($formData['prioLvl']) ? (int)$formData['prioLvl'] : 2,
+                'subPurpose' => $formData['sub_purpose'] ?? '',
+                'plateNo' => $formData['plate_no'] ?? null,
+                'odometer' => isset($formData['odometer']) ? (int)$formData['odometer'] : null,
+                'attachment' => $attachmentName,
             ];
 
             $parentId = $inhouseModel->addInhouseRequestHeader($headerData);
@@ -42,34 +80,38 @@ class InhouseController
                 throw new Exception("Failed to insert header.");
             }
 
-            // Add details
-            if (!empty($formData['details']) && is_array($formData['details'])) {
-                foreach ($formData['details'] as $detail) {
+            // Add item details loop
+            if (!empty($formData['items']) && is_array($formData['items'])) {
+                foreach ($formData['items'] as $item) {
+                    $qty = isset($item['qty']) ? (int)$item['qty'] : 1;
+                    $unitPrice = isset($item['unit_price']) ? (float)$item['unit_price'] : 0.00;
+
                     $detailData = [
                         'parentId' => $parentId,
-                        'itemCode' => $detail['item_code'] ?? null,
-                        'barCode' => $detail['bar_code'] ?? null,
-                        'itemDesc' => $detail['item_desc'] ?? null,
-                        'itemNo' => isset($detail['item_no']) ? (int)$detail['item_no'] : null,
-                        'ounit' => $detail['oum'] ?? null,
-                        'reqQty' => isset($detail['qty']) ? (int)$detail['qty'] : 0,
-                        'unitPrice' => isset($detail['unit_price']) ? (float)$detail['unit_price'] : 0.00,
-                        'reqAmount' => isset($detail['req_amount']) ? (float)$detail['req_amount'] : 0.00,
+                        'itemCode' => $item['item_code'] ?? null,
+                        'barCode' => $item['bar_code'] ?? null,
+                        'itemDesc' => $item['item_desc'] ?? null,
+                        'itemNo' => isset($item['item_no']) ? (int)$item['item_no'] : null,
+                        'ounit' => $item['oum'] ?? null,
+                        'reqQty' => $qty,
+                        'unitPrice' => $unitPrice,
+                        'reqAmount' => $qty * $unitPrice,
+                        'oconId' => isset($item['consign_id']) ? (int)$item['consign_id'] : null,
+                        'detail_type' => 1,
                     ];
 
                     if (!$inhouseModel->addInhouseRequestDetails($detailData)) {
-                        throw new Exception("Failed to insert request detail.");
+                        throw new Exception("Failed to insert detail.");
                     }
                 }
             }
 
             $this->dbConn->commit();
             return true;
-
         } catch (Exception $e) {
             $this->dbConn->rollback();
-            error_log("Transaction failed: " . $e->getMessage());
-            return false;
+            echo "<h3>Database/Transaction Error:</h3> " . htmlspecialchars($e->getMessage());
+            exit();
         }
     }
 
@@ -85,16 +127,63 @@ class InhouseController
         return $inhouseModel->getInhouseDetails($headerId);
     }
 
-    // public function getSuppliesHeader(): array
-    // {
-    //     $inhouseModel = new InhouseModel($this->dbConn);
-    //     return $inhouseModel->getSuppliesHeader();
-    // }
+    public function getCurrentCompany(): array
+    {
+        $inhouseModel = new InhouseModel($this->dbConn);
+        return $inhouseModel->getCurrentCompany();
+    }
 
-    // public function getSuppliesDetails(string $headerId): array
-    // {
-    //     $inhouseModel = new InhouseModel($this->dbConn);
-    //     return $inhouseModel->getSuppliesDetails($headerId);
-    // }
+    public function getDepartments(): array
+    {
+        $inhouseModel = new InhouseModel($this->dbConn);
+        return $inhouseModel->getDepartments();
+    }
+
+    public function getApprovers(): array
+    {
+        $inhouseModel = new InhouseModel($this->dbConn);
+        return $inhouseModel->getApprovers();
+    }
+
+    public function getPlateNumbers(): array
+    {
+        $inhouseModel = new InhouseModel($this->dbConn);
+        return $inhouseModel->getPlateNumbers();
+    }
 }
-?>
+
+// --- AJAX DETAILS ENDPOINT HANDLER ---
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['header_id'])) {
+    header('Content-Type: application/json');
+    require_once __DIR__ . '/../config/db.php';
+
+    $headerId = $_GET['header_id'];
+    $dbConn = getDBConnection();
+    $controller = new InhouseController($dbConn);
+
+    try {
+        $details = $controller->getInhouseDetails($headerId);
+        echo json_encode(['success' => true, 'data' => $details]);
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'error' => $e->getMessage(), 'data' => []]);
+    }
+    exit();
+}
+
+// --- FORM SUBMISSION HANDLER ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    require_once __DIR__ . '/../config/db.php';
+
+    $dbConn = getDBConnection();
+    $controller = new InhouseController($dbConn);
+
+    $success = $controller->addInhouseRequest($_POST, $_FILES);
+
+    if ($success) {
+        header("Location: ../views/inhouse_requisition.php?status=success");
+        exit();
+    } else {
+        echo "<script>alert('Failed to save in-house requisition. Please check logs.'); window.history.back();</script>";
+        exit();
+    }
+}
