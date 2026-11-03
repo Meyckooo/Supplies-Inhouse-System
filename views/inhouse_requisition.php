@@ -131,7 +131,7 @@ $headers = $inhouseController->getInhouseHeader();
                                     <th>Location</th>
                                     <th>Purpose</th>
                                     <th>Requested By</th>
-                                    <th>Approver ID</th>
+                                    <th>Approver</th>
                                     <th>Status</th>
                                     <th class="text_center global-floating-action" style="width: 370px; min-width: 370px;">Actions</th>
                                 </tr>
@@ -147,7 +147,7 @@ $headers = $inhouseController->getInhouseHeader();
                                             <td><?php echo htmlspecialchars($row['olocation'] ?? ''); ?></td>
                                             <td><?php echo htmlspecialchars($row['opurpose'] ?? ''); ?></td>
                                             <td><?php echo htmlspecialchars($row['opostby'] ?? ''); ?></td>
-                                            <td><?php echo htmlspecialchars($row['oapprover_id'] ?? ''); ?></td>
+                                            <td><?php echo htmlspecialchars($row['oapprover_name'] ?? 'N/A'); ?></td>
                                             <td>
                                                 <?php
                                                 $ostatus = (int)($row['ostatus'] ?? 0);
