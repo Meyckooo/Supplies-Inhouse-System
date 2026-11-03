@@ -1,4 +1,5 @@
 <?php
+$base_path = '../';
 session_start();
 require_once '../config/db.php';
 require_once '../controller/login_controller.php';

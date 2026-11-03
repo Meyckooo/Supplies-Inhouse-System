@@ -88,7 +88,7 @@ $dbConn = getDBConnection();
 
                     <!-- RECEIVING CARDS SECTION -->
                     <div class="receiving_container">
-                        
+
                         <div id="receivingCardContainer" class="receiving_card_list">
 
                             <section class="receiving_card">
@@ -187,6 +187,173 @@ $dbConn = getDBConnection();
                     </div>
 
                 </div>
+
+
+                <!-- RECEIVE ITEM MODAL -->
+                <div class="received_modal_overlay" id="receiveItemModal">
+                    <div class="receive_modal_content">
+                        <div class="receive_modal_header">
+                            <div class="receive_header_title_wrap">
+                                <span class="receive_header_accent"></span>
+                                <h3 id="modalItemTitle">AUTO CIRCUIT TESTER TS:URIAH 158-569 UA663170 6-24</h3>
+                            </div>
+                            <button type="button" class="receive_modal_close" id="btnCloseReceiveModal">&times;</button>
+                        </div>
+
+                        <div class="receive_modal_body">
+                            <div class="receive_summary_grid">
+                                <div class="receive_sum_col">
+                                    <span class="receive_label">ITEM CODE</span>
+                                    <span class="receive_value" id="modalItemCode">IO309-0190</span>
+                                </div>
+                                <div class="receive_sum_col">
+                                    <span class="receive_label">ITEM NO</span>
+                                    <span class="receive_value" id="modalItemNo">90333</span>
+                                </div>
+                                <div class="receive_sum_col">
+                                    <span class="receive_label">BARCODE</span>
+                                    <span class="receive_value" id="modalBarcode">805089663173</span>
+                                </div>
+                                <div class="receive_sum_col">
+                                    <span class="receive_label">MONITORED BY</span>
+                                    <span class="receive_value_bold" id="modalMonitored">DIY_INDUST</span>
+                                </div>
+                                <div class="receive_sum_col">
+                                    <span class="receive_label">UNIT</span>
+                                    <span class="receive_value" id="modalUnit">PCS</span>
+                                </div>
+                                <div class="receive_sum_col receive_badge_box">
+                                    <span class="receive_label">RECEIVED QTY</span>
+                                    <span class="receive_badge_val" id="modalReceivedQty">100.00 <small>PCS</small></span>
+                                </div>
+                                <div class="receive_sum_col receive_badge_box">
+                                    <span class="receive_label">PLACED QTY</span>
+                                    <span class="receive_badge_val" id="modalPlacedQty">104.00 <small>PCS</small></span>
+                                </div>
+                                <div class="receive_sum_col">
+                                    <span class="receive_label">REFERENCE NO.</span>
+                                    <span class="receive_value" id="modalRefNo">115151</span>
+                                </div>
+                                <div class="receive_sum_col">
+                                    <span class="receive_label">CREATED DATE</span>
+                                    <span class="receive_date_val" id="modalCreatedDate">2026-09-17 15:06:17</span>
+                                </div>
+                            </div>
+
+                            <div class="receive_balance_box">
+                                <div class="balance_row">
+                                    <span class="balance_label">SYSTEM BAL</span>
+                                    <span class="balance_val">0.00 <small>PCS</small></span>
+                                </div>
+                                <div class="balance_row">
+                                    <span class="balance_label">DEPOT BAL</span>
+                                    <span class="balance_val">0.00 <small>PCS</small></span>
+                                </div>
+                            </div>
+
+                            <div class="locators_section_header">
+                                <h4>LOCATORS (<span id="locatorCount">3</span>)</h4>
+                            </div>
+
+                            <!-- Locators List Container -->
+                            <div class="locators_list_container scrollable_locators_box" id="locatorsListContainer">
+                                <!-- Locator Item Row 1 -->
+                                <div class="locator_row_card">
+                                    <div class="loc_info">
+                                        <span class="receiving_label">LOCATOR</span>
+                                        <span class="loc_val">3PS1A1</span>
+                                    </div>
+                                    <div class="loc_info">
+                                        <span class="receiving_label">RACK</span>
+                                        <span class="loc_val">DIY</span>
+                                    </div>
+                                    <div class="loc_qty_badge">
+                                        <span class="receiving_label">QUANTITY</span>
+                                        <span class="receiving_badge_val">65.00 <small>PCS</small></span>
+                                    </div>
+                                    <div class="loc_action_box">
+                                        <input type="text" class="global_input" placeholder="ENTER QUANTITY">
+                                        <button type="button" class="btn_put_locator">PUT</button>
+                                        <button type="button" class="btn_remove_locator">Remove</button>
+                                    </div>
+                                </div>
+
+                                <!-- Locator Item Row 2 -->
+                                <div class="locator_row_card">
+                                    <div class="loc_info">
+                                        <span class="receiving_label">LOCATOR</span>
+                                        <span class="loc_val">3PS1F2</span>
+                                    </div>
+                                    <div class="loc_info">
+                                        <span class="receiving_label">RACK</span>
+                                        <span class="loc_val">DIY</span>
+                                    </div>
+                                    <div class="loc_qty_badge">
+                                        <span class="receiving_label">QUANTITY</span>
+                                        <span class="receiving_badge_val">50.00 <small>PCS</small></span>
+                                    </div>
+                                    <div class="loc_action_box">
+                                        <input type="text" class="global_input" placeholder="ENTER QUANTITY">
+                                        <button type="button" class="btn_put_locator">PUT</button>
+                                        <button type="button" class="btn_remove_locator">Remove</button>
+                                    </div>
+                                </div>
+
+                                <!-- Locator Item Row 3 -->
+                                <div class="locator_row_card">
+                                    <div class="loc_info">
+                                        <span class="receiving_label">LOCATOR</span>
+                                        <span class="loc_val">3PS1J2</span>
+                                    </div>
+                                    <div class="loc_info">
+                                        <span class="receiving_label">RACK</span>
+                                        <span class="loc_val">DIY</span>
+                                    </div>
+                                    <div class="loc_qty_badge">
+                                        <span class="receiving_label">QUANTITY</span>
+                                        <span class="receiving_badge_val">20.00 <small>PCS</small></span>
+                                    </div>
+                                    <div class="loc_action_box">
+                                        <input type="text" class="global_input" placeholder="ENTER QUANTITY">
+                                        <button type="button" class="btn_put_locator">PUT</button>
+                                        <button type="button" class="btn_remove_locator">Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ADD LOCATOR BUTTON -->
+                            <button type="button" class="floating_add_locator_btn" id="openAddLocatorModalBtn" title="Add Locator">
+                                <span>+</span>
+                            </button>
+                            
+                               <!-- ADD LOCATOR SUB-MODAL -->
+                            <div class="received_modal_overlay" id="addLocatorSubModal">
+                                <div class="add_locator_modal_content">
+                                    <div class="add_locator_modal_header">
+                                        <h3>ADD LOCATOR</h3>
+                                        <button type="button" class="add_locator_cancel_text" id="btnCloseAddLocatorModal">Cancel</button>
+                                    </div>
+
+                                    <div class="add_locator_modal_body">
+                                        <div class="form_group">
+                                            <input type="text" class="global_input" id="inputLocatorName" placeholder="LOCATOR">
+                                        </div>
+                                        <div class="form_group">
+                                            <input type="text" class="global_input" id="inputRackName" placeholder="RACK">
+                                        </div>
+                                        <div class="form_group">
+                                            <input type="text" class="global_input" id="inputInitialQty" placeholder="INITIAL QUANTITY">
+                                        </div>
+
+                                        <button type="button" class="global_add_locator_submit_btn" id="btnSubmitNewLocator">ADD LOCATOR</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
 
             </div>
         </div>

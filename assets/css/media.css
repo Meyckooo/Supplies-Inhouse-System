@@ -317,6 +317,13 @@ object-position: 33px 0;
   .header_title h1 {
     font: 800 17px/100% var(--headingTxt);
     }
+
+    .receive_summary_grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .locator_row_card {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media only screen and (max-width: 600px) {
