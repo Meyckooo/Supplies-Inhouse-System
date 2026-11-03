@@ -9,6 +9,17 @@ class InhouseModel
         $this->db = $conn;
     }
 
+    public function getCompanyLocation(): array
+    {
+        $query = "SELECT * FROM tbl_supplies_location";
+        $result = mysqli_query($this->db, $query);
+
+        if ($result) {
+            return mysqli_fetch_all($result, MYSQLI_ASSOC);
+        }
+        return [];
+    }
+
     public function getInhouseHeader(): array
     {
         $query = "SELECT * FROM tbl_ihsup_header";
@@ -37,90 +48,70 @@ class InhouseModel
 
     public function addInhouseRequestHeader(array $data): int|false
     {
-        $query = "INSERT INTO tbl_ihsup_header (odepartment, 
-                                                odate_need, 
-                                                oapprover, 
-                                                oaprover_id, 
-                                                osection, 
-                                                oremarks, 
-                                                otype, 
-                                                olocation, 
-                                                opurpose, 
-                                                omode, 
-                                                ostatus, 
-                                                opostdate, 
-                                                opostby, 
-                                                opostby_id, 
-                                                oapprovedate, 
-                                                oapproveby, 
-                                                ocompany, 
-                                                ocancelby, 
-                                                ocanceldate, 
-                                                ostockroomid, 
-                                                orelease_by, 
-                                                orelease_date, 
-                                                oprio_lvl, 
-                                                osub_purpose, 
-                                                oplate_no, 
-                                                odometer) 
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $query = "INSERT INTO tbl_ihsup_header (
+                    odepartment, oapprover, oapprover_id, osection, 
+                    oremarks, otype, olocation, opurpose, omode, ostatus, 
+                    opostdate, opostby, opostby_id, oapprovedate, oapprovedby, 
+                    ocompany, ocancelby, ocanceldate, ostockroomid, orelease_by, 
+                    orelease_date, oprio_lvl, osub_purpose, oplate_no, odometer, attachment
+                  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         if ($stmt = $this->db->prepare($query)) {
             $department   = $data['department'] ?? null;
-            $dateNeed     = $data['dateNeed'] ?? null;
             $approver     = $data['approver'] ?? null;
-            $approverId   = $data['approverId'] ?? null;
+            $approverId   = isset($data['approverId']) ? (int)$data['approverId'] : null;
             $section      = $data['section'] ?? null;
             $remarks      = $data['remarks'] ?? null;
-            $type         = $data['type'] ?? null;
+            $type         = $data['type'] ?? 'Inhouse';
             $location     = $data['location'] ?? null;
             $purpose      = $data['purpose'] ?? null;
             $mode         = $data['mode'] ?? null;
-            $status       = $data['status'] ?? null;
+            $status       = isset($data['ostatus']) ? (int)$data['ostatus'] : 2;
             $postDate     = $data['postDate'] ?? null;
             $postBy       = $data['postBy'] ?? null;
-            $postById     = $data['postById'] ?? null;
+            $postById     = isset($data['postById']) ? (int)$data['postById'] : 0;
             $approveDate  = $data['approveDate'] ?? null;
             $approveBy    = $data['approveBy'] ?? null;
             $company      = $data['company'] ?? null;
             $cancelBy     = $data['cancelBy'] ?? null;
             $cancelDate   = $data['cancelDate'] ?? null;
-            $stockRoomId  = $data['stockRoomId'] ?? null;
+            $stockRoomId  = isset($data['stockRoomId']) ? (int)$data['stockRoomId'] : 0;
             $releaseBy    = $data['releaseBy'] ?? null;
             $releaseDate  = $data['releaseDate'] ?? null;
-            $prioLvl      = $data['prioLvl'] ?? null;
-            $subPurpose   = $data['subPurpose'] ?? null;
+            $prioLvl      = isset($data['prioLvl']) ? (int)$data['prioLvl'] : 2;
+            $subPurpose   = $data['subPurpose'] ?? '';
             $plateNo      = $data['plateNo'] ?? null;
-            $odometer     = $data['odometer'] ?? null;
+            $odometer     = isset($data['odometer']) ? (int)$data['odometer'] : null;
+            $attachment   = $data['attachment'] ?? null;
 
             $stmt->bind_param(
-                "sssissssssississssisssissi",
-                $department,
-                $dateNeed,
-                $approver,
-                $approverId,
-                $section,
-                $remarks,
-                $type,
-                $location,
-                $purpose,
-                $mode,
-                $status,
-                $postDate,
-                $postBy,
-                $postById,
-                $approveDate,
-                $approveBy,
-                $company,
-                $cancelBy,
-                $cancelDate,
-                $stockRoomId,
-                $releaseBy,
-                $releaseDate,
-                $prioLvl,
-                $subPurpose,
-                $plateNo,
-                $odometer
+                "sssissssssississsssisssssis",
+                $department,   
+                $approver,     
+                $approverId,   
+                $section,      
+                $remarks,      
+                $type,         
+                $location,    
+                $purpose,     
+                $mode,         
+                $status,       
+                $postDate,    
+                $postBy,      
+                $postById,     
+                $approveDate,  
+                $approveBy,   
+                $company,      
+                $cancelBy,    
+                $cancelDate,   
+                $stockRoomId,  
+                $releaseBy,    
+                $releaseDate, 
+                $prioLvl,      
+                $subPurpose,  
+                $plateNo,     
+                $odometer,   
+                $attachment    
             );
 
             if ($stmt->execute()) {
@@ -129,33 +120,22 @@ class InhouseModel
                 return $insertId;
             }
 
-            error_log("Failed to add Header: " . $stmt->error);
+            $errorMsg = $stmt->error;
             $stmt->close();
+            throw new Exception("MySQL Insert Error: " . $errorMsg);
         }
-        return false;
+
+        throw new Exception("Prepare failed: " . $this->db->error);
     }
 
     public function addInhouseRequestDetails(array $data): bool
     {
-        $query = "INSERT INTO tbl_ihsup_details (oparentid, 
-                                                oitemcode, 
-                                                obarcodestat, 
-                                                oitemdesc, 
-                                                oitemno, 
-                                                ounit, 
-                                                oreq_qty, 
-                                                oapprove_qty, 
-                                                orelease_qty, 
-                                                orelease_remarks, 
-                                                ounitprice, 
-                                                oreq_amount, 
-                                                oapproved_amount, 
-                                                orelease_amount, 
-                                                ocon_id, 
-                                                osup_cust_rem, 
-                                                oappr_rem, 
-                                                otype) 
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $query = "INSERT INTO tbl_ihsup_details (
+                    oparentid, oitemcode, obarcode, oitemdesc, oitemno, 
+                    ounit, oreq_qty, oapprove_qty, orelease_qty, orelease_remarks, 
+                    ounitprice, oreq_amount, oapproved_amount, orelease_amount, 
+                    ocon_id, osup_cust_rem, oappr_remarks, otype
+                  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         if ($stmt = $this->db->prepare($query)) {
             $parentId       = $data['parentId'] ?? null;
@@ -164,74 +144,95 @@ class InhouseModel
             $itemDesc       = $data['itemDesc'] ?? null;
             $itemNo         = $data['itemNo'] ?? null;
             $ounit          = $data['ounit'] ?? null;
-            $reqQty         = $data['reqQty'] ?? null;
-            $approvedQty    = $data['approvedQty'] ?? null;
-            $releasedQty    = $data['releasedQty'] ?? null;
+            $reqQty         = isset($data['reqQty']) ? (int)$data['reqQty'] : 0;
+            $approvedQty    = isset($data['approvedQty']) ? (int)$data['approvedQty'] : 0;
+            $releasedQty    = isset($data['releasedQty']) ? (int)$data['releasedQty'] : 0;
             $releaseRemarks = $data['releaseRemarks'] ?? null;
-            $unitPrice      = $data['unitPrice'] ?? null;
-            $reqAmount      = $data['reqAmount'] ?? null;
-            $approvedAmount = $data['approvedAmount'] ?? null;
-            $releasedAmount = $data['releasedAmount'] ?? null;
-            $oconId         = $data['oconId'] ?? null;
+            $unitPrice      = isset($data['unitPrice']) ? (float)$data['unitPrice'] : 0.00;
+            $reqAmount      = isset($data['reqAmount']) ? (float)$data['reqAmount'] : 0.00;
+            $approvedAmount = isset($data['approvedAmount']) ? (float)$data['approvedAmount'] : 0.00;
+            $releasedAmount = isset($data['releasedAmount']) ? (float)$data['releasedAmount'] : 0.00;
+            $oconId         = isset($data['oconId']) ? (int)$data['oconId'] : null;
             $sup_cust_rem   = $data['sup_cust_rem'] ?? null;
             $app_rem        = $data['app_rem'] ?? null;
-            $detail_type    = $data['detail_type'] ?? null;
+            $type           = isset($data['type']) ? (int)$data['type'] : 1;
 
             $stmt->bind_param(
                 "isssisiiisddddissi",
-                $parentId,
-                $itemCode,
-                $barCode,
-                $itemDesc,
-                $itemNo,
-                $ounit,
-                $reqQty,
-                $approvedQty,
-                $releasedQty,
+                $parentId,      
+                $itemCode,       
+                $barCode,        
+                $itemDesc,     
+                $itemNo,         
+                $ounit,          
+                $reqQty,        
+                $approvedQty,   
+                $releasedQty,  
                 $releaseRemarks,
-                $unitPrice,
-                $reqAmount,
-                $approvedAmount,
-                $releasedAmount,
-                $oconId,
-                $sup_cust_rem,
-                $app_rem,
-                $detail_type
+                $unitPrice,     
+                $reqAmount,     
+                $approvedAmount, 
+                $releasedAmount, 
+                $oconId,         
+                $sup_cust_rem,  
+                $app_rem,        
+                $type         
             );
 
-            $result = $stmt->execute();
+            if ($stmt->execute()) {
+                $stmt->close();
+                return true;
+            }
+
+            $errorMsg = $stmt->error;
             $stmt->close();
-            return $result;
-        } else {
-            error_log("Failed to add Request Details: " . $this->db->error);
-            return false;
+            throw new Exception("MySQL Detail Insert Error: " . $errorMsg);
         }
+
+        throw new Exception("Prepare failed for details: " . $this->db->error);
     }
 
-    // public function getSuppliesHeader(): array
-    // {
-    //     $query = "SELECT * FROM tbl_supplies_header";
-    //     $result = mysqli_query($this->db, $query);
+    public function getCurrentCompany(): array
+    {
+        $query = "SELECT * FROM tbl_ihsup_location";
+        $result = mysqli_query($this->db, $query);
 
-    //     if ($result) {
-    //         return mysqli_fetch_all($result, MYSQLI_ASSOC);
-    //     }
-    //     return [];
-    // }
+        if ($result) {
+            return mysqli_fetch_all($result, MYSQLI_ASSOC);
+        }
+        return [];
+    }
 
-    // public function getSuppliesDetails(string $headerId): array
-    // {
-    //     $stmt = $this->db->prepare("SELECT * FROM tbl_supplies_details WHERE oparentid = ?");
-    //     $stmt->bind_param("s", $headerId);
-    //     $stmt->execute();
-    //     $result = $stmt->get_result();
+    public function getDepartments(): array
+    {
+        $query = "SELECT * FROM tbl_ihsup_department";
+        $result = mysqli_query($this->db, $query);
 
-    //     $details = [];
-    //     while ($row = $result->fetch_assoc()) {
-    //         $details[] = $row;
-    //     }
-    //     $stmt->close();
-    //     return $details;
-    // }
-    
+        if ($result) {
+            return mysqli_fetch_all($result, MYSQLI_ASSOC);
+        }
+        return [];
+    }
+
+    public function getApprovers(): array
+    {
+        $query = "SELECT * FROM tbl_ihsup_approver";
+        $result = mysqli_query($this->db, $query);
+
+        if ($result) {
+            return mysqli_fetch_all($result, MYSQLI_ASSOC);
+        }
+        return [];
+    }
+
+    public function getPlateNumbers(): array
+    {
+        $query = "SELECT * FROM tbl_ihsup_plateno";
+        $result = mysqli_query($this->db, $query);
+
+        if ($result) {
+            return mysqli_fetch_all($result, MYSQLI_ASSOC);
+        }
+        return [];
+    }
 }

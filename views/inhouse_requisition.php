@@ -4,12 +4,10 @@ $base_path = "../";
 
 require_once __DIR__ . '/../includes/auth_check.php';
 require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../controller/inhouse_controller.php';
 
 $moduleId = 2;
 
-/*========================================================== //
-//             Enforce Main Module Access                   //
-//==========================================================*/
 if (!hasAccess($moduleId, $isSuperAdmin, $allowedModules)) {
     header('HTTP/1.1 403 Forbidden');
     header('Location: ' . $base_path . '403.php');
@@ -17,22 +15,8 @@ if (!hasAccess($moduleId, $isSuperAdmin, $allowedModules)) {
 }
 
 $dbConn = getDBConnection();
-
-// Check specific action permissions for frontend buttons
-// $canAdd   = hasActionAccess($moduleId, 'Add', $isSuperAdmin, $userId, $dbConn);
-// $canEdit  = hasActionAccess($moduleId, 'Edit', $isSuperAdmin, $userId, $dbConn);
-// $canView  = hasActionAccess($moduleId, 'View', $isSuperAdmin, $userId, $dbConn);
-// $canSave  = hasActionAccess($moduleId, 'Save', $isSuperAdmin, $userId, $dbConn);
-// $canPost  = hasActionAccess($moduleId, 'Post', $isSuperAdmin, $userId, $dbConn);
-// $canCancel = hasActionAccess($moduleId, 'Cancel', $isSuperAdmin, $userId, $dbConn);
-// $canPrint = hasActionAccess($moduleId, 'Print', $isSuperAdmin, $userId, $dbConn);
-// $canDiscount = hasActionAccess($moduleId, 'Discount', $isSuperAdmin, $userId, $dbConn);
-// $canSend = hasActionAccess($moduleId, 'Send', $isSuperAdmin, $userId, $dbConn);
-// $canSA = hasActionAccess($moduleId, 'SA', $isSuperAdmin, $userId, $dbConn);
-// $canSupervisor = hasActionAccess($moduleId, 'Supervisor', $isSuperAdmin, $userId, $dbConn);
-// $canManager = hasActionAccess($moduleId, 'Manager', $isSuperAdmin, $userId, $dbConn);
-// $canAudit = hasActionAccess($moduleId, 'Audit', $isSuperAdmin, $userId, $dbConn);
-
+$inhouseController = new InhouseController($dbConn);
+$headers = $inhouseController->getInhouseHeader();
 ?>
 
 <!DOCTYPE html>
@@ -46,13 +30,20 @@ $dbConn = getDBConnection();
     <link rel="stylesheet" href="<?php echo $base_path ?>assets/css/media.css">
     <link rel="stylesheet" href="<?php echo $base_path ?>assets/css/bootstrap.min.css">
     <link rel="icon" href="<?php echo $base_path; ?>/assets/images/favicon.png">
+    <style>
+        .global_table tbody tr {
+            cursor: pointer;
+        }
 
+        .global_table tbody tr.selected_row {
+            background-color: rgba(0, 123, 255, 0.1) !important;
+        }
+    </style>
 </head>
 
 <body>
 
     <?php include $base_path . 'includes/sidebar.php'; ?>
-
 
     <div class="main_content">
         <div class="wrapper">
@@ -60,7 +51,7 @@ $dbConn = getDBConnection();
                 <div class="header_info">
                     <h1>Requisition</h1>
                 </div>
-                
+
                 <div class="ph_realtime_clock_wrapper" id="phRealtimeClock">
                     <span class="ph_clock_date">Loading date...</span>
                     <span class="ph_clock_time">Loading time...</span>
@@ -88,8 +79,7 @@ $dbConn = getDBConnection();
 
                             <div class="filter_dropdown">
                                 <select class="global_select" id="filterCategory">
-                                    <option value="" disabled selected>Filter By</option>
-                                    <option value="ctrl_no">Control No</option>
+                                    <option value="ctrl_no" selected>Control No</option>
                                     <option value="location">Location</option>
                                     <option value="department">Department</option>
                                     <option value="approver">Approver</option>
@@ -125,7 +115,7 @@ $dbConn = getDBConnection();
                         </div>
 
                         <div class="filter_group right">
-                            <a href="inhouse_requisition_add.php" class="global_add_btn">&plus; Add</a>
+                            <a href="inhouse_requisition_add.php" class="global_add_btn">+ Add</a>
                         </div>
                     </section>
 
@@ -141,75 +131,71 @@ $dbConn = getDBConnection();
                                     <th>Location</th>
                                     <th>Purpose</th>
                                     <th>Requested By</th>
-                                    <th>Approver</th>
-                                    <th>Approval Date</th>
+                                    <th>Approver ID</th>
                                     <th>Status</th>
                                     <th class="text_center global-floating-action" style="width: 370px; min-width: 370px;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>REQ-2026-001</td>
-                                    <td>2026-10-26</td>
-                                    <td>IT Department</td>
-                                    <td>Software Dev</td>
-                                    <td>Cebu City</td>
-                                    <td>System Upgrade Hardware</td>
-                                    <td>Ivan</td>
-                                    <td>Robert Balalilhe</td>
-                                    <td>2026-10-26 13:32:35</td>
-                                    <td><span class="global_status status_pending">Pending</span></td>
-                                    <td class="action_cell global-floating-action">
-                                        <button class="btn-tool-tip btn_edit"><span>Edit</span></button>
-                                        <button class="btn-tool-tip btn_view"><span>View</span></button>
-                                        <button class="btn-tool-tip btn_print"><span>Print</span></button>
-                                        <button class="btn-tool-tip btn_cancel"><span>Cancel</span></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>REQ-2026-002</td>
-                                    <td>2026-10-28</td>
-                                    <td>Accounting</td>
-                                    <td>Finance</td>
-                                    <td>Banawa Branch</td>
-                                    <td>Office Supplies</td>
-                                    <td>Argie</td>
-                                    <td>Robert Balalilhe</td>
-                                    <td>2026-10-26 13:32:35</td>
-                                    <td><span class="global_status status_approved">Approved</span></td>
-                                    <td class="action_cell global-floating-action">
-                                        <button class="btn-tool-tip btn_edit"><span>Edit</span></button>
-                                        <button class="btn-tool-tip btn_view"><span>View</span></button>
-                                        <button class="btn-tool-tip btn_print"><span>Print</span></button>
-                                        <button class="btn-tool-tip btn_cancel"><span>Cancel</span></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>REQ-2026-003</td>
-                                    <td>2026-10-30</td>
-                                    <td>Operations</td>
-                                    <td>Logistics</td>
-                                    <td>Mandaue Hub</td>
-                                    <td>Vehicle Maintenance</td>
-                                    <td>Meycko</td>
-                                    <td>Robert Balalilhe</td>
-                                    <td>2026-10-26 13:32:35</td>
-                                    <td><span class="global_status status_cancelled">Cancelled</span></td>
-                                    <td class="action_cell global-floating-action">
-                                        <button class="btn-tool-tip btn_edit"><span>Edit</span></button>
-                                        <button class="btn-tool-tip btn_view"><span>View</span></button>
-                                        <button class="btn-tool-tip btn_print"><span>Print</span></button>
-                                        <button class="btn-tool-tip btn_cancel"><span>Cancel</span></button>
-                                    </td>
-                                </tr>
+                                <?php if (!empty($headers)): ?>
+                                    <?php foreach ($headers as $row): ?>
+                                        <tr data-header-id="<?php echo htmlspecialchars($row['otableid']); ?>">
+                                            <td><?php echo str_pad($row['otableid'], 3, '0', STR_PAD_LEFT); ?></td>
+                                            <td><?php echo htmlspecialchars($row['odate_need'] ?? ''); ?></td>
+                                            <td><?php echo htmlspecialchars($row['odepartment'] ?? ''); ?></td>
+                                            <td><?php echo htmlspecialchars($row['osection'] ?? ''); ?></td>
+                                            <td><?php echo htmlspecialchars($row['olocation'] ?? ''); ?></td>
+                                            <td><?php echo htmlspecialchars($row['opurpose'] ?? ''); ?></td>
+                                            <td><?php echo htmlspecialchars($row['opostby'] ?? ''); ?></td>
+                                            <td><?php echo htmlspecialchars($row['oapprover_id'] ?? ''); ?></td>
+                                            <td>
+                                                <?php
+                                                $ostatus = (int)($row['ostatus'] ?? 0);
+                                                switch ($ostatus) {
+                                                    case 1:
+                                                        echo '<span class="global_status status_cancelled">To Approved</span>';
+                                                        break;
+                                                    case 2:
+                                                        echo '<span class="global_status status_pending">Saved</span>';
+                                                        break;
+                                                    case 3:
+                                                        echo '<span class="global_status status_cancelled">Cancelled</span>';
+                                                        break;
+                                                    case 4:
+                                                        echo '<span class="global_status status_approved">Save Approved</span>';
+                                                        break;
+                                                    case 5:
+                                                        echo '<span class="global_status status_approved">Approved</span>';
+                                                        break;
+                                                    case 0:
+                                                    default:
+                                                        echo '<span class="global_status">None</span>';
+                                                        break;
+                                                }
+                                                ?>
+                                            </td>
+                                            <td class="action_cell global-floating-action" onclick="event.stopPropagation();">
+                                                <button class="btn-tool-tip btn_edit"><span>Edit</span></button>
+                                                <button class="btn-tool-tip btn_view"><span>View</span></button>
+                                                <button class="btn-tool-tip btn_print"><span>Print</span></button>
+                                                <button class="btn-tool-tip btn_cancel"><span>Cancel</span></button>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="10" class="text_center">No requisition records found.</td>
+                                    </tr>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </section>
                 </div>
 
-                <div class="inhouse_requisition_child_tbl global_display_table_wrapper">
+                <!-- CHILD DETAILS TABLE AREA -->
+                <div class="inhouse_requisition_child_tbl global_display_table_wrapper" style="margin-top: 20px;">
                     <div class="global_display_table_container">
-                        <table class="global_display_table">
+                        <table class="global_display_table" id="detailsTable">
                             <thead>
                                 <tr>
                                     <th class="text_center" style="width: 60px;">#</th>
@@ -224,44 +210,7 @@ $dbConn = getDBConnection();
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="text_center">1</td>
-                                    <td>X1007-049</td>
-                                    <td>ZZ. ALBATROSS</td>
-                                    <td>PCS</td>
-                                    <td class="text_right">10</td>
-                                    <td class="text_right">10</td>
-                                    <td class="text_right">0</td>
-                                    <td>137297</td>
-                                </tr>
-                                <tr>
-                                    <td class="text_center index_col">2</td>
-                                    <td>X4-464</td>
-                                    <td>ZZ. ALBATROSS</td>
-                                    <td>PCS</td>
-                                    <td class="text_right">1</td>
-                                    <td class="text_right">1</td>
-                                    <td class="text_right">0</td>
-                                    <td>160721</td>
-                                </tr>
-                                <tr>
-                                    <td class="text_center index_col">3</td>
-                                    <td>X4-378</td>
-                                    <td>ZZ. TOILET BOWL CLEANER</td>
-                                    <td>GAL</td>
-                                    <td class="text_right">1</td>
-                                    <td class="text_right">1</td>
-                                    <td class="text_right">0</td>
-                                    <td>160510</td>
-                                </tr>
-                                <tr>
-                                    <td class="text_center index_col">4</td>
-                                    <td>X4-466</td>
-                                    <td>ZZ. DETERGENT POWDER</td>
-                                    <td>PCS</td>
-                                    <td class="text_right">2</td>
-                                    <td class="text_right">2</td>
-                                    <td class="text_right">0</td>
-                                    <td>160724</td>
+                                    <td colspan="8" class="text_center">Click a requisition row above to view items.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -271,8 +220,6 @@ $dbConn = getDBConnection();
             </div>
         </div>
     </div>
-
-
 
     <?php include $base_path . 'includes/footer.php'; ?>
 
