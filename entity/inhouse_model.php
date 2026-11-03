@@ -22,13 +22,14 @@ class InhouseModel
 
     public function getInhouseHeader(): array
     {
-        $query = "SELECT * FROM tbl_ihsup_header";
-        $result = mysqli_query($this->db, $query);
+        $query = "SELECT h.*, a.oapprover_name 
+              FROM tbl_ihsup_header h
+              LEFT JOIN tbl_ihsup_approver a ON h.oapprover_id = a.oapprover_id 
+              ORDER BY h.otableid DESC
+              LIMIT 50";
 
-        if ($result) {
-            return mysqli_fetch_all($result, MYSQLI_ASSOC);
-        }
-        return [];
+        $result = $this->db->query($query);
+        return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
     }
 
     public function getInhouseDetails(string $headerId): array
@@ -86,32 +87,32 @@ class InhouseModel
 
             $stmt->bind_param(
                 "sssissssssississsssisssssis",
-                $department,   
-                $approver,     
-                $approverId,   
-                $section,      
-                $remarks,      
-                $type,         
-                $location,    
-                $purpose,     
-                $mode,         
-                $status,       
-                $postDate,    
-                $postBy,      
-                $postById,     
-                $approveDate,  
-                $approveBy,   
-                $company,      
-                $cancelBy,    
-                $cancelDate,   
-                $stockRoomId,  
-                $releaseBy,    
-                $releaseDate, 
-                $prioLvl,      
-                $subPurpose,  
-                $plateNo,     
-                $odometer,   
-                $attachment    
+                $department,
+                $approver,
+                $approverId,
+                $section,
+                $remarks,
+                $type,
+                $location,
+                $purpose,
+                $mode,
+                $status,
+                $postDate,
+                $postBy,
+                $postById,
+                $approveDate,
+                $approveBy,
+                $company,
+                $cancelBy,
+                $cancelDate,
+                $stockRoomId,
+                $releaseBy,
+                $releaseDate,
+                $prioLvl,
+                $subPurpose,
+                $plateNo,
+                $odometer,
+                $attachment
             );
 
             if ($stmt->execute()) {
@@ -159,24 +160,24 @@ class InhouseModel
 
             $stmt->bind_param(
                 "isssisiiisddddissi",
-                $parentId,      
-                $itemCode,       
-                $barCode,        
-                $itemDesc,     
-                $itemNo,         
-                $ounit,          
-                $reqQty,        
-                $approvedQty,   
-                $releasedQty,  
+                $parentId,
+                $itemCode,
+                $barCode,
+                $itemDesc,
+                $itemNo,
+                $ounit,
+                $reqQty,
+                $approvedQty,
+                $releasedQty,
                 $releaseRemarks,
-                $unitPrice,     
-                $reqAmount,     
-                $approvedAmount, 
-                $releasedAmount, 
-                $oconId,         
-                $sup_cust_rem,  
-                $app_rem,        
-                $type         
+                $unitPrice,
+                $reqAmount,
+                $approvedAmount,
+                $releasedAmount,
+                $oconId,
+                $sup_cust_rem,
+                $app_rem,
+                $type
             );
 
             if ($stmt->execute()) {
