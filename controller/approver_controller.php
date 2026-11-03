@@ -129,6 +129,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         approverError(403, 'Your session has expired. Refresh the page and try again.');
     }
 
+    if (($_POST['action'] ?? '') === 'delete') {
+        $recordId = parseApproverId($_POST['otableid'] ?? null);
+        if ($recordId === null) {
+            approverError(422, 'Select a valid approver.');
+        }
+
+        $deleteStmt = $conn->prepare('DELETE FROM tbl_ihsup_approver WHERE otableid = ?');
+        if (!$deleteStmt) {
+            error_log('Unable to prepare approver delete: ' . $conn->error);
+            approverError(500, 'Unable to remove the approver.');
+        }
+        $deleteStmt->bind_param('i', $recordId);
+        if (!$deleteStmt->execute()) {
+            error_log('Unable to delete approver: ' . $deleteStmt->error);
+            $deleteStmt->close();
+            approverError(500, 'Unable to remove the approver.');
+        }
+
+        $deleted = $deleteStmt->affected_rows > 0;
+        $deleteStmt->close();
+        if (!$deleted) {
+            approverError(404, 'The approver was not found.');
+        }
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Approver removed successfully.',
+        ]);
+        exit;
+    }
+
     $approverId = parseApproverId($_POST['approver_id'] ?? null);
     $departmentId = parseApproverId($_POST['department_id'] ?? null);
     $locationId = parseApproverId($_POST['location_id'] ?? null);

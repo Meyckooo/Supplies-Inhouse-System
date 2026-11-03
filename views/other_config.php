@@ -7,9 +7,6 @@ require_once __DIR__ . '/../config/db.php';
 
 $moduleId = 2;
 
-/*========================================================== //
-//             Enforce Main Module Access                   //
-//==========================================================*/
 if (!hasAccess($moduleId, $isSuperAdmin, $allowedModules)) {
     header('HTTP/1.1 403 Forbidden');
     header('Location: ' . $base_path . '403.php');
@@ -32,14 +29,9 @@ $_SESSION['csrf_token'] ??= bin2hex(random_bytes(32));
     <link rel="stylesheet" href="<?php echo $base_path ?>assets/css/media.css">
     <link rel="stylesheet" href="<?php echo $base_path ?>assets/css/bootstrap.min.css">
     <link rel="icon" href="<?php echo $base_path; ?>/assets/images/favicon.png">
-
 </head>
-
 <body>
-
     <?php include $base_path . 'includes/sidebar.php'; ?>
-
-
     <div class="main_content">
         <div class="wrapper">
             <div class="header_title">
@@ -81,11 +73,6 @@ $_SESSION['csrf_token'] ??= bin2hex(random_bytes(32));
                             </div>
 
                             <div class="date_picker_container">
-                                <!-- <button type="button" class="date_picker_trigger" id="datePickerBtn">
-                                    <figure><img src="<?php echo $base_path ?>assets/images/icon/calendar.png" alt="calendar"></figure>
-                                    <span id="selectedDateRangeText">Select Date</span>
-                                </button> -->
-
                                 <div class="calendar_dropdown" id="calendarDropdown">
                                     <div class="calendar_header">
                                         <button type="button" class="nav_btn" id="prevMonthBtn">&lt;</button>
@@ -107,12 +94,11 @@ $_SESSION['csrf_token'] ??= bin2hex(random_bytes(32));
                         </div>
 
                         <div class="filter_group right">
-                            <button type="button" class="global_add_btn" id="togglePlateConfig">&plus; Plate Number</button>
-                            <button type="button" class="global_add_btn" id="toggleApproverConfig">&plus; Approver List</button>
+                            <button type="button" class="global_add_btn" id="togglePlateConfig">Plate Number</button>
+                            <button type="button" class="global_add_btn" id="toggleApproverConfig">Approver List</button>
                         </div>
                     </section>
 
-                    <!-- TABLE AREA 1 for Register plate # only-->
                     <section class="global_table_container" id="plateNumberSection" hidden>
                         <table class="global_table">
                             <thead>
@@ -128,14 +114,13 @@ $_SESSION['csrf_token'] ??= bin2hex(random_bytes(32));
                         </table>
                     </section>
 
-                    <!-- TABLE AREA 2 for Register Approver only-->
                     <section class="global_table_container" id="approverSection" hidden>
                         <table class="global_table">
                             <thead>
                                 <tr>
                                     <th>Approver Name</th>
                                     <th>Approver ID</th>
-                                    <th>Location ID</th>
+                                    <th>Location</th>
                                     <th>Department to Approve</th>
                                     <th class="text_center global-floating-action" style="width: 370px; min-width: 370px;">Actions</th>
                                 </tr>

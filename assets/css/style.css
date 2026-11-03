@@ -526,7 +526,61 @@ input.form_disabled {
 .header_buttons ul li a.global_back_btn {
   width: 85px !important;
 }
+.post_buttons {
+  padding: 15px 20px;
+  background-color: transparent; 
+  border-top: 1px solid #eaeaea; 
+}
 
+.post_buttons ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end; 
+  gap: 10px;
+}
+
+.post_buttons ul li a,
+.post_buttons ul li button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--primaryColor);
+  color: #ffffff !important;  
+  font-family: var(--headingTxt);
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 6px;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 6px rgba(33, 140, 60, 0.25);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  line-height: 35px;
+  padding: 3px 10px;
+  text-wrap: nowrap;
+  border: 0;
+}
+
+.post_buttons ul li a:hover,
+.post_buttons ul li button:hover {
+  background-color: #1a7030;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(33, 140, 60, 0.35);
+  transform: translateY(-1px);
+}
+
+.post_buttons ul li a:active,
+.post_buttons ul li button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(33, 140, 60, 0.2);
+}
+
+.post_buttons ul li a.global_post_btn,
+.post_buttons ul li button.global_post_btn {
+  width: 85px !important;
+}
 
 /* INTRO PAGE */
 
@@ -3102,6 +3156,9 @@ line-height: 27px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
+  max-height: 45vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   background-color: var(--White);
   padding: 16px;
   border-radius: 6px;

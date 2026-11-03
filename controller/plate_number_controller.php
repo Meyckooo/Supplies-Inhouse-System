@@ -29,6 +29,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    if (($_POST['action'] ?? '') === 'delete') {
+        $plateId = filter_var($_POST['otableid'] ?? null, FILTER_VALIDATE_INT, [
+            'options' => ['min_range' => 1, 'max_range' => 2147483647],
+        ]);
+        if ($plateId === false) {
+            http_response_code(422);
+            echo json_encode(['success' => false, 'error' => 'Select a valid plate number.']);
+            exit;
+        }
+
+        $deleteStmt = $conn->prepare('DELETE FROM tbl_ihsup_plateno WHERE otableid = ?');
+        if (!$deleteStmt) {
+            error_log('Unable to prepare plate number delete: ' . $conn->error);
+            http_response_code(500);
+            echo json_encode(['success' => false, 'error' => 'Unable to remove the plate number.']);
+            exit;
+        }
+
+        $deleteStmt->bind_param('i', $plateId);
+        if (!$deleteStmt->execute()) {
+            error_log('Unable to delete plate number: ' . $deleteStmt->error);
+            $deleteStmt->close();
+            http_response_code(500);
+            echo json_encode(['success' => false, 'error' => 'Unable to remove the plate number.']);
+            exit;
+        }
+
+        $deleted = $deleteStmt->affected_rows > 0;
+        $deleteStmt->close();
+        if (!$deleted) {
+            http_response_code(404);
+            echo json_encode(['success' => false, 'error' => 'The plate number was not found.']);
+            exit;
+        }
+
+        echo json_encode(['success' => true, 'message' => 'Plate number removed successfully.']);
+        exit;
+    }
+
     $rawPlateNumber = $_POST['oplateno'] ?? '';
     if (!is_string($rawPlateNumber)) {
         http_response_code(422);

@@ -22,6 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const approverSubmitButton = document.getElementById("registerApproverSubmit");
   let approverSearchTimer;
   let approverSearchController;
+  let plateClicks = 0;
+  let approverClicks = 0;
 
   function showTableMessage(tableBody, columnCount, message) {
     const row = document.createElement("tr");
@@ -52,11 +54,17 @@ document.addEventListener("DOMContentLoaded", () => {
         const idCell = document.createElement("td");
         const plateCell = document.createElement("td");
         const actionCell = document.createElement("td");
+        const removeButton = document.createElement("button");
 
         idCell.textContent = plate.otableid;
         plateCell.textContent = plate.oplateno;
         actionCell.className = "action_cell global-floating-action";
-        actionCell.textContent = "-";
+        removeButton.type = "button";
+        removeButton.className = "btn btn-sm btn-danger";
+        removeButton.dataset.removeRecord = "";
+        removeButton.dataset.recordId = plate.otableid;
+        removeButton.textContent = "Remove";
+        actionCell.appendChild(removeButton);
 
         row.append(idCell, plateCell, actionCell);
         return row;
@@ -91,18 +99,24 @@ document.addEventListener("DOMContentLoaded", () => {
           approver.oapprover_id,
           approver.olocation_id,
           approver.odepartment_name,
-          "-",
         ];
 
         values.forEach((value, index) => {
           const cell = document.createElement("td");
           cell.textContent = value ?? "";
-          if (index === values.length - 1) {
-            cell.className = "action_cell global-floating-action";
-          }
           row.appendChild(cell);
         });
 
+        const actionCell = document.createElement("td");
+        const removeButton = document.createElement("button");
+        actionCell.className = "action_cell global-floating-action";
+        removeButton.type = "button";
+        removeButton.className = "btn btn-sm btn-danger";
+        removeButton.dataset.removeRecord = "";
+        removeButton.dataset.recordId = approver.otableid;
+        removeButton.textContent = "Remove";
+        actionCell.appendChild(removeButton);
+        row.appendChild(actionCell);
         return row;
       });
 
@@ -241,11 +255,66 @@ document.addEventListener("DOMContentLoaded", () => {
     element.className = isSuccess ? "mt-2 text-success" : "mt-2 text-danger";
   }
 
+  async function confirmAndRemoveRecord(tableBody, form, button, recordType) {
+    const confirmation = await Swal.fire({
+      title: "Are you sure?",
+      text: `Remove this ${recordType}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#e82929",
+      cancelButtonColor: "#64748b",
+      confirmButtonText: "Remove",
+    });
+
+    if (!confirmation.isConfirmed) {
+      return;
+    }
+
+    button.disabled = true;
+    try {
+      const requestBody = new FormData(form);
+      requestBody.set("action", "delete");
+      requestBody.set("otableid", button.dataset.recordId);
+
+      const response = await fetch(tableBody.dataset.endpoint, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: requestBody,
+      });
+      const result = await readResponse(response);
+
+      button.closest("tr").remove();
+      if (tableBody.children.length === 0) {
+        showTableMessage(tableBody, recordType === "plate number" ? 3 : 5, `No ${recordType}s found.`);
+      }
+
+      await Swal.fire({
+        title: "Removed",
+        text: result.message,
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error(`Error removing ${recordType}:`, error);
+      await Swal.fire({
+        title: "Unable to remove",
+        text: error.message,
+        icon: "error",
+      });
+    } finally {
+      button.disabled = false;
+    }
+  }
+
   if (plateButton && plateSection && plateTableBody) {
-    let clicks = 0;
     plateButton.addEventListener("click", async () => {
-      clicks += 1;
-      if (clicks % 2 === 0) {
+      approverClicks = 0;
+      plateClicks += 1;
+      approverButton.textContent = "Approver List";
+      plateButton.textContent = "Add Plate Number";
+      if (plateClicks === 2) {
+        plateClicks = 0;
         window.bootstrap.Modal.getOrCreateInstance(plateModalElement).show();
         return;
       }
@@ -255,13 +324,24 @@ document.addEventListener("DOMContentLoaded", () => {
       showTableMessage(plateTableBody, 3, "Loading plate numbers...");
       await loadPlateNumbers();
     });
+
+    plateTableBody.addEventListener("click", (event) => {
+      const removeButton = event.target.closest("button[data-remove-record]");
+      if (!removeButton || !plateTableBody.contains(removeButton)) {
+        return;
+      }
+      confirmAndRemoveRecord(plateTableBody, plateForm, removeButton, "plate number");
+    });
   }
 
   if (approverButton && approverSection && approverTableBody) {
-    let clicks = 0;
     approverButton.addEventListener("click", async () => {
-      clicks += 1;
-      if (clicks % 2 === 0) {
+      plateClicks = 0;
+      approverClicks += 1;
+      plateButton.textContent = "Plate Number";
+      approverButton.textContent = "Add Approver";
+      if (approverClicks === 2) {
+        approverClicks = 0;
         window.bootstrap.Modal.getOrCreateInstance(approverModalElement).show();
         return;
       }
@@ -270,6 +350,14 @@ document.addEventListener("DOMContentLoaded", () => {
       approverSection.hidden = false;
       showTableMessage(approverTableBody, 5, "Loading approvers...");
       await loadApprovers();
+    });
+
+    approverTableBody.addEventListener("click", (event) => {
+      const removeButton = event.target.closest("button[data-remove-record]");
+      if (!removeButton || !approverTableBody.contains(removeButton)) {
+        return;
+      }
+      confirmAndRemoveRecord(approverTableBody, approverForm, removeButton, "approver");
     });
   }
 
@@ -374,7 +462,7 @@ document.addEventListener("DOMContentLoaded", () => {
       approverMessage.className = "mt-2";
 
       if (!approverUserId.value || !departmentSelect.value || !locationSelect.value) {
-        setStatus(approverMessage, "Select an approver, department, and location.", false);
+        setStatus(approverMessage, "Select an approver, department, and location.", false); 
         return;
       }
 
