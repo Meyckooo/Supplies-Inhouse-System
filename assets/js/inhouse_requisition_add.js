@@ -19,6 +19,32 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // --- DYNAMIC DEPARTMENT & SECTION DROPDOWN LOGIC ---
+  const departmentSelect = document.getElementById("departmentSelect");
+  const sectionSelect = document.getElementById("sectionSelect");
+
+  if (departmentSelect && sectionSelect && typeof departmentSectionMap !== "undefined") {
+    departmentSelect.addEventListener("change", (e) => {
+      const selectedDept = e.target.value;
+      
+      // Reset section dropdown options
+      sectionSelect.innerHTML = '<option value="" disabled selected>Select Section</option>';
+      
+      // Filter sections belonging to the selected department
+      const matches = departmentSectionMap.filter(item => item.odepartment_name === selectedDept);
+      
+      // Populate matching sections
+      matches.forEach(item => {
+        if (item.osection) {
+          const option = document.createElement("option");
+          option.value = item.osection;
+          option.textContent = item.osection;
+          sectionSelect.appendChild(option);
+        }
+      });
+    });
+  }
+
   // --- LOOKUP ITEM MODAL JS ---
   const lookupItemModal = document.getElementById("lookupItemModal");
   const btnOpenLookupModal = document.querySelector(".global_add_btn");
@@ -37,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const start = e.target.selectionStart;
       const end = e.target.selectionEnd;
       e.target.value = e.target.value.toUpperCase();
-      e.target.setSelectionRange(start, end); // Keeps cursor position stable
+      e.target.setSelectionRange(start, end); 
     });
   }
 
@@ -179,55 +205,88 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       checkedBoxes.forEach((chk) => {
-        const rowCount = mainTableBody.rows.length + 1;
+        // Get current total rows count to use as index
+        const currentIndex = mainTableBody.rows.length;
+        const rowCount = currentIndex + 1;
+
         const code = chk.dataset.code;
         const barcode = chk.dataset.barcode;
         const desc = chk.dataset.desc;
         const itemno = chk.dataset.itemno;
         const unit = chk.dataset.unit;
         const consignid = chk.dataset.consignid;
-        const price = chk.dataset.price;
+        const price = parseFloat(chk.dataset.price) || 0;
 
         const newRow = document.createElement("tr");
+        // Using explicit index brackets like items[0][item_code] so PHP receives array data properly
         newRow.innerHTML = `
             <td class="text_center row_number">${rowCount}</td>
-            <td>${code}<input type="hidden" name="items[][item_code]" value="${code}"></td>
-            <td>${barcode}<input type="hidden" name="items[][bar_code]" value="${barcode}"></td>
-            <td>${desc}<input type="hidden" name="items[][item_desc]" value="${desc}"></td>
-            <td>${itemno}<input type="hidden" name="items[][item_no]" value="${itemno}"></td>
-            <td>${consignid}<input type="hidden" name="items[][consign_id]" value="${consignid}"></td>
-            <td>${price}<input type="hidden" name="items[][unit_price]" value="${price}"></td>
-            <td>${unit}<input type="hidden" name="items[][oum]" value="${unit}"></td>
-            <td><select name="items[][type]" class="global_select">
-                <option value="inhouse">SUPPLIES</option>
-                <option value="external">INHOUSE</option>
-                <option value="external">PRNT</option>
-            </select></td>
+            <td>${code}<input type="hidden" name="items[${currentIndex}][item_code]" value="${code}"></td>
+            <td>${barcode}<input type="hidden" name="items[${currentIndex}][bar_code]" value="${barcode}"></td>
+            <td>${desc}<input type="hidden" name="items[${currentIndex}][item_desc]" value="${desc}"></td>
+            <td>${itemno}<input type="hidden" name="items[${currentIndex}][item_no]" value="${itemno}"></td>
+            <td>${consignid}<input type="hidden" name="items[${currentIndex}][consign_id]" value="${consignid}"></td>
+            <td class="item_price">${price.toFixed(2)}<input type="hidden" name="items[${currentIndex}][unit_price]" value="${price}"></td>
+            <td>${unit}<input type="hidden" name="items[${currentIndex}][oum]" value="${unit}"></td>
+            <td>
+              <select name="items[${currentIndex}][type]" class="global_select">
+                <option value="SUPPLIES">SUPPLIES</option>
+                <option value="INHOUSE">INHOUSE</option>
+                <option value="PRNT">PRNT</option>
+              </select>
+            </td>
             <td>SUPPLIES</td>
-            <td><input type="number" name="items[][qty]" class="global_input" value="1" min="1" required></td>
+            <td><input type="number" name="items[${currentIndex}][qty]" class="global_input item_qty" value="1" min="1" required></td>
             <td class="text_center">
-                <button type="button" class="btn btn-danger btn-sm remove_item_btn" style="padding: 2px 8px; font-size: 12px;">&times;</button>
+                <button type="button" class="btn btn-danger btn-sm remove_item_btn" style="padding: 2px 8px; font-size: 12px;">×</button>
             </td>
         `;
         mainTableBody.appendChild(newRow);
       });
 
-      // Close modal after adding
+      // Close modal after adding & recalculate totals
       lookupItemModal.classList.remove("show");
+      updateTotalAmount();
     });
   }
 
-  // --- NEW: Remove Item Row & Re-index Row Numbers ---
+  // --- RECALCULATE TOTAL AMOUNT ON QTY CHANGE ---
   if (mainTableBody) {
+    mainTableBody.addEventListener("input", (e) => {
+      if (e.target.classList.contains("item_qty")) {
+        updateTotalAmount();
+      }
+    });
+
     mainTableBody.addEventListener("click", (e) => {
       if (e.target.classList.contains("remove_item_btn")) {
         const row = e.target.closest("tr");
         if (row) {
           row.remove();
           updateRowNumbers();
+          updateTotalAmount();
         }
       }
     });
+  }
+
+  function updateTotalAmount() {
+    let grandTotal = 0;
+    const rows = mainTableBody.querySelectorAll("tr");
+    rows.forEach(row => {
+      const priceCell = row.querySelector(".item_price");
+      const qtyInput = row.querySelector(".item_qty");
+      if (priceCell && qtyInput) {
+        const price = parseFloat(priceCell.textContent) || 0;
+        const qty = parseInt(qtyInput.value) || 0;
+        grandTotal += price * qty;
+      }
+    });
+
+    const totalInput = document.querySelector("input[value^='₱']");
+    if (totalInput) {
+      totalInput.value = `₱ ${grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
   }
 
   function updateRowNumbers() {
@@ -237,6 +296,16 @@ document.addEventListener("DOMContentLoaded", () => {
       if (numCell) {
         numCell.textContent = index + 1;
       }
+      
+      // Re-index input name attributes dynamically to keep array sequence intact if rows are removed
+      const inputs = row.querySelectorAll("input, select");
+      inputs.forEach(input => {
+        const nameAttr = input.getAttribute("name");
+        if (nameAttr) {
+          const updatedName = nameAttr.replace(/items\[\d+\]/, `items[${index}]`);
+          input.setAttribute("name", updatedName);
+        }
+      });
     });
   }
 });
