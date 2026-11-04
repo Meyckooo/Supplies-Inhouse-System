@@ -254,7 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
       clearTimeout(searchTimeout);
       searchTimeout = setTimeout(() => {
         filterTableRows();
-      }, 500); 
+      }, 300); 
     });
   }
 
