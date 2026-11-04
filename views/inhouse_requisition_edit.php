@@ -102,17 +102,17 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                     <div class="section_title">General Details</div>
 
                                     <div class="form_group">
-                                        <label>Company <span class="required">*</span></label>
+                                        <label>Company </label>
                                         <input type="text" name="company" class="global_input has-value" value="<?php echo htmlspecialchars($requisition['ocompany'] ?? $defaultCompany); ?>" readonly required>
                                     </div>
 
                                     <div class="form_group">
-                                        <label>Location <span class="required">*</span></label>
+                                        <label>Location </label>
                                         <input type="text" name="location" class="global_input has-value" value="<?php echo htmlspecialchars($requisition['olocation'] ?? $defaultLocation); ?>" readonly required>
                                     </div>
 
                                     <div class="form_group">
-                                        <label>Department <span class="required">*</span></label>
+                                        <label>Department </label>
                                         <select class="global_select has-value" id="departmentSelect" name="department" required disabled>
                                             <option value="" disabled>Select Department</option>
                                             <?php foreach ($departments as $dept): ?>
@@ -126,7 +126,7 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                     </div>
 
                                     <div class="form_group">
-                                        <label>Section <span class="required">*</span></label>
+                                        <label>Section </label>
                                         <select class="global_select has-value" id="sectionSelect" name="section" required disabled>
                                             <option value="<?php echo htmlspecialchars($requisition['osection'] ?? ''); ?>" selected><?php echo htmlspecialchars($requisition['osection'] ?? 'Select Section'); ?></option>
                                         </select>
@@ -150,7 +150,7 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                     <div class="section_title">Purpose & Operations</div>
 
                                     <div class="form_group">
-                                        <label>Mode <span class="required">*</span></label>
+                                        <label>Mode </label>
                                         <select class="global_select has-value" name="mode" required disabled>
                                             <option value="" disabled>Select Mode</option>
                                             <option value="pickup" <?php echo (($requisition['omode'] ?? '') === 'pickup') ? 'selected' : ''; ?>>Pick-up</option>
@@ -159,7 +159,7 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                     </div>
 
                                     <div class="form_group">
-                                        <label>Purpose <span class="required">*</span></label>
+                                        <label>Purpose </label>
                                         <select class="global_select has-value" id="purposeSelect" name="purpose" required disabled>
                                             <option value="" disabled>Select Purpose</option>
                                             <?php
@@ -202,7 +202,7 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                     </div>
 
                                     <div class="form_group">
-                                        <label>Post Date <span class="required">*</span></label>
+                                        <label>Post Date </label>
                                         <input type="date" name="postDate" class="global_input has-value" value="<?php echo htmlspecialchars(substr($requisition['opostdate'] ?? $currentPhDate, 0, 10)); ?>" required disabled>
                                     </div>
                                 </div>
@@ -212,12 +212,12 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                     <div class="section_title">Additional Details</div>
 
                                     <div class="form_group">
-                                        <label>Requested By <span class="required">*</span></label>
+                                        <label>Requested By </label>
                                         <input type="text" name="postBy" class="global_input has-value" value="<?php echo htmlspecialchars($requisition['opostby'] ?? $currentUser); ?>" readonly required>
                                     </div>
 
                                     <div class="form_group">
-                                        <label>Priority Levels <span class="required">*</span></label>
+                                        <label>Priority Levels </label>
                                         <select class="global_select priority_select has-value" name="prioLvl" required disabled>
                                             <option value="" disabled>Select Priority</option>
                                             <option value="4" <?php echo ((int)($requisition['oprio_lvl'] ?? 0) === 4) ? 'selected' : ''; ?>>Urgent</option>
@@ -228,7 +228,7 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                     </div>
 
                                     <div class="form_group">
-                                        <label>Plate Number / # <span class="required">*</span></label>
+                                        <label>Plate Number / # </label>
                                         <select class="global_select has-value" name="plate_no" required disabled>
                                             <option value="" disabled>Select Plate No.</option>
                                             <?php foreach ($plateNumbers as $plate): ?>
@@ -240,7 +240,7 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                     </div>
 
                                     <div class="form_group">
-                                        <label>Odometer <span class="required">*</span></label>
+                                        <label>Odometer </label>
                                         <input type="number" name="odometer" class="global_input has-value" value="<?php echo htmlspecialchars($requisition['odometer'] ?? ''); ?>" required disabled>
                                     </div>
 
@@ -254,7 +254,7 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                 <div class="form_section_card full_width_card">
                                     <div class="section_title">Instructions</div>
                                     <div class="form_group delivery_instruct full_width">
-                                        <label>Delivery Instructions <span class="required">*</span></label>
+                                        <label>Delivery Instructions </label>
                                         <textarea name="remarks" class="global_textarea" rows="3" placeholder="Enter delivery instructions..."><?php echo htmlspecialchars($requisition['oremarks'] ?? $requisition['remarks'] ?? ''); ?></textarea>
                                     </div>
                                 </div>
@@ -355,8 +355,9 @@ $plateNumbers = $inhouseController->getPlateNumbers();
 
                 <!-- Form Footer Actions -->
                 <div class="form_footer_actions">
-                    <a href="inhouse_requisition.php" class="global_btn_cancel"><span>Cancel</span></a>
-                    <button type="submit" form="inhouseForm" name="action" value="update" class="global_btn_submit"><span>Update</span></button>
+                    <a href="inhouse_requisition.php" class="global_btn_cancel btn-tool-tip ir_btn_cancel"><span>Cancel</span></a>
+                    <button type="submit" form="inhouseForm" name="action" value="save" class="global_btn_save btn-tool-tip ir_btn_save"><span>Save</span></button>
+                    <button type="submit" form="inhouseForm" name="action" value="post" class="global_btn_submit btn-tool-tip ir_btn_submit"><span>Post</span></button>
                 </div>
 
             </div>
