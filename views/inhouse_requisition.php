@@ -162,7 +162,7 @@ $headers = $inhouseController->getInhouseHeader();
                                                         echo '<span class="global_status status_cancelled">Cancelled</span>';
                                                         break;
                                                     case 4:
-                                                        echo '<span class="global_status status_approved">Save Approved</span>';
+                                                        echo '<span class="global_status status_save_approved">Save Approved</span>';
                                                         break;
                                                     case 5:
                                                         echo '<span class="global_status status_approved">Approved</span>';
@@ -174,11 +174,12 @@ $headers = $inhouseController->getInhouseHeader();
                                                 }
                                                 ?>
                                             </td>
-                                            <td class="action_cell global-floating-action" onclick="event.stopPropagation();">
-                                                <button class="btn-tool-tip btn_edit"><span>Edit</span></button>
-                                                <button class="btn-tool-tip btn_view"><span>View</span></button>
-                                                <button class="btn-tool-tip btn_print"><span>Print</span></button>
-                                                <button class="btn-tool-tip btn_cancel"><span>Cancel</span></button>
+                                            <td class="action_cell global-floating-action">
+                                                <a href="inhouse_requisition_edit.php?otable_id=<?php echo $row['otableid']; ?>" 
+                                                 class="btn-tool-tip btn_edit"><span>Edit</span></a>
+                                                <a class="btn-tool-tip btn_view"><span>View</span></a>
+                                                <a class="btn-tool-tip btn_print"><span>Print</span></a>
+                                                <a class="btn-tool-tip btn_cancel"><span>Cancel</span></a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>

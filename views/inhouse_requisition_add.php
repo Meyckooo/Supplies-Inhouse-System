@@ -49,7 +49,7 @@ $plateNumbers = $inhouseController->getPlateNumbers();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>In-House & Supplies Requisition</title>
+    <title>In-House &amp; Supplies Requisition</title>
     <link rel="stylesheet" href="<?php echo $base_path; ?>assets/css/style.css">
     <link rel="stylesheet" href="<?php echo $base_path; ?>assets/css/media.css">
     <link rel="stylesheet" href="<?php echo $base_path; ?>assets/css/bootstrap.min.css">
@@ -64,7 +64,7 @@ $plateNumbers = $inhouseController->getPlateNumbers();
         <div class="wrapper">
             <div class="header_title">
                 <div class="header_info">
-                    <h1>Requisition</h1>
+                    <h1>Add Requisition</h1>
                 </div>
 
                 <div class="ph_realtime_clock_wrapper" id="phRealtimeClock">
@@ -99,13 +99,13 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                     <div class="section_title">General Details</div>
 
                                     <div class="form_group">
-                                        <label>Company <span class="required">*</span></label>
-                                        <input type="text" name="company" class="global_input has-value" value="<?php echo htmlspecialchars($defaultCompany); ?>" readonly placeholder="Auto" required>
+                                        <label>Company</label>
+                                        <input type="text" name="company" class="global_input has-value" value="<?php echo htmlspecialchars($defaultCompany); ?>" disabled placeholder="Auto" required>
                                     </div>
 
                                     <div class="form_group">
-                                        <label>Location <span class="required">*</span></label>
-                                        <input type="text" name="location" class="global_input has-value" value="<?php echo htmlspecialchars($defaultLocation); ?>" readonly placeholder="Auto" required>
+                                        <label>Location</label>
+                                        <input type="text" name="location" class="global_input has-value" value="<?php echo htmlspecialchars($defaultLocation); ?>" disabled placeholder="Auto" required>
                                     </div>
 
                                     <div class="form_group">
@@ -134,22 +134,22 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                         const departmentSectionMap = <?php echo json_encode($deptRecords); ?>;
                                     </script>
 
-                                    <div class="form_group">
-                                        <label>Attachemnt</label>
+                                    <!-- <div class="form_group">
+                                        <label>Attachement</label>
                                         <input type="file" name="attachment" class="global_input">
-                                    </div>
+                                    </div> -->
                                 </div>
 
-                                <!-- Section 2: Purpose & Operations -->
+                                <!-- Section 2: Purpose &amp; Operations -->
                                 <div class="form_section_card">
-                                    <div class="section_title">Purpose & Operations</div>
+                                    <div class="section_title">Purpose &amp; Operations</div>
 
                                     <div class="form_group">
                                         <label>Mode <span class="required">*</span></label>
                                         <select class="global_select" name="mode" required>
                                             <option value="" disabled selected>Select Mode</option>
                                             <option value="pickup">Pick-up</option>
-                                            <option value="pick&delivery">Pick-up & Delivery</option>
+                                            <option value="pick&amp;delivery">Pick-up &amp; Delivery</option>
                                         </select>
                                     </div>
 
@@ -157,36 +157,36 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                         <label>Purpose <span class="required">*</span></label>
                                         <select class="global_select" id="purposeSelect" name="purpose" required>
                                             <option value="" disabled selected>Select Purpose</option>
-                                            <option value="office_admin">Office & Admin</option>
-                                            <option value="handling_storage">Handling & Storage Supplies</option>
+                                            <option value="office_admin">Office &amp; Admin</option>
+                                            <option value="handling_storage">Handling &amp; Storage Supplies</option>
                                             <option value="other_operational">Other Operational Supplies</option>
                                             <option value="medical">Medical Supplies</option>
-                                            <option value="selling_marketing">Selling & Marketing</option>
-                                            <option value="facility_sanitation">Facility Sanitation/ Upkeep & Janitorial</option>
+                                            <option value="selling_marketing">Selling &amp; Marketing</option>
+                                            <option value="facility_sanitation">Facility Sanitation/ Upkeep &amp; Janitorial</option>
                                             <option value="production">Production</option>
-                                            <option value="facilities_building">Facilities & Building</option>
-                                            <option value="equipment_machinery">Equipment & Machinery</option>
-                                            <option value="vehicle_fleet">Vehicle & Fleet</option>
-                                            <option value="it_hardware">IT & Hardware</option>
-                                            <option value="safety_ppe">Safety & PPE (Personal Protective Equipment)</option>
+                                            <option value="facilities_building">Facilities &amp; Building</option>
+                                            <option value="equipment_machinery">Equipment &amp; Machinery</option>
+                                            <option value="vehicle_fleet">Vehicle &amp; Fleet</option>
+                                            <option value="it_hardware">IT &amp; Hardware</option>
+                                            <option value="safety_ppe">Safety &amp; PPE (Personal Protective Equipment)</option>
                                         </select>
                                     </div>
 
                                     <!-- Subdropdowns -->
                                     <div class="form_group sub_dropdown_group" id="sub_selling_marketing" style="display:none;">
-                                        <label>Selling & Marketing <span class="required">*</span></label>
+                                        <label>Subpurpose<span class="required">*</span></label>
                                         <select name="sub_purpose" class="global_select">
                                             <option value="" disabled selected>Select</option>
                                             <option value="cashiering">Cashiering / POS</option>
-                                            <option value="selling_fulfillment">Selling & Fulfillment</option>
-                                            <option value="promotional">Promotional & Display</option>
+                                            <option value="selling_fulfillment">Selling &amp; Fulfillment</option>
+                                            <option value="promotional">Promotional &amp; Display</option>
                                             <option value="diy">DIY</option>
                                             <option value="counter">Counter</option>
                                         </select>
                                     </div>
 
                                     <div class="form_group sub_dropdown_group" id="sub_production" style="display:none;">
-                                        <label>Production <span class="required">*</span></label>
+                                        <label>Subpurpose<span class="required">*</span></label>
                                         <select name="sub_purpose" class="global_select">
                                             <option value="" disabled selected>Select</option>
                                             <option value="stickering">Stickering/ Labeling</option>
@@ -195,8 +195,8 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                         </select>
                                     </div>
 
-                                    <div class="form_group sub_dropdown_group" id="sub_vehicle_fleet" style="display:none;">
-                                        <label>Vehicle & Fleet <span class="required">*</span></label>
+                                    <div class="form_group sub_dropdown_group" id="sub_facilities_and_building" style="display:none;">
+                                        <label>Subpurpose<span class="required">*</span></label>
                                         <select name="sub_purpose" class="global_select">
                                             <option value="" disabled selected>Select</option>
                                             <option value="repairs">Repairs</option>
@@ -205,8 +205,8 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                         </select>
                                     </div>
 
-                                    <div class="form_group sub_dropdown_group" id="sub_it_hardware" style="display:none;">
-                                        <label>IT & Hardware <span class="required">*</span></label>
+                                    <div class="form_group sub_dropdown_group" id="sub_it_and_hardware" style="display:none;">
+                                        <label>Subpurpose<span class="required">*</span></label>
                                         <select name="sub_purpose" class="global_select">
                                             <option value="" disabled selected>Select</option>
                                             <option value="repairs">Repairs</option>
@@ -214,6 +214,27 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                             <option value="project">Project</option>
                                         </select>
                                     </div>
+
+                                    <div class="form_group sub_dropdown_group" id="sub_equipment_and_machinery" style="display:none;">
+                                        <label>Subpurpose<span class="required">*</span></label>
+                                        <select name="sub_purpose" class="global_select">
+                                            <option value="" disabled selected>Select</option>
+                                            <option value="repairs">Repairs</option>
+                                            <option value="maintenance">Maintenance</option>
+                                            <option value="project">Project</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form_group sub_dropdown_group" id="sub_vehicle_fleet" style="display:none;">
+                                        <label>Subpurpose<span class="required">*</span></label>
+                                        <select name="sub_purpose" class="global_select">
+                                            <option value="" disabled selected>Select</option>
+                                            <option value="repairs">Repairs</option>
+                                            <option value="maintenance">Maintenance</option>
+                                            <option value="project">Project</option>
+                                        </select>
+                                    </div>
+
 
                                     <div class="form_group">
                                         <label>Approver <span class="required">*</span></label>
@@ -228,7 +249,7 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                     </div>
 
                                     <div class="form_group">
-                                        <label>Post Date <span class="required">*</span></label>
+                                        <label>Post Date</label>
                                         <input type="date" name="postDate" class="global_input has-value" value="<?php echo $currentPhDate; ?>" required>
                                     </div>
                                 </div>
@@ -238,8 +259,8 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                     <div class="section_title">Additional Details</div>
 
                                     <div class="form_group">
-                                        <label>Requested By <span class="required">*</span></label>
-                                        <input type="text" name="postBy" class="global_input has-value" value="<?php echo htmlspecialchars($currentUser); ?>" readonly required>
+                                        <label>Requested By</label>
+                                        <input type="text" name="postBy" class="global_input has-value" value="<?php echo htmlspecialchars($currentUser); ?>" disabled required>
                                     </div>
 
                                     <div class="form_group">
@@ -266,12 +287,12 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                     </div>
 
                                     <div class="form_group">
-                                        <label>Odometer <span class="required">*</span></label>
-                                        <input type="number" name="odometer" class="global_input has-value" value="45200" required readonly>
+                                        <label>Odometer</label>
+                                        <input type="number" name="odometer" class="global_input" value="">
                                     </div>
 
                                     <div class="form_group">
-                                        <label>Total Amount <span class="required">*</span></label>
+                                        <label>Total Amount</label>
                                         <input type="text" class="global_input has-value" value="₱ 0.00" disabled required>
                                     </div>
                                 </div>
@@ -280,7 +301,7 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                 <div class="form_section_card full_width_card">
                                     <div class="section_title">Instructions</div>
                                     <div class="form_group delivery_instruct full_width">
-                                        <label>Delivery Instructions <span class="required">*</span></label>
+                                        <label>Delivery Instructions</label>
                                         <textarea name="remarks" class="global_textarea" rows="3" placeholder="Enter delivery instructions..."></textarea>
                                     </div>
                                 </div>

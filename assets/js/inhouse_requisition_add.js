@@ -11,6 +11,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("sub_selling_marketing").style.display = "flex";
       } else if (val === "production") {
         document.getElementById("sub_production").style.display = "flex";
+      } else if (val === "facilities_building") {
+        document.getElementById("sub_facilities_and_building").style.display = "flex";
+      } else if (val === "equipment_machinery") {
+        document.getElementById("sub_equipment_and_machinery").style.display = "flex";
       } else if (val === "vehicle_fleet") {
         document.getElementById("sub_vehicle_fleet").style.display = "flex";
       } else if (val === "it_hardware") {
