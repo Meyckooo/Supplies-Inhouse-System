@@ -40,8 +40,8 @@ h5 {
   margin: 0;
 }
 
-table{
-
+.none{
+  display: none !important;
 }
 
 figure {
@@ -265,6 +265,20 @@ input.form_disabled {
   cursor: pointer;
   transition: background-color 0.2s ease;
   width: 120px;
+}
+
+.global_btn_cancel {
+  background-color: var(--Gray);
+  color: var(--White);
+  border: none;
+  padding: 9px 22px;
+  border-radius: 6px;
+  font-family: var(--headingTxt);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
 }
 
 .global_btn_cancel:hover {
@@ -1412,9 +1426,10 @@ footer.footer_intro {
 
 .index_right_content {
 position: relative;
-width: calc(100% - 965px);
+width: calc(100% - 795px);
 margin-right: 65px;
 }
+
 .index_right_content h2 {
 font: 700 50px/100% var(--headingTxt);
 color: var(--lBlue);
@@ -2298,10 +2313,11 @@ line-height: 27px;
 .global_table_container {
   overflow-x: auto;
   overflow-y: auto;
-  min-height: 350px !important;
-  max-height: 350px !important;
+  min-height: 500px !important;
+  max-height: 500px !important;
   width: 100%;
 }
+
 
 .global_table {
   width: 100%;
@@ -2309,6 +2325,12 @@ line-height: 27px;
   text-align: left;
   font-size: 14px;
   white-space: nowrap;
+}
+
+.global_table thead{
+  position: sticky;
+  inset:0;
+  z-index: 99;
 }
 
 
@@ -2394,6 +2416,11 @@ line-height: 27px;
 .global_status.status_approved, .global_status.status_active {
   background-color: #d1fae5;
   color: var(--dGreen);
+}
+
+.global_status.status_save_approved, .global_status.status_active {
+  background-color: rgb(236, 157, 10);
+  color: #fff;
 }
 
 .global_status.status_pending {
@@ -2652,19 +2679,18 @@ line-height: 27px;
   margin-top: 20px;
 }
 
-.form_footer_actions button{width: 110px !important;}
-
-
+.form_footer_actions button, .form_footer_actions a{width: 110px !important;}
+.form_footer_actions .ir_btn_cancel:before{content:url(../images/icon/cancel.png);}
 .form_footer_actions .ir_btn_save:before{content:url(../images/icon/save.png);}
 .form_footer_actions .ir_btn_submit:before{content:url(../images/icon/send.png);}
 
 
 /* Priority Option Colors */
 .priority_select option{font-weight: 600; border-radius: none; cursor: pointer !important;}
-.priority_select option[value="urgent"] { background-color: #DC3545; color: #fff !important;}
-.priority_select option[value="high"] { background-color: #FD7E14; color: #fff !important;}
-.priority_select option[value="standard"] { background-color: #0D6EFD; color: #fff !important;}
-.priority_select option[value="low"] { background-color: #6C757D; color: #fff !important;}
+.priority_select option[value="4"] { background-color: #DC3545; color: #fff !important;}
+.priority_select option[value="3"] { background-color: #FD7E14; color: #fff !important;}
+.priority_select option[value="2"] { background-color: #0D6EFD; color: #fff !important;}
+.priority_select option[value="1"] { background-color: #6C757D; color: #fff !important;}
 
 
 .table_action {

@@ -131,6 +131,11 @@ width: 120px;
 }
 
   /* END OF INTRO */
+
+
+  .index_right_content{
+    width: calc(100% - 675px);
+  }
 }
 
 @media only screen and (max-width :1200px) {
@@ -140,13 +145,15 @@ width: 120px;
   }
   /* End */
 
-  /* Sales Performance */
-  .performance_chart {
-    width: 70%;
-    }
-    .transaction_chart {
-    width: 30%;
-    }
+.index_right_content {
+  width: calc(100% - 625px);
+}
+.index_right_content p {
+  font-size: 16px;
+}
+.index_right_content h2 {
+  font: 700 47px/100% var(--headingTxt);
+}
 
 /* End */
 
@@ -203,6 +210,22 @@ object-position: 33px 0;
 
    .full_width_card {
     grid-column: span 1;
+    }
+    
+    .index_right_content {
+    width: 100%;
+    margin: 0;
+    }
+
+    .index_bottom {
+    flex-direction: column-reverse;
+    text-align: center;
+    padding-inline: 15px;
+    }
+
+    .index_video {
+    margin-left: 0;
+    max-width: 100%;
     }
 
 }
@@ -327,9 +350,6 @@ object-position: 33px 0;
 }
 
 @media only screen and (max-width: 600px) {
- .header_title h1{
-  font-size: 30px;
- }
 
  /* RECEIVING */
 
