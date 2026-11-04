@@ -377,4 +377,22 @@ class InhouseModel
             throw new Exception("Update Transaction Error: " . $e->getMessage());
         }
     }
+
+    public function cancelInhouseRequest(string $otableId, string $cancelBy): bool
+    {
+        $query = "UPDATE tbl_ihsup_header SET 
+                    ostatus = 3, 
+                    ocancelby = ?, 
+                    ocanceldate = NOW() 
+                  WHERE otableid = ?";
+
+        if ($stmt = $this->db->prepare($query)) {
+            $stmt->bind_param("si", $cancelBy, $otableId);
+            $success = $stmt->execute();
+            $stmt->close();
+            return $success;
+        }
+
+        throw new Exception("Prepare failed for cancellation: " . $this->db->error);
+    }
 }

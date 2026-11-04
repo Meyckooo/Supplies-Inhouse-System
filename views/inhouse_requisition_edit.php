@@ -356,7 +356,7 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                 <!-- Form Footer Actions -->
                 <div class="form_footer_actions">
                     <a href="inhouse_requisition.php" class="global_btn_cancel btn-tool-tip ir_btn_cancel"><span>Cancel</span></a>
-                    <button type="submit" form="inhouseForm" name="action" value="save" class="global_btn_save btn-tool-tip ir_btn_save"><span>Save</span></button>
+                    <button type="submit" form="inhouseForm" name="action" value="update" class="global_btn_save btn-tool-tip ir_btn_save"><span>Save</span></button>
                     <button type="submit" form="inhouseForm" name="action" value="post" class="global_btn_submit btn-tool-tip ir_btn_submit"><span>Post</span></button>
                 </div>
 
@@ -448,7 +448,7 @@ $plateNumbers = $inhouseController->getPlateNumbers();
             <?php if (isset($_SESSION['success_message'])): ?>
                 Swal.fire({
                     icon: 'success',
-                    title: 'Success!',
+                    title: 'Saved!',
                     text: '<?php echo htmlspecialchars($_SESSION['success_message'], ENT_QUOTES); ?>',
                     timer: 2500,
                     timerProgressBar: true,
