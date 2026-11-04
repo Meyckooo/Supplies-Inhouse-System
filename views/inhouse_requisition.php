@@ -175,8 +175,7 @@ $headers = $inhouseController->getInhouseHeader();
                                                 ?>
                                             </td>
                                             <td class="action_cell global-floating-action">
-                                                <a href="inhouse_requisition_edit.php?otable_id=<?php echo $row['otableid']; ?>" 
-                                                 class="btn-tool-tip btn_edit"><span>Edit</span></a>
+                                                <a href="inhouse_requisition_edit.php?otableid=<?php echo htmlspecialchars($row['otableid']); ?>" class="btn-tool-tip btn_edit"><span>Edit</span></a>
                                                 <a class="btn-tool-tip btn_view"><span>View</span></a>
                                                 <a class="btn-tool-tip btn_print"><span>Print</span></a>
                                                 <a class="btn-tool-tip btn_cancel"><span>Cancel</span></a>
