@@ -12,7 +12,7 @@ $phTimezone = new DateTimeZone('Asia/Manila');
 $currentPhDate = (new DateTime('now', $phTimezone))->format('Y-m-d');
 
 /*========================================================== //
-//           Enforce Main Module Access                  //
+//         Enforce Main Module Access                      //
 //==========================================================*/
 if (!hasAccess($moduleId, $isSuperAdmin, $allowedModules)) {
     header('HTTP/1.1 403 Forbidden');
@@ -21,25 +21,28 @@ if (!hasAccess($moduleId, $isSuperAdmin, $allowedModules)) {
 }
 
 $currentUser = $_SESSION['user_name'] ?? '';
-
 $dbConn = getDBConnection();
-
 $inhouseController = new InhouseController($dbConn);
-$locations = $inhouseController->getCurrentCompany();
 
-$defaultCompany = !empty($locations) ? $locations[0]['ocompany'] : '';
-$defaultLocation = !empty($locations) ? $locations[0]['olocation'] : '';
+// Get otableid from URL safely
+$otableId = $_GET['otableid'] ?? $_GET['id'] ?? null;
+$requisition = null;
+$requisitionDetails = [];
 
-$inhouseController = new InhouseController($dbConn);
+if ($otableId) {
+    $requisition = $inhouseController->getHeaderById($otableId);
+    $requisitionDetails = $inhouseController->getInhouseDetails($otableId);
+}
+
+$locations = $inhouseController->getCompanyLocation();
+$defaultCompany = !empty($locations) ? ($locations[0]['ocompany'] ?? $locations[0]['company'] ?? '') : '';
+$defaultLocation = !empty($locations) ? ($locations[0]['olocation'] ?? $locations[0]['location'] ?? '') : '';
+
 $deptRecords = $inhouseController->getDepartments();
-
 $departments = array_unique(array_column($deptRecords, 'odepartment_name'));
 sort($departments);
 
-$companyLocation = (new InhouseController($dbConn))->getCompanyLocation();
-
 $approvers = $inhouseController->getApprovers();
-
 $plateNumbers = $inhouseController->getPlateNumbers();
 ?>
 
@@ -49,11 +52,12 @@ $plateNumbers = $inhouseController->getPlateNumbers();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>In-House &amp; Supplies Requisition</title>
+    <title>In-House & Supplies Requisition</title>
     <link rel="stylesheet" href="<?php echo $base_path; ?>assets/css/style.css">
     <link rel="stylesheet" href="<?php echo $base_path; ?>assets/css/media.css">
     <link rel="stylesheet" href="<?php echo $base_path; ?>assets/css/bootstrap.min.css">
     <link rel="icon" href="<?php echo $base_path; ?>assets/images/favicon.png">
+
 </head>
 
 <body>
@@ -66,7 +70,6 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                 <div class="header_info">
                     <h1>Edit Requisition</h1>
                 </div>
-
                 <div class="ph_realtime_clock_wrapper" id="phRealtimeClock">
                     <span class="ph_clock_date">Loading date...</span>
                     <span class="ph_clock_time">Loading time...</span>
@@ -78,15 +81,20 @@ $plateNumbers = $inhouseController->getPlateNumbers();
     <div class="main_content_body">
         <div class="wrapper">
             <div class="main_content_body_con">
+                <div class="header_buttons">
+                    <ul>
+                        <li><a class="global_back_btn" href="inhouse_requisition.php">← Back</a></li>
+                    </ul>
+                </div>
 
                 <div class="global_form_wrapper">
                     <div class="form_page_header">
-                        <h3 class="h3_repeat">Add Inhouse Requisition</h3>
+                        <h3 class="h3_repeat">Edit Inhouse Requisition (Ctrl No: <?php echo htmlspecialchars($otableId ?? ''); ?>)</h3>
                     </div>
 
                     <div class="form_body_content">
-                        <!-- Added enctype="multipart/form-data" to allow file uploads and wrapped both form inputs and details table inside -->
                         <form id="inhouseForm" action="../controller/inhouse_controller.php" method="POST" enctype="multipart/form-data">
+                            <input type="hidden" name="otableid" value="<?php echo htmlspecialchars($otableId ?? ''); ?>">
 
                             <div class="global_form_grid_sections">
                                 <!-- Section 1: General Details -->
@@ -94,92 +102,99 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                     <div class="section_title">General Details</div>
 
                                     <div class="form_group">
-                                        <label>Company</label>
-                                        <input type="text" name="company" class="global_input has-value" value="<?php echo htmlspecialchars($defaultCompany); ?>" disabled placeholder="Auto" required>
+                                        <label>Company <span class="required">*</span></label>
+                                        <input type="text" name="company" class="global_input has-value" value="<?php echo htmlspecialchars($requisition['ocompany'] ?? $defaultCompany); ?>" readonly required>
                                     </div>
 
                                     <div class="form_group">
-                                        <label>Location</label>
-                                        <input type="text" name="location" class="global_input has-value" value="<?php echo htmlspecialchars($defaultLocation); ?>" disabled placeholder="Auto" required>
+                                        <label>Location <span class="required">*</span></label>
+                                        <input type="text" name="location" class="global_input has-value" value="<?php echo htmlspecialchars($requisition['olocation'] ?? $defaultLocation); ?>" readonly required>
                                     </div>
 
                                     <div class="form_group">
-                                        <label>Department</label>
+                                        <label>Department <span class="required">*</span></label>
                                         <select class="global_select has-value" id="departmentSelect" name="department" required disabled>
-                                            <!-- <option value="" disabled selected>Select Department</option> -->
-
-                                            <!-- <!?php foreach ($departments as $dept): ?>
-                                                <!?php if (!empty($dept)): ?>
-                                                    <option value="<!?php echo htmlspecialchars($dept); ?>">
-                                                        <!?php echo htmlspecialchars($dept); ?>
+                                            <option value="" disabled>Select Department</option>
+                                            <?php foreach ($departments as $dept): ?>
+                                                <?php if (!empty($dept)): ?>
+                                                    <option value="<?php echo htmlspecialchars($dept); ?>" <?php echo (($requisition['odepartment'] ?? '') === $dept) ? 'selected' : ''; ?>>
+                                                        <?php echo htmlspecialchars($dept); ?>
                                                     </option>
-                                                <!?php endif; ?>
-                                            <!?php endforeach; ?> -->
+                                                <?php endif; ?>
+                                            <?php endforeach; ?>
                                         </select>
                                     </div>
 
                                     <div class="form_group">
-                                        <label>Section</label>
+                                        <label>Section <span class="required">*</span></label>
                                         <select class="global_select has-value" id="sectionSelect" name="section" required disabled>
-                                            <!-- <option value="" disabled selected>Select Section</option> -->
+                                            <option value="<?php echo htmlspecialchars($requisition['osection'] ?? ''); ?>" selected><?php echo htmlspecialchars($requisition['osection'] ?? 'Select Section'); ?></option>
                                         </select>
                                     </div>
 
-                                    <!-- Pass the database mapping to JavaScript -->
                                     <script>
                                         const departmentSectionMap = <?php echo json_encode($deptRecords); ?>;
                                     </script>
 
-                                    <div class="form_group">
-                                        <label>Attachement <span class="required">*</span></label>
-                                        <input type="file" name="attachment" class="global_input" required>
-                                    </div>
+                                    <!-- <div class="form_group">
+                                        <label>Attachment</label>
+                                        <input type="file" name="attachment" class="global_input">
+                                        <!?php if (!empty($requisition['attachment'])): ?> 
+                                            <small class="text-muted">Current: <!?php echo htmlspecialchars($requisition['attachment']); ?></small>
+                                        <!?php endif; ?>
+                                    </div> -->
                                 </div>
 
-                                <!-- Section 2: Purpose &amp; Operations -->
+                                <!-- Section 2: Purpose & Operations -->
                                 <div class="form_section_card">
-                                    <div class="section_title">Purpose &amp; Operations</div>
+                                    <div class="section_title">Purpose & Operations</div>
 
                                     <div class="form_group">
-                                        <label>Mode</label>
+                                        <label>Mode <span class="required">*</span></label>
                                         <select class="global_select has-value" name="mode" required disabled>
-                                            <!-- <option value="" disabled selected>Select Mode</option>
-                                            <option value="pickup">Pick-up</option>
-                                            <option value="pick&amp;delivery">Pick-up &amp; Delivery</option> -->
+                                            <option value="" disabled>Select Mode</option>
+                                            <option value="pickup" <?php echo (($requisition['omode'] ?? '') === 'pickup') ? 'selected' : ''; ?>>Pick-up</option>
+                                            <option value="others" <?php echo (($requisition['omode'] ?? '') === 'others') ? 'selected' : ''; ?>>Pick-up & Delivery</option>
                                         </select>
                                     </div>
 
                                     <div class="form_group">
-                                        <label>Purpose</label>
+                                        <label>Purpose <span class="required">*</span></label>
                                         <select class="global_select has-value" id="purposeSelect" name="purpose" required disabled>
-                                            <!-- <option value="" disabled selected>Select Purpose</option>
-                                            <option value="office_admin">Office &amp; Admin</option>
-                                            <option value="handling_storage">Handling &amp; Storage Supplies</option>
-                                            <option value="other_operational">Other Operational Supplies</option>
-                                            <option value="medical">Medical Supplies</option>
-                                            <option value="selling_marketing">Selling &amp; Marketing</option>
-                                            <option value="facility_sanitation">Facility Sanitation/ Upkeep &amp; Janitorial</option>
-                                            <option value="production">Production</option>
-                                            <option value="facilities_building">Facilities &amp; Building</option>
-                                            <option value="equipment_machinery">Equipment &amp; Machinery</option>
-                                            <option value="vehicle_fleet">Vehicle &amp; Fleet</option>
-                                            <option value="it_hardware">IT &amp; Hardware</option>
-                                            <option value="safety_ppe">Safety &amp; PPE (Personal Protective Equipment)</option> -->
+                                            <option value="" disabled>Select Purpose</option>
+                                            <?php
+                                            $purposes = [
+                                                'office_admin' => 'Office & Admin',
+                                                'handling_storage' => 'Handling & Storage Supplies',
+                                                'other_operational' => 'Other Operational Supplies',
+                                                'medical' => 'Medical Supplies',
+                                                'selling_marketing' => 'Selling & Marketing',
+                                                'facility_sanitation' => 'Facility Sanitation/ Upkeep & Janitorial',
+                                                'production' => 'Production',
+                                                'facilities_building' => 'Facilities & Building',
+                                                'equipment_machinery' => 'Equipment & Machinery',
+                                                'vehicle_fleet' => 'Vehicle & Fleet',
+                                                'it_hardware' => 'IT & Hardware',
+                                                'safety_ppe' => 'Safety & PPE (Personal Protective Equipment)'
+                                            ];
+                                            foreach ($purposes as $val => $label):
+                                            ?>
+                                                <option value="<?php echo $val; ?>" <?php echo (($requisition['opurpose'] ?? '') === $val) ? 'selected' : ''; ?>><?php echo $label; ?></option>
+                                            <?php endforeach; ?>
                                         </select>
                                     </div>
 
                                     <div class="form_group">
                                         <label>Sub-Purpose</label>
-                                        <input type="text" name="subPurpose" class="global_input has-value" value="" disabled required>
+                                        <input type="text" name="subPurpose" class="global_input has-value" readonly placeholder="None" value="<?php echo htmlspecialchars($requisition['osub_purpose'] ?? ''); ?>">
                                     </div>
-                                    
 
                                     <div class="form_group">
                                         <label>Approver <span class="required">*</span></label>
                                         <select class="global_select" name="approverId" required>
-                                            <option value="" disabled selected>Select Approver</option>
+                                            <option value="" disabled>Select Approver</option>
                                             <?php foreach ($approvers as $app): ?>
-                                                <option value="<?php echo htmlspecialchars($app['oapprover_id']); ?>">
+                                                <option value="<?php echo htmlspecialchars($app['oapprover_id']); ?>" <?php echo ((string)($requisition['oapprover_id'] ?? '') === (string)$app['oapprover_id']) ? 'selected' : ''; ?>>
                                                     <?php echo htmlspecialchars($app['oapprover_name']); ?>
                                                 </option>
                                             <?php endforeach; ?>
@@ -187,8 +202,8 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                     </div>
 
                                     <div class="form_group">
-                                        <label>Post Date</label>
-                                        <input type="date" name="postDate" class="global_input has-value" value="<?php echo $currentPhDate; ?>" required>
+                                        <label>Post Date <span class="required">*</span></label>
+                                        <input type="date" name="postDate" class="global_input has-value" value="<?php echo htmlspecialchars(substr($requisition['opostdate'] ?? $currentPhDate, 0, 10)); ?>" required disabled>
                                     </div>
                                 </div>
 
@@ -197,42 +212,41 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                     <div class="section_title">Additional Details</div>
 
                                     <div class="form_group">
-                                        <label>Requested By</label>
-                                        <input type="text" name="postBy" class="global_input has-value" value="<?php echo htmlspecialchars($currentUser); ?>" disabled required>
+                                        <label>Requested By <span class="required">*</span></label>
+                                        <input type="text" name="postBy" class="global_input has-value" value="<?php echo htmlspecialchars($requisition['opostby'] ?? $currentUser); ?>" readonly required>
                                     </div>
 
                                     <div class="form_group">
-                                        <label>Priority Levels</label>
+                                        <label>Priority Levels <span class="required">*</span></label>
                                         <select class="global_select priority_select has-value" name="prioLvl" required disabled>
-                                            <!-- <option value="" disabled selected>Select Priority</option>
-                                            <option value="4">Urgent</option>
-                                            <option value="3">High</option>
-                                            <option value="2">Standard</option>
-                                            <option value="1">Low</option> -->
+                                            <option value="" disabled>Select Priority</option>
+                                            <option value="4" <?php echo ((int)($requisition['oprio_lvl'] ?? 0) === 4) ? 'selected' : ''; ?>>Urgent</option>
+                                            <option value="3" <?php echo ((int)($requisition['oprio_lvl'] ?? 0) === 3) ? 'selected' : ''; ?>>High</option>
+                                            <option value="2" <?php echo ((int)($requisition['oprio_lvl'] ?? 0) === 2) ? 'selected' : ''; ?>>Standard</option>
+                                            <option value="1" <?php echo ((int)($requisition['oprio_lvl'] ?? 0) === 1) ? 'selected' : ''; ?>>Low</option>
                                         </select>
                                     </div>
 
                                     <div class="form_group">
-                                        <label>Plate Number / #</label>
-                                        <select class="global_select has-value" name="plate_no" disabled>
-                                            <!-- <option value="" disabled selected>Select Plate No.</option> -->
-
-                                            <!-- <!?php foreach ($plateNumbers as $plate): ?>
-                                                <option value="<!?php echo htmlspecialchars($plate['oplateno']); ?>">
-                                                    <!?php echo htmlspecialchars($plate['oplateno']); ?>
+                                        <label>Plate Number / # <span class="required">*</span></label>
+                                        <select class="global_select has-value" name="plate_no" required disabled>
+                                            <option value="" disabled>Select Plate No.</option>
+                                            <?php foreach ($plateNumbers as $plate): ?>
+                                                <option value="<?php echo htmlspecialchars($plate['oplateno']); ?>" <?php echo (($requisition['oplate_no'] ?? '') === $plate['oplateno']) ? 'selected' : ''; ?>>
+                                                    <?php echo htmlspecialchars($plate['oplateno']); ?>
                                                 </option>
-                                            <!?php endforeach; ?> -->
+                                            <?php endforeach; ?>
                                         </select>
                                     </div>
 
                                     <div class="form_group">
-                                        <label>Odometer</label>
-                                        <input type="number" name="odometer" class="global_input has-value" value="" disabled>
+                                        <label>Odometer <span class="required">*</span></label>
+                                        <input type="number" name="odometer" class="global_input has-value" value="<?php echo htmlspecialchars($requisition['odometer'] ?? ''); ?>" required disabled>
                                     </div>
 
                                     <div class="form_group">
                                         <label>Total Amount</label>
-                                        <input type="text" class="global_input has-value" value="₱ 0.00" disabled required>
+                                        <input type="text" id="totalAmount" name="totalAmount" class="global_input has-value" value="₱ 0.00" readonly>
                                     </div>
                                 </div>
 
@@ -240,16 +254,16 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                 <div class="form_section_card full_width_card">
                                     <div class="section_title">Instructions</div>
                                     <div class="form_group delivery_instruct full_width">
-                                        <label>Delivery Instructions</label>
-                                        <textarea name="remarks" class="global_textarea" rows="3" placeholder="Enter delivery instructions..."></textarea>
+                                        <label>Delivery Instructions <span class="required">*</span></label>
+                                        <textarea name="remarks" class="global_textarea" rows="3" placeholder="Enter delivery instructions..."><?php echo htmlspecialchars($requisition['oremarks'] ?? $requisition['remarks'] ?? ''); ?></textarea>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Added Item Table now nested inside the form wrapper -->
+                            <!-- Added Item Table -->
                             <div class="inhouse_requisition_child_tbl global_display_table_wrapper" style="margin-top: 20px;">
                                 <div class="table_action">
-                                    <h2 class="h3_repeat">Added Item</h2>
+                                    <h2 class="h3_repeat">Edit Added Item</h2>
                                     <button type="button" class="global_add_btn">+ Add Item</button>
                                 </div>
 
@@ -272,19 +286,76 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                             </tr>
                                         </thead>
                                         <tbody>
-
+                                            <?php if (!empty($requisitionDetails)): ?>
+                                                <?php foreach ($requisitionDetails as $index => $item): ?>
+                                                    <tr>
+                                                        <td class="text_center row_number"><?php echo $index + 1; ?></td>
+                                                        <td>
+                                                            <?php echo htmlspecialchars($item['oitemcode'] ?? ''); ?>
+                                                            <!-- CRITICAL: Pass the existing row's primary key (otableid) as detail_id -->
+                                                            <input type="hidden" name="items[<?php echo $index; ?>][detail_id]" value="<?php echo htmlspecialchars($item['otableid'] ?? ''); ?>">
+                                                            <input type="hidden" name="items[<?php echo $index; ?>][item_code]" value="<?php echo htmlspecialchars($item['oitemcode'] ?? ''); ?>">
+                                                        </td>
+                                                        <td>
+                                                            <?php echo htmlspecialchars($item['obarcode'] ?? ''); ?>
+                                                            <input type="hidden" name="items[<?php echo $index; ?>][bar_code]" value="<?php echo htmlspecialchars($item['obarcode'] ?? ''); ?>">
+                                                        </td>
+                                                        <td>
+                                                            <?php echo htmlspecialchars($item['oitemdesc'] ?? ''); ?>
+                                                            <input type="hidden" name="items[<?php echo $index; ?>][item_desc]" value="<?php echo htmlspecialchars($item['oitemdesc'] ?? ''); ?>">
+                                                        </td>
+                                                        <td>
+                                                            <?php echo htmlspecialchars($item['oitemno'] ?? ''); ?>
+                                                            <input type="hidden" name="items[<?php echo $index; ?>][item_no]" value="<?php echo htmlspecialchars($item['oitemno'] ?? ''); ?>">
+                                                        </td>
+                                                        <td>
+                                                            <?php echo htmlspecialchars($item['ocon_id'] ?? ''); ?>
+                                                            <input type="hidden" name="items[<?php echo $index; ?>][consign_id]" value="<?php echo htmlspecialchars($item['ocon_id'] ?? ''); ?>">
+                                                        </td>
+                                                        <td class="text_right item_price">
+                                                            <?php
+                                                            $unitPrice = $item['ounitprice'] ?? ($item['ounit_price'] ?? '0.00');
+                                                            echo htmlspecialchars($unitPrice);
+                                                            ?>
+                                                            <input type="hidden" name="items[<?php echo $index; ?>][unit_price]" value="<?php echo htmlspecialchars($unitPrice); ?>">
+                                                        </td>
+                                                        <td>
+                                                            <?php echo htmlspecialchars($item['ounit'] ?? ''); ?>
+                                                            <input type="hidden" name="items[<?php echo $index; ?>][oum]" value="<?php echo htmlspecialchars($item['ounit'] ?? ''); ?>">
+                                                        </td>
+                                                        <td>
+                                                            <select name="items[<?php echo $index; ?>][type]" class="global_select">
+                                                                <option value="SUPPLIES" <?php echo (($item['otype'] ?? '') == 1 || ($item['otype'] ?? '') === 'SUPPLIES') ? 'selected' : ''; ?>>SUPPLIES</option>
+                                                                <option value="INHOUSE" <?php echo (($item['otype'] ?? '') == 2 || ($item['otype'] ?? '') === 'INHOUSE') ? 'selected' : ''; ?>>INHOUSE</option>
+                                                                <option value="PRNT" <?php echo (($item['otype'] ?? '') == 3 || ($item['otype'] ?? '') === 'PRNT') ? 'selected' : ''; ?>>PRNT</option>
+                                                            </select>
+                                                        </td>
+                                                        <td><?php echo htmlspecialchars($item['ostatus'] ?? 'SUPPLIES'); ?></td>
+                                                        <td class="text_right">
+                                                            <input type="number" name="items[<?php echo $index; ?>][qty]" class="global_input item_qty" value="<?php echo htmlspecialchars($item['oreq_qty'] ?? 1); ?>" min="1" style="width: 80px;" required>
+                                                        </td>
+                                                        <td class="text_center">
+                                                            <button type="button" class="btn btn-danger btn-sm remove_item_btn" style="padding: 2px 8px; font-size: 12px;">×</button>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                            <?php if (empty($requisitionDetails)): ?>
+                                                <tr class="no_items_row">
+                                                    <td colspan="12" class="text_center">No items added yet.</td>
+                                                </tr>
+                                            <?php endif; ?>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
-
                         </form>
                     </div>
                 </div>
 
                 <!-- Form Footer Actions -->
                 <div class="form_footer_actions">
-                    <a href="inhouse_requisition.php" value="cancel" class="global_btn_cancel"><span>Cancel</span></a>
+                    <a href="inhouse_requisition.php" class="global_btn_cancel"><span>Cancel</span></a>
                     <button type="submit" form="inhouseForm" name="action" value="update" class="global_btn_submit"><span>Update</span></button>
                 </div>
 
@@ -330,7 +401,7 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                             </tr>
                         </thead>
                         <tbody>
-
+                            <!-- Dynamically populated via JS -->
                         </tbody>
                     </table>
                 </div>
@@ -357,10 +428,10 @@ $plateNumbers = $inhouseController->getPlateNumbers();
 
             if (inhouseForm) {
                 inhouseForm.addEventListener('submit', function(e) {
-                    const itemRows = document.querySelectorAll('.ir_add_display_tbl tbody tr');
+                    const itemRows = document.querySelectorAll('.ir_add_display_tbl tbody tr:not(.no_items_row)');
 
                     if (itemRows.length === 0) {
-                        e.preventDefault(); 
+                        e.preventDefault();
 
                         Swal.fire({
                             icon: 'warning',
@@ -371,10 +442,33 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                     }
                 });
             }
+
+            // --- AUTO-TRIGGER SWEETALERT FOR CONTROLLER SESSION MESSAGES ---
+            <?php if (isset($_SESSION['success_message'])): ?>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: '<?php echo htmlspecialchars($_SESSION['success_message'], ENT_QUOTES); ?>',
+                    timer: 2500,
+                    timerProgressBar: true,
+                    showConfirmButton: true,
+                    confirmButtonText: 'OK'
+                });
+                <?php unset($_SESSION['success_message']); ?>
+            <?php endif; ?>
+
+            <?php if (isset($_SESSION['error_message'])): ?>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Update Failed',
+                    text: '<?php echo htmlspecialchars($_SESSION['error_message'], ENT_QUOTES); ?>',
+                    showConfirmButton: true,
+                    confirmButtonText: 'OK'
+                });
+                <?php unset($_SESSION['error_message']); ?>
+            <?php endif; ?>
         });
     </script>
-
-
 </body>
 
 </html>

@@ -150,6 +150,46 @@ class InhouseController
         $inhouseModel = new InhouseModel($this->dbConn);
         return $inhouseModel->getPlateNumbers();
     }
+
+    public function getHeaderById(string $otableId): ?array
+    {
+        $inhouseModel = new InhouseModel($this->dbConn);
+        return $inhouseModel->getHeaderById($otableId);
+    }
+
+    public function updateRequest(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update') {
+            $otableId = $_POST['otableid'] ?? null;
+
+            if (!$otableId) {
+                $_SESSION['error_message'] = "Invalid Requisition ID.";
+                header("Location: ../views/inhouse_requisition.php");
+                exit();
+            }
+
+            $headerData = [
+                'approverId' => $_POST['approverId'] ?? null,
+                'remarks'    => $_POST['remarks'] ?? null
+            ];
+
+            $detailsData = $_POST['items'] ?? [];
+
+            try {
+                $model = new InhouseModel($this->dbConn);
+                $success = $model->updateInhouseRequest($otableId, $headerData, $detailsData);
+
+                if ($success) {
+                    $_SESSION['success_message'] = "Requisition updated successfully!";
+                }
+            } catch (Exception $e) {
+                $_SESSION['error_message'] = "Error: " . $e->getMessage();
+            }
+
+            header("Location: ../views/inhouse_requisition_edit.php?otableid=" . urlencode($otableId));
+            exit();
+        }
+    }
 }
 
 // --- AJAX DETAILS ENDPOINT HANDLER ---
@@ -177,13 +217,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $dbConn = getDBConnection();
     $controller = new InhouseController($dbConn);
 
-    $success = $controller->addInhouseRequest($_POST, $_FILES);
-
-    if ($success) {
-        header("Location: ../views/inhouse_requisition.php?status=success");
-        exit();
+    if ($_POST['action'] === 'update') {
+        // Route to update method
+        $controller->updateRequest();
     } else {
-        echo "<script>alert('Failed to save in-house requisition. Please check logs.'); window.history.back();</script>";
-        exit();
+        // Route to add/save method
+        $success = $controller->addInhouseRequest($_POST, $_FILES);
+
+        if ($success) {
+            header("Location: ../views/inhouse_requisition.php?status=success");
+            exit();
+        } else {
+            echo "<script>alert('Failed to save in-house requisition. Please check logs.'); window.history.back();</script>";
+            exit();
+        }
     }
 }

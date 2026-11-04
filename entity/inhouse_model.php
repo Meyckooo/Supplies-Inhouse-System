@@ -47,7 +47,7 @@ class InhouseModel
         return $details;
     }
 
-    public function addInhouseRequestHeader(array $data): int|false
+    public function addInhouseRequestHeader(array $data): int | false
     {
         $query = "INSERT INTO tbl_ihsup_header (
                     odepartment, oapprover, oapprover_id, osection, 
@@ -55,7 +55,7 @@ class InhouseModel
                     opostdate, opostby, opostby_id, oapprovedate, oapprovedby, 
                     ocompany, ocancelby, ocanceldate, ostockroomid, orelease_by, 
                     orelease_date, oprio_lvl, osub_purpose, oplate_no, odometer, attachment
-                  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         if ($stmt = $this->db->prepare($query)) {
             $department   = $data['department'] ?? null;
@@ -86,7 +86,7 @@ class InhouseModel
             $attachment   = $data['attachment'] ?? null;
 
             $stmt->bind_param(
-                "sssissssssississsssisssssis",
+                "ssissssssississsssisssssis",
                 $department,
                 $approver,
                 $approverId,
@@ -193,6 +193,7 @@ class InhouseModel
         throw new Exception("Prepare failed for details: " . $this->db->error);
     }
 
+
     public function getCurrentCompany(): array
     {
         $query = "SELECT * FROM tbl_ihsup_location";
@@ -235,5 +236,145 @@ class InhouseModel
             return mysqli_fetch_all($result, MYSQLI_ASSOC);
         }
         return [];
+    }
+
+    public function getHeaderById(string $otableId): ?array
+    {
+        $query = "SELECT h.*, a.oapprover_name 
+                  FROM tbl_ihsup_header h
+                  LEFT JOIN tbl_ihsup_approver a ON h.oapprover_id = a.oapprover_id 
+                  WHERE h.otableid = ?";
+
+        if ($stmt = $this->db->prepare($query)) {
+            $stmt->bind_param("s", $otableId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $data = $result->fetch_assoc();
+            $stmt->close();
+            return $data ? $data : null;
+        }
+        return null;
+    }
+
+    public function updateInhouseRequest(string $otableId, array $headerData, array $detailsData): bool
+    {
+        $this->db->begin_transaction();
+
+        try {
+            // 1. Update Header Details
+            $headerQuery = "UPDATE tbl_ihsup_header SET 
+                                oapprover_id = ?, 
+                                oremarks = ? 
+                            WHERE otableid = ?";
+
+            if ($stmt = $this->db->prepare($headerQuery)) {
+                $approverId = isset($headerData['approverId']) ? (int)$headerData['approverId'] : null;
+                $remarks = $headerData['remarks'] ?? null;
+
+                $stmt->bind_param("isi", $approverId, $remarks, $otableId);
+                $stmt->execute();
+                $stmt->close();
+            } else {
+                throw new Exception("Prepare failed for header update: " . $this->db->error);
+            }
+
+            // 2. Delete database detail rows that were removed from the UI table (via '×' button)
+            $submittedDetailIds = [];
+            if (!empty($detailsData)) {
+                foreach ($detailsData as $item) {
+                    if (!empty($item['detail_id'])) {
+                        $submittedDetailIds[] = (int)$item['detail_id'];
+                    }
+                }
+            }
+
+            if (!empty($submittedDetailIds)) {
+                $placeholders = implode(',', array_fill(0, count($submittedDetailIds), '?'));
+                $deleteSql = "DELETE FROM tbl_ihsup_details WHERE oparentid = ? AND otableid NOT IN ($placeholders)";
+
+                if ($delStmt = $this->db->prepare($deleteSql)) {
+                    $types = "i" . str_repeat('i', count($submittedDetailIds));
+                    $params = array_merge([(int)$otableId], $submittedDetailIds);
+                    $delStmt->bind_param($types, ...$params);
+                    $delStmt->execute();
+                    $delStmt->close();
+                }
+            } else {
+                // If all items were removed from the UI
+                $deleteAllSql = "DELETE FROM tbl_ihsup_details WHERE oparentid = ?";
+                if ($delAllStmt = $this->db->prepare($deleteAllSql)) {
+                    $parentIdInt = (int)$otableId;
+                    $delAllStmt->bind_param("i", $parentIdInt);
+                    $delAllStmt->execute();
+                    $delAllStmt->close();
+                }
+            }
+
+            // Process Details (Update existing or Insert new)
+            if (!empty($detailsData)) {
+                foreach ($detailsData as $item) {
+                    $detailId   = isset($item['detail_id']) && !empty($item['detail_id']) ? (int)$item['detail_id'] : null;
+                    $parentId   = (int)$otableId;
+                    $itemCode   = $item['item_code'] ?? null;
+                    $barCode    = $item['bar_code'] ?? null;
+                    $itemDesc   = $item['item_desc'] ?? null;
+                    $itemNo     = isset($item['item_no']) ? (int)$item['item_no'] : null;
+                    $ounit      = $item['oum'] ?? null;
+                    $reqQty     = isset($item['qty']) ? (int)$item['qty'] : 1;
+                    $unitPrice  = isset($item['unit_price']) ? (float)$item['unit_price'] : 0.00;
+                    $conId      = isset($item['consign_id']) ? (int)$item['consign_id'] : null;
+
+                    // Map string type to integer (SUPPLIES = 1, INHOUSE = 2, PRNT = 3)
+                    $rawType    = $item['type'] ?? 'SUPPLIES';
+                    $typeMap    = ['SUPPLIES' => 1, 'INHOUSE' => 2, 'PRNT' => 3];
+                    $type       = is_numeric($rawType) ? (int)$rawType : ($typeMap[strtoupper($rawType)] ?? 1);
+
+                    if ($detailId) {
+                        // Update existing detail row by its unique primary key 
+                        $updateDetailSql = "UPDATE tbl_ihsup_details SET 
+                                            oreq_qty = ?, ounitprice = ?, otype = ? 
+                                            WHERE otableid = ? AND oparentid = ?";
+                        if ($updateDetailStmt = $this->db->prepare($updateDetailSql)) {
+                            $updateDetailStmt->bind_param("idiii", $reqQty, $unitPrice, $type, $detailId, $parentId);
+                            $updateDetailStmt->execute();
+                            $updateDetailStmt->close();
+                        } else {
+                            throw new Exception("Prepare failed for detail update: " . $this->db->error);
+                        }
+                    } else {
+                        // Insert new item 
+                        $insertDetailSql = "INSERT INTO tbl_ihsup_details (
+                            oparentid, oitemcode, obarcode, oitemdesc, oitemno, 
+                            ounit, oreq_qty, ounitprice, ocon_id, otype
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        if ($insertDetailStmt = $this->db->prepare($insertDetailSql)) {
+                            $insertDetailStmt->bind_param(
+                                "isssisidii",
+                                $parentId,
+                                $itemCode,
+                                $barCode,
+                                $itemDesc,
+                                $itemNo,
+                                $ounit,
+                                $reqQty,
+                                $unitPrice,
+                                $conId,
+                                $type
+                            );
+                            $insertDetailStmt->execute();
+                            $insertDetailStmt->close();
+                        } else {
+                            throw new Exception("Prepare failed for detail insertion: " . $this->db->error);
+                        }
+                    }
+                }
+            }
+
+            $this->db->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->db->rollback();
+            throw new Exception("Update Transaction Error: " . $e->getMessage());
+        }
     }
 }
