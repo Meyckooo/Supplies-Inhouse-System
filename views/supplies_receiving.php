@@ -64,7 +64,6 @@ $_SESSION['csrf_token'] ??= bin2hex(random_bytes(32));
 
                 <!-- INHOUSE REQUISITION TABLE SECTION -->
                 <div class="inhouse_requisition global_table_wrapper">
-                    
                     <section class="global_filter_bar">
                         <div class="filter_group left">
                             <div class="search_box">
