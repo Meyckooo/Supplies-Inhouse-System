@@ -267,6 +267,20 @@ input.form_disabled {
   width: 120px;
 }
 
+.global_btn_cancel {
+  background-color: var(--Gray);
+  color: var(--White);
+  border: none;
+  padding: 9px 22px;
+  border-radius: 6px;
+  font-family: var(--headingTxt);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+}
+
 .global_btn_cancel:hover {
   background-color: var(--Black);
 }
@@ -2312,6 +2326,14 @@ line-height: 27px;
 }
 
 
+.global_table thead {
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 99;
+}
+
+
 .global_table thead tr {
   background-color: var(--primaryColor);
   color: var(--White);
@@ -2394,6 +2416,11 @@ line-height: 27px;
 .global_status.status_approved, .global_status.status_active {
   background-color: #d1fae5;
   color: var(--dGreen);
+}
+
+.global_status.status_save_approved, .global_status.status_active {
+  background-color: rgb(236, 157, 10);
+  color: #fff;
 }
 
 .global_status.status_pending {
@@ -2661,10 +2688,10 @@ line-height: 27px;
 
 /* Priority Option Colors */
 .priority_select option{font-weight: 600; border-radius: none; cursor: pointer !important;}
-.priority_select option[value="urgent"] { background-color: #DC3545; color: #fff !important;}
-.priority_select option[value="high"] { background-color: #FD7E14; color: #fff !important;}
-.priority_select option[value="standard"] { background-color: #0D6EFD; color: #fff !important;}
-.priority_select option[value="low"] { background-color: #6C757D; color: #fff !important;}
+.priority_select option[value="4"] { background-color: #DC3545; color: #fff !important;}
+.priority_select option[value="3"] { background-color: #FD7E14; color: #fff !important;}
+.priority_select option[value="2"] { background-color: #0D6EFD; color: #fff !important;}
+.priority_select option[value="1"] { background-color: #6C757D; color: #fff !important;}
 
 
 .table_action {
