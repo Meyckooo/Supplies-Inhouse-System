@@ -1,44 +1,27 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // const purposeSelect = document.getElementById("purposeSelect");
-  // const subGroups = document.querySelectorAll(".sub_dropdown_group");
-
-  // if (purposeSelect) {
-  //   purposeSelect.addEventListener("change", (e) => {
-  //     const val = e.target.value;
-  //     subGroups.forEach((group) => (group.style.display = "none"));
-
-  //     if (val === "selling_marketing") {
-  //       document.getElementById("sub_selling_marketing").style.display = "flex";
-  //     } else if (val === "production") {
-  //       document.getElementById("sub_production").style.display = "flex";
-  //     } else if (val === "facilities_building") {
-  //       document.getElementById("sub_facilities_and_building").style.display = "flex";
-  //     } else if (val === "equipment_machinery") {
-  //       document.getElementById("sub_equipment_and_machinery").style.display = "flex";
-  //     } else if (val === "vehicle_fleet") {
-  //       document.getElementById("sub_vehicle_fleet").style.display = "flex";
-  //     } else if (val === "it_hardware") {
-  //       document.getElementById("sub_it_hardware").style.display = "flex";
-  //     }
-  //   });
-  // }
-
   // --- DYNAMIC DEPARTMENT & SECTION DROPDOWN LOGIC ---
   const departmentSelect = document.getElementById("departmentSelect");
   const sectionSelect = document.getElementById("sectionSelect");
 
-  if (departmentSelect && sectionSelect && typeof departmentSectionMap !== "undefined") {
+  if (
+    departmentSelect &&
+    sectionSelect &&
+    typeof departmentSectionMap !== "undefined"
+  ) {
     departmentSelect.addEventListener("change", (e) => {
       const selectedDept = e.target.value;
-      
+
       // Reset section dropdown options
-      sectionSelect.innerHTML = '<option value="" disabled selected>Select Section</option>';
-      
+      sectionSelect.innerHTML =
+        '<option value="" disabled selected>Select Section</option>';
+
       // Filter sections belonging to the selected department
-      const matches = departmentSectionMap.filter(item => item.odepartment_name === selectedDept);
-      
+      const matches = departmentSectionMap.filter(
+        (item) => item.odepartment_name === selectedDept,
+      );
+
       // Populate matching sections
-      matches.forEach(item => {
+      matches.forEach((item) => {
         if (item.osection) {
           const option = document.createElement("option");
           option.value = item.osection;
@@ -67,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const start = e.target.selectionStart;
       const end = e.target.selectionEnd;
       e.target.value = e.target.value.toUpperCase();
-      e.target.setSelectionRange(start, end); 
+      e.target.setSelectionRange(start, end);
     });
   }
 
@@ -149,6 +132,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     items.forEach((item) => {
+      // Check all possible price property variations returned by backend APIs
+      const itemPrice =
+        item.oprice !== undefined
+          ? item.oprice
+          : item.unit_price !== undefined
+            ? item.unit_price
+            : item.ounitprice !== undefined
+              ? item.ounitprice
+              : 0;
+
       const row = document.createElement("tr");
       row.innerHTML = `
                 <td class="text_center">
@@ -159,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
                            data-itemno="${item.oitemno || ""}" 
                            data-unit="${item.ounit || ""}" 
                            data-consignid="${item.oconsignid || 0}" 
-                           data-price="${item.oprice || 0}">
+                           data-price="${itemPrice}">
                 </td>
                 <td class="item_code_cell">${item.oitemcode || ""}</td>
                 <td>${item.obarcode || ""}</td>
@@ -209,7 +202,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       checkedBoxes.forEach((chk) => {
-        // Get current total rows count to use as index
         const currentIndex = mainTableBody.rows.length;
         const rowCount = currentIndex + 1;
 
@@ -222,10 +214,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const price = parseFloat(chk.dataset.price) || 0;
 
         const newRow = document.createElement("tr");
-        // Using explicit index brackets like items[0][item_code] so PHP receives array data properly
         newRow.innerHTML = `
             <td class="text_center row_number">${rowCount}</td>
-            <td>${code}<input type="hidden" name="items[${currentIndex}][item_code]" value="${code}"></td>
+            <td>
+                ${code}
+                <input type="hidden" name="items[${currentIndex}][detail_id]" value="">
+                <input type="hidden" name="items[${currentIndex}][item_code]" value="${code}">
+            </td>
             <td>${barcode}<input type="hidden" name="items[${currentIndex}][bar_code]" value="${barcode}"></td>
             <td>${desc}<input type="hidden" name="items[${currentIndex}][item_desc]" value="${desc}"></td>
             <td>${itemno}<input type="hidden" name="items[${currentIndex}][item_no]" value="${itemno}"></td>
@@ -248,8 +243,9 @@ document.addEventListener("DOMContentLoaded", () => {
         mainTableBody.appendChild(newRow);
       });
 
-      // Close modal after adding & recalculate totals
+      // Close modal after adding, re-index rows, & recalculate totals
       lookupItemModal.classList.remove("show");
+      updateRowNumbers();
       updateTotalAmount();
     });
   }
@@ -277,19 +273,26 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateTotalAmount() {
     let grandTotal = 0;
     const rows = mainTableBody.querySelectorAll("tr");
-    rows.forEach(row => {
+    rows.forEach((row) => {
       const priceCell = row.querySelector(".item_price");
       const qtyInput = row.querySelector(".item_qty");
       if (priceCell && qtyInput) {
-        const price = parseFloat(priceCell.textContent) || 0;
+        // Read price from hidden input inside price cell or fallback textContent
+        const priceInput = priceCell.querySelector("input[type='hidden']");
+        const price = priceInput
+          ? parseFloat(priceInput.value) || 0
+          : parseFloat(priceCell.textContent) || 0;
         const qty = parseInt(qtyInput.value) || 0;
         grandTotal += price * qty;
       }
     });
 
-    const totalInput = document.querySelector("input[value^='₱']");
+    // Target total input by ID (if configured) or fallback to selector matching peso sign
+    const totalInput =
+      document.getElementById("totalAmount") ||
+      document.querySelector("input[value^='₱']");
     if (totalInput) {
-      totalInput.value = `₱ ${grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      totalInput.value = `₱ ${grandTotal.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
   }
 
@@ -300,16 +303,21 @@ document.addEventListener("DOMContentLoaded", () => {
       if (numCell) {
         numCell.textContent = index + 1;
       }
-      
-      // Re-index input name attributes dynamically to keep array sequence intact if rows are removed
+
+      // Re-index input name attributes dynamically to keep array sequence intact
       const inputs = row.querySelectorAll("input, select");
-      inputs.forEach(input => {
+      inputs.forEach((input) => {
         const nameAttr = input.getAttribute("name");
         if (nameAttr) {
-          const updatedName = nameAttr.replace(/items\[\d+\]/, `items[${index}]`);
+          const updatedName = nameAttr.replace(
+            /items\[\d+\]/,
+            `items[${index}]`,
+          );
           input.setAttribute("name", updatedName);
         }
       });
     });
   }
+
+  updateTotalAmount();
 });
