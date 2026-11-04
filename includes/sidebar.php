@@ -122,6 +122,21 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
                             </li>
                         </ul>
                     </li>
+                    <!-- Nested Submenu  -->
+                    <li class="menu-item mb-1 has-submenu">
+                        <a href="javascript:void(0)"; class="menu-link d-flex align-items-center justify-content-between">
+                            <span>Supplies Adjustment</span>
+                            <span class="submenu-arrow">&#9662;</span>
+                        </a>
+                        <ul class="sub-menu list-unstyled ps-3 mt-2">
+                            <li class="menu-item mb-1">
+                                <a href="<?php echo BASE_URL; ?>views/ihsup_adjustment.php" class="menu-link">adjust</a>
+                            </li>
+                            <li class="menu-item mb-1">
+                                <a href="<?php echo BASE_URL; ?>views/supplies_receiving.php" class="menu-link">blank</a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </li>
         <?php endif; ?>
@@ -136,6 +151,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
                 </a>
             </li>
         <?php endif; ?>
+
 
         <li class="menu-item mb-2">
             <a href="<?php echo BASE_URL; ?>logout.php" class="sidebar_logout menu-link d-flex align-items-center justify-content-between">
