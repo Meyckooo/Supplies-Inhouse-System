@@ -100,12 +100,12 @@ $plateNumbers = $inhouseController->getPlateNumbers();
 
                                     <div class="form_group">
                                         <label>Company</label>
-                                        <input type="text" name="company" class="global_input has-value" value="<?php echo htmlspecialchars($defaultCompany); ?>" disabled placeholder="Auto" required>
+                                        <input type="text" name="company" class="global_input has-value" value="<?php echo htmlspecialchars($defaultCompany); ?>" readonly placeholder="Auto" required>
                                     </div>
 
                                     <div class="form_group">
                                         <label>Location</label>
-                                        <input type="text" name="location" class="global_input has-value" value="<?php echo htmlspecialchars($defaultLocation); ?>" disabled placeholder="Auto" required>
+                                        <input type="text" name="location" class="global_input has-value" value="<?php echo htmlspecialchars($defaultLocation); ?>" readonly placeholder="Auto" required>
                                     </div>
 
                                     <div class="form_group">
@@ -205,7 +205,7 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                         </select>
                                     </div>
 
-                                    <div class="form_group sub_dropdown_group" id="sub_it_and_hardware" style="display:none;">
+                                    <div class="form_group sub_dropdown_group" id="sub_it_hardware" style="display:none;">
                                         <label>Subpurpose<span class="required">*</span></label>
                                         <select name="sub_purpose" class="global_select">
                                             <option value="" disabled selected>Select</option>
@@ -250,7 +250,7 @@ $plateNumbers = $inhouseController->getPlateNumbers();
 
                                     <div class="form_group">
                                         <label>Post Date</label>
-                                        <input type="date" name="postDate" class="global_input has-value" value="<?php echo $currentPhDate; ?>" required>
+                                        <input type="date" name="postDate" class="global_input" value="<?php echo $currentPhDate; ?>" required>
                                     </div>
                                 </div>
 
