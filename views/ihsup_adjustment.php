@@ -86,179 +86,14 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                         <li><a class="global_back_btn" href="inhouse_requisition.php">← Back</a></li>
                     </ul>
                 </div>
-
-                <div class="global_form_wrapper">
-                    <div class="form_page_header">
-                        <h3 class="h3_repeat">Adjustments data </h3>
-                    </div>
-
                     <div class="form_body_content">
                         <form id="inhouseForm" action="../controller/inhouse_controller.php" method="POST" enctype="multipart/form-data">
                             <input type="hidden" name="otableid" value="<?php echo htmlspecialchars($otableId ?? ''); ?>">
-
-                            <div class="global_form_grid_sections">
-                                <!-- Section 1: General Details -->
-                                <div class="form_section_card">
-                                    <div class="section_title">General Details</div>
-
-                                    <div class="form_group">
-                                        <label>Company <span class="required">*</span></label>
-                                        <input type="text" name="company" class="global_input has-value" value="<?php echo htmlspecialchars($requisition['ocompany'] ?? $defaultCompany); ?>" readonly required>
-                                    </div>
-
-                                    <div class="form_group">
-                                        <label>Location <span class="required">*</span></label>
-                                        <input type="text" name="location" class="global_input has-value" value="<?php echo htmlspecialchars($requisition['olocation'] ?? $defaultLocation); ?>" readonly required>
-                                    </div>
-
-                                    <div class="form_group">
-                                        <label>Department <span class="required">*</span></label>
-                                        <select class="global_select has-value" id="departmentSelect" name="department" required disabled>
-                                            <option value="" disabled>Select Department</option>
-                                            <?php foreach ($departments as $dept): ?>
-                                                <?php if (!empty($dept)): ?>
-                                                    <option value="<?php echo htmlspecialchars($dept); ?>" <?php echo (($requisition['odepartment'] ?? '') === $dept) ? 'selected' : ''; ?>>
-                                                        <?php echo htmlspecialchars($dept); ?>
-                                                    </option>
-                                                <?php endif; ?>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-
-                                    <div class="form_group">
-                                        <label>Section <span class="required">*</span></label>
-                                        <select class="global_select has-value" id="sectionSelect" name="section" required disabled>
-                                            <option value="<?php echo htmlspecialchars($requisition['osection'] ?? ''); ?>" selected><?php echo htmlspecialchars($requisition['osection'] ?? 'Select Section'); ?></option>
-                                        </select>
-                                    </div>
-
-                                    <script>
-                                        const departmentSectionMap = <?php echo json_encode($deptRecords); ?>;
-                                    </script>
-
-                                  
-                                </div>
-
-                                <!-- Section 2: Purpose & Operations -->
-                                <div class="form_section_card">
-                                    <div class="section_title">Purpose & Operations</div>
-
-                                    <div class="form_group">
-                                        <label>Mode <span class="required">*</span></label>
-                                        <select class="global_select has-value" name="mode" required disabled>
-                                            <option value="" disabled>Select Mode</option>
-                                            <option value="pickup" <?php echo (($requisition['omode'] ?? '') === 'pickup') ? 'selected' : ''; ?>>Pick-up</option>
-                                            <option value="others" <?php echo (($requisition['omode'] ?? '') === 'others') ? 'selected' : ''; ?>>Pick-up & Delivery</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form_group">
-                                        <label>Purpose <span class="required">*</span></label>
-                                        <select class="global_select has-value" id="purposeSelect" name="purpose" required disabled>
-                                            <option value="" disabled>Select Purpose</option>
-                                            <?php
-                                            $purposes = [
-                                                'office_admin' => 'Office & Admin',
-                                                'handling_storage' => 'Handling & Storage Supplies',
-                                                'other_operational' => 'Other Operational Supplies',
-                                                'medical' => 'Medical Supplies',
-                                                'selling_marketing' => 'Selling & Marketing',
-                                                'facility_sanitation' => 'Facility Sanitation/ Upkeep & Janitorial',
-                                                'production' => 'Production',
-                                                'facilities_building' => 'Facilities & Building',
-                                                'equipment_machinery' => 'Equipment & Machinery',
-                                                'vehicle_fleet' => 'Vehicle & Fleet',
-                                                'it_hardware' => 'IT & Hardware',
-                                                'safety_ppe' => 'Safety & PPE (Personal Protective Equipment)'
-                                            ];
-                                            foreach ($purposes as $val => $label):
-                                            ?>
-                                                <option value="<?php echo $val; ?>" <?php echo (($requisition['opurpose'] ?? '') === $val) ? 'selected' : ''; ?>><?php echo $label; ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-
-                                    <div class="form_group">
-                                        <label>Sub-Purpose</label>
-                                        <input type="text" name="subPurpose" class="global_input has-value" readonly placeholder="None" value="<?php echo htmlspecialchars($requisition['osub_purpose'] ?? ''); ?>">
-                                    </div>
-
-                                    <div class="form_group">
-                                        <label>Approver <span class="required">*</span></label>
-                                        <select class="global_select" name="approverId" required>
-                                            <option value="" disabled>Select Approver</option>
-                                            <?php foreach ($approvers as $app): ?>
-                                                <option value="<?php echo htmlspecialchars($app['oapprover_id']); ?>" <?php echo ((string)($requisition['oapprover_id'] ?? '') === (string)$app['oapprover_id']) ? 'selected' : ''; ?>>
-                                                    <?php echo htmlspecialchars($app['oapprover_name']); ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-
-                                    <div class="form_group">
-                                        <label>Post Date <span class="required">*</span></label>
-                                        <input type="date" name="postDate" class="global_input has-value" value="<?php echo htmlspecialchars(substr($requisition['opostdate'] ?? $currentPhDate, 0, 10)); ?>" required disabled>
-                                    </div>
-                                </div>
-
-                                <!-- Section 3: Additional Details -->
-                                <div class="form_section_card">
-                                    <div class="section_title">Additional Details</div>
-
-                                    <div class="form_group">
-                                        <label>Requested By <span class="required">*</span></label>
-                                        <input type="text" name="postBy" class="global_input has-value" value="<?php echo htmlspecialchars($requisition['opostby'] ?? $currentUser); ?>" readonly required>
-                                    </div>
-
-                                    <div class="form_group">
-                                        <label>Priority Levels <span class="required">*</span></label>
-                                        <select class="global_select priority_select has-value" name="prioLvl" required disabled>
-                                            <option value="" disabled>Select Priority</option>
-                                            <option value="4" <?php echo ((int)($requisition['oprio_lvl'] ?? 0) === 4) ? 'selected' : ''; ?>>Urgent</option>
-                                            <option value="3" <?php echo ((int)($requisition['oprio_lvl'] ?? 0) === 3) ? 'selected' : ''; ?>>High</option>
-                                            <option value="2" <?php echo ((int)($requisition['oprio_lvl'] ?? 0) === 2) ? 'selected' : ''; ?>>Standard</option>
-                                            <option value="1" <?php echo ((int)($requisition['oprio_lvl'] ?? 0) === 1) ? 'selected' : ''; ?>>Low</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form_group">
-                                        <label>Plate Number / # <span class="required">*</span></label>
-                                        <select class="global_select has-value" name="plate_no" required disabled>
-                                            <option value="" disabled>Select Plate No.</option>
-                                            <?php foreach ($plateNumbers as $plate): ?>
-                                                <option value="<?php echo htmlspecialchars($plate['oplateno']); ?>" <?php echo (($requisition['oplate_no'] ?? '') === $plate['oplateno']) ? 'selected' : ''; ?>>
-                                                    <?php echo htmlspecialchars($plate['oplateno']); ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-
-                                    <div class="form_group">
-                                        <label>Odometer <span class="required">*</span></label>
-                                        <input type="number" name="odometer" class="global_input has-value" value="<?php echo htmlspecialchars($requisition['odometer'] ?? ''); ?>" required disabled>
-                                    </div>
-
-                                    <div class="form_group">
-                                        <label>Total Amount</label>
-                                        <input type="text" id="totalAmount" name="totalAmount" class="global_input has-value" value="₱ 0.00" readonly>
-                                    </div>
-                                </div>
-
-                                <!-- Section 4: Instructions -->
-                                <div class="form_section_card full_width_card">
-                                    <div class="section_title">Instructions</div>
-                                    <div class="form_group delivery_instruct full_width">
-                                        <label>Delivery Instructions <span class="required">*</span></label>
-                                        <textarea name="remarks" class="global_textarea" rows="3" placeholder="Enter delivery instructions..."><?php echo htmlspecialchars($requisition['oremarks'] ?? $requisition['remarks'] ?? ''); ?></textarea>
-                                    </div>
-                                </div>
-                            </div>
-
                             <!-- Added Item Table -->
                             <div class="inhouse_requisition_child_tbl global_display_table_wrapper" style="margin-top: 20px;">
                                 <div class="table_action">
                                     <h2 class="h3_repeat">Edit Added Item</h2>
-                                    <button type="button" class="global_add_btn">+ Add Item</button>
+                                    <!-- <button type="button" class="global_add_btn">+ Add Item</button> -->
                                 </div>
 
                                 <div class="global_display_table_container">
@@ -266,16 +101,14 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                         <thead>
                                             <tr>
                                                 <th class="text_center" style="width: 60px;">#</th>
-                                                <th>Item Code</th>
-                                                <th>Barcode</th>
-                                                <th>Item Description</th>
-                                                <th>Item No</th>
-                                                <th>Concession ID</th>
-                                                <th>Unit Price</th>
-                                                <th>UOM</th>
-                                                <th>Type</th>
-                                                <th>Status</th>
-                                                <th>Req Qty</th>
+                                                <th>created date</th>
+                                                <th>ctrl No</th>
+                                                <th>type</th>
+                                                <th>ref no</th>
+                                                <th>remarks</th>
+                                                <th>created by</th>
+                                                <th>modified date</th>
+                                                <th>reason</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -345,14 +178,6 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                             </div>
                         </form>
                     </div>
-                </div>
-
-                <!-- Form Footer Actions -->
-                <div class="form_footer_actions">
-                    <a href="inhouse_requisition.php" class="global_btn_cancel"><span>Cancel</span></a>
-                    <button type="submit" form="inhouseForm" name="action" value="update" class="global_btn_submit"><span>Update</span></button>
-                </div>
-
             </div>
         </div>
     </div>
