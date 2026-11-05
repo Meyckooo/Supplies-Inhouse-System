@@ -195,6 +195,7 @@ class InhouseController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'cancel') {
             $otableId = $_POST['otableid'] ?? null;
+            $cancelReason = $_POST['cancel_reason'] ?? ''; // Capture the reason from SweetAlert textarea input
             $cancelBy = $_SESSION['user_name'] ?? 'System';
 
             if (!$otableId) {
@@ -205,7 +206,7 @@ class InhouseController
 
             try {
                 $model = new InhouseModel($this->dbConn);
-                $success = $model->cancelInhouseRequest($otableId, $cancelBy);
+                $success = $model->cancelInhouseRequest($otableId, $cancelBy, $cancelReason);
 
                 if ($success) {
                     $_SESSION['success_message'] = "Requisition cancelled successfully!";
@@ -230,10 +231,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['header_id'])) {
     $controller = new InhouseController($dbConn);
 
     try {
+        $header = $controller->getHeaderById($headerId);
         $details = $controller->getInhouseDetails($headerId);
-        echo json_encode(['success' => true, 'data' => $details]);
+
+        echo json_encode([
+            'success' => true,
+            'header' => $header,
+            'data' => $details
+        ]);
     } catch (Exception $e) {
-        echo json_encode(['success' => false, 'error' => $e->getMessage(), 'data' => []]);
+        echo json_encode(['success' => false, 'error' => $e->getMessage(), 'header' => null, 'data' => []]);
     }
     exit();
 }
