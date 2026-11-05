@@ -332,7 +332,7 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                                         </td>
                                                         <td><?php echo htmlspecialchars($item['ostatus'] ?? 'SUPPLIES'); ?></td>
                                                         <td class="text_right">
-                                                            <input type="number" name="items[<?php echo $index; ?>][qty]" class="global_input item_qty" value="<?php echo htmlspecialchars($item['oreq_qty'] ?? 1); ?>" min="1" style="width: 80px;" required>
+                                                            <input type="number" name="items[<?php echo $index; ?>][qty]" class="global_input item_qty" value="<?php echo htmlspecialchars($item['oreq_qty'] ?? 1); ?>" min="1" style="width: 100%;" required>
                                                         </td>
                                                         <td class="text_center">
                                                             <button type="button" class="btn btn-danger btn-sm remove_item_btn" style="padding: 2px 8px; font-size: 12px;">×</button>
