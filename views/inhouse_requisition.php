@@ -87,7 +87,7 @@ $headers = $inhouseController->getInhouseHeader();
                                 </select>
                             </div>
 
-                            <div class="date_picker_container">
+                            <!-- <div class="date_picker_container">
                                 <button type="button" class="date_picker_trigger" id="datePickerBtn">
                                     <figure><img src="<?php echo $base_path ?>assets/images/icon/calendar.png" alt="calendar"></figure>
                                     <span id="selectedDateRangeText">Select Date</span>
@@ -103,15 +103,15 @@ $headers = $inhouseController->getInhouseHeader();
                                         <button type="button" class="nav_btn" id="nextMonthBtn">&gt;</button>
                                     </div>
 
-                                    <div class="calendar_grid" id="calendarGrid">
+                                    <div class="calendar_grid" id="calendarGrid"> -->
                                         <!-- Rendered Dynamically via JS -->
-                                    </div>
+                                    <!-- </div>
 
                                     <div class="calendar_footer">
                                         <button type="button" class="btn_clear" id="btnClearDate">Clear</button>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
 
                         <div class="filter_group right">
@@ -177,7 +177,7 @@ $headers = $inhouseController->getInhouseHeader();
                                             <td class="action_cell global-floating-action">
                                                 <a href="inhouse_requisition_edit.php?otableid=<?php echo htmlspecialchars($row['otableid']); ?>" class="btn-tool-tip btn_edit"><span>Edit</span></a>
                                                 <a href="inhouse_requisition_view.php?otableid=<?php echo htmlspecialchars($row['otableid']); ?>" class="btn-tool-tip btn_view"><span>View</span></a>
-                                                <a class="btn-tool-tip btn_print"><span>Print</span></a>
+                                                <a href="#" data-otableid="<?php echo htmlspecialchars($row['otableid']); ?>" class="btn-tool-tip btn_print btn_direct_print"><span>Print</span></a>
 
                                                 <!-- Cancel Form & Trigger Button -->
                                                 <form action="../controller/inhouse_controller.php" method="POST" class="cancel-form">
@@ -234,6 +234,10 @@ $headers = $inhouseController->getInhouseHeader();
     <script src="<?php echo $base_path ?>assets/js/inhouse_requisition.js"></script>
     <script src="<?php echo $base_path ?>assets/js/sidebar_button.js"></script>
     <script src="<?php echo $base_path ?>assets/js/ph_time.js"></script>
+    <script src="<?php echo $base_path ?>assets/js/print.js"></script>
+    <script>
+        window.currentUsername = "<?php echo htmlspecialchars($_SESSION['user_name'] ?? 'ADMIN', ENT_QUOTES); ?>";
+    </script>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -244,19 +248,39 @@ $headers = $inhouseController->getInhouseHeader();
                     const form = this.closest("form");
 
                     Swal.fire({
-                        title: 'Are you sure?',
-                        text: "Do you want to cancel this requisition?",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Yes, cancel it!',
-                        cancelButtonText: 'No, keep it'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            form.submit();
-                        }
-                    });
+                            title: 'Cancel Requisition',
+                            text: "Please provide a reason for canceling this requisition.",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            input: 'textarea',
+                            inputPlaceholder: 'Enter reason for cancellation',
+                            inputValidator: (value) => {
+                                if (!value) {
+                                    return 'You need to enter a reason for cancellation';
+                                }
+                            },
+                            reverseButtons: true,
+                            cancelButtonColor: '#8b8e91',
+                            confirmButtonColor: '#d33',
+                            confirmButtonText: 'Confirm',
+                            cancelButtonText: 'Cancel'
+                        })
+                        .then((result) => {
+                            if (result.isConfirmed) {
+                                const cancelReason = result.value;
+
+                                let reasonInput = form.querySelector('input[name="cancel_reason"]');
+                                if (!reasonInput) {
+                                    reasonInput = document.createElement('input');
+                                    reasonInput.type = 'hidden';
+                                    reasonInput.name = 'cancel_reason';
+                                    form.appendChild(reasonInput);
+                                }
+                                reasonInput.value = cancelReason;
+
+                                form.submit();
+                            }
+                        });
                 });
             });
 
