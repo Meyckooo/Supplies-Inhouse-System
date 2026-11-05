@@ -89,7 +89,7 @@ $headers = $inhouseController->getInhouseHeader();
 
                             <!-- <div class="date_picker_container">
                                 <button type="button" class="date_picker_trigger" id="datePickerBtn">
-                                    <figure><img src="<?php echo $base_path ?>assets/images/icon/calendar.png" alt="calendar"></figure>
+                                    <figure><img src="<!?php echo $base_path ?>assets/images/icon/calendar.png" alt="calendar"></figure>
                                     <span id="selectedDateRangeText">Select Date</span>
                                 </button>
 
@@ -104,8 +104,8 @@ $headers = $inhouseController->getInhouseHeader();
                                     </div>
 
                                     <div class="calendar_grid" id="calendarGrid"> -->
-                                        <!-- Rendered Dynamically via JS -->
-                                    <!-- </div>
+                            <!-- Rendered Dynamically via JS -->
+                            <!-- </div>
 
                                     <div class="calendar_footer">
                                         <button type="button" class="btn_clear" id="btnClearDate">Clear</button>
@@ -139,7 +139,12 @@ $headers = $inhouseController->getInhouseHeader();
                             <tbody>
                                 <?php if (!empty($headers)): ?>
                                     <?php foreach ($headers as $row): ?>
-                                        <tr data-header-id="<?php echo htmlspecialchars($row['otableid']); ?>">
+                                        <?php
+                                        $ostatus = (int)($row['ostatus'] ?? 0);
+                                        $isCancelled = ($ostatus === 3);
+                                        $rowClass = $isCancelled ? 'row_cancelled' : '';
+                                        ?>
+                                        <tr data-header-id="<?php echo htmlspecialchars($row['otableid']); ?>" class="<?php echo $rowClass; ?>">
                                             <td><?php echo str_pad($row['otableid'], 3, '0', STR_PAD_LEFT); ?></td>
                                             <td><?php echo htmlspecialchars($row['odate_need'] ?? ''); ?></td>
                                             <td><?php echo htmlspecialchars($row['odepartment'] ?? ''); ?></td>
@@ -175,15 +180,15 @@ $headers = $inhouseController->getInhouseHeader();
                                                 ?>
                                             </td>
                                             <td class="action_cell global-floating-action">
-                                                <a href="inhouse_requisition_edit.php?otableid=<?php echo htmlspecialchars($row['otableid']); ?>" class="btn-tool-tip btn_edit"><span>Edit</span></a>
+                                                <a href="inhouse_requisition_edit.php?otableid=<?php echo htmlspecialchars($row['otableid']); ?>" class="btn-tool-tip btn_edit <?php echo $isCancelled ? 'disabled_action' : ''; ?>"><span>Edit</span></a>
                                                 <a href="inhouse_requisition_view.php?otableid=<?php echo htmlspecialchars($row['otableid']); ?>" class="btn-tool-tip btn_view"><span>View</span></a>
-                                                <a href="#" data-otableid="<?php echo htmlspecialchars($row['otableid']); ?>" class="btn-tool-tip btn_print btn_direct_print"><span>Print</span></a>
+                                                <a href="#" data-otableid="<?php echo htmlspecialchars($row['otableid']); ?>" class="btn-tool-tip btn_print btn_direct_print <?php echo $isCancelled ? 'disabled_action' : ''; ?>"><span>Print</span></a>
 
                                                 <!-- Cancel Form & Trigger Button -->
-                                                <form action="../controller/inhouse_controller.php" method="POST" class="cancel-form">
+                                                <form action="../controller/inhouse_controller.php" method="POST" class="cancel-form" style="display:inline;">
                                                     <input type="hidden" name="action" value="cancel">
                                                     <input type="hidden" name="otableid" value="<?php echo htmlspecialchars($row['otableid']); ?>">
-                                                    <button type="button" class="btn-tool-tip btn_cancel btn_cancel_request"><span>Cancel</span></button>
+                                                    <button type="button" class="btn-tool-tip btn_cancel btn_cancel_request <?php echo $isCancelled ? 'disabled_action' : ''; ?>" <?php echo $isCancelled ? 'disabled' : ''; ?>><span>Cancel</span></button>
                                                 </form>
                                             </td>
                                         </tr>
