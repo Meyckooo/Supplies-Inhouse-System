@@ -378,16 +378,17 @@ class InhouseModel
         }
     }
 
-    public function cancelInhouseRequest(string $otableId, string $cancelBy): bool
+    public function cancelInhouseRequest(string $otableId, string $cancelBy, string $cancelReason): bool
     {
         $query = "UPDATE tbl_ihsup_header SET 
                     ostatus = 3, 
                     ocancelby = ?, 
-                    ocanceldate = NOW() 
+                    ocanceldate = NOW(),
+                    ocancelreason = ? 
                   WHERE otableid = ?";
 
         if ($stmt = $this->db->prepare($query)) {
-            $stmt->bind_param("si", $cancelBy, $otableId);
+            $stmt->bind_param("ssi", $cancelBy, $cancelReason, $otableId);
             $success = $stmt->execute();
             $stmt->close();
             return $success;
