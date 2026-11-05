@@ -332,7 +332,7 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                                         </td>
                                                         <td><?php echo htmlspecialchars($item['ostatus'] ?? 'SUPPLIES'); ?></td>
                                                         <td class="text_right">
-                                                            <input type="number" name="items[<?php echo $index; ?>][qty]" class="global_input item_qty" value="<?php echo htmlspecialchars($item['oreq_qty'] ?? 1); ?>" min="1" style="width: 80px;" required>
+                                                            <input type="number" name="items[<?php echo $index; ?>][qty]" class="global_input item_qty" value="<?php echo htmlspecialchars($item['oreq_qty'] ?? 1); ?>" min="1" style="width: 100%;" required>
                                                         </td>
                                                         <td class="text_center">
                                                             <button type="button" class="btn btn-danger btn-sm remove_item_btn" style="padding: 2px 8px; font-size: 12px;">×</button>
@@ -426,6 +426,7 @@ $plateNumbers = $inhouseController->getPlateNumbers();
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const inhouseForm = document.getElementById('inhouseForm');
+            const postBtn = document.querySelector('.ir_btn_submit');
 
             if (inhouseForm) {
                 inhouseForm.addEventListener('submit', function(e) {
@@ -444,7 +445,50 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                 });
             }
 
-            // --- AUTO-TRIGGER SWEETALERT FOR CONTROLLER SESSION MESSAGES ---
+            if (postBtn && inhouseForm) {
+                postBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    const itemRows = document.querySelectorAll('.ir_add_display_tbl tbody tr:not(.no_items_row)');
+                    if (itemRows.length === 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'No Items Added',
+                            text: 'Add Items First.',
+                            confirmButtonText: 'OK'
+                        });
+                        return;
+                    }
+
+                    Swal.fire({
+                        title: 'Post Requisition?',
+                        text: "You cannot edit/cancel after Posted.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        reverseButtons: true,
+                        cancelButtonColor: '#8b8e91',
+                        confirmButtonColor: '#28a745',
+                        confirmButtonText: 'POST',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            let actionInput = inhouseForm.querySelector('input[name="action"][value="post"]');
+                            if (!actionInput) {
+                                actionInput = document.createElement('input');
+                                actionInput.type = 'hidden';
+                                actionInput.name = 'action';
+                                actionInput.value = 'post';
+                                inhouseForm.appendChild(actionInput);
+                            } else {
+                                actionInput.value = 'post';
+                            }
+
+                            inhouseForm.submit();
+                        }
+                    });
+                });
+            }
+
             <?php if (isset($_SESSION['success_message'])): ?>
                 Swal.fire({
                     icon: 'success',

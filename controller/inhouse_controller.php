@@ -159,8 +159,9 @@ class InhouseController
 
     public function updateRequest(): void
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update') {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && in_array($_POST['action'], ['update', 'post'])) {
             $otableId = $_POST['otableid'] ?? null;
+            $action = $_POST['action'];
 
             if (!$otableId) {
                 $_SESSION['error_message'] = "Invalid Requisition ID.";
@@ -173,6 +174,11 @@ class InhouseController
                 'remarks'    => $_POST['remarks'] ?? null
             ];
 
+            // If action is post, explicitly set ostatus to 1 (To Approved / Posted)
+            if ($action === 'post') {
+                $headerData['ostatus'] = 1;
+            }
+
             $detailsData = $_POST['items'] ?? [];
 
             try {
@@ -180,13 +186,17 @@ class InhouseController
                 $success = $model->updateInhouseRequest($otableId, $headerData, $detailsData);
 
                 if ($success) {
-                    $_SESSION['success_message'] = "Requisition updated successfully!";
+                    $_SESSION['success_message'] = ($action === 'post')
+                        ? "Requisition posted successfully!"
+                        : "Requisition updated successfully!";
                 }
             } catch (Exception $e) {
                 $_SESSION['error_message'] = "Error: " . $e->getMessage();
+                header("Location: ../views/inhouse_requisition_edit.php?otableid=" . urlencode($otableId));
+                exit();
             }
 
-            header("Location: ../views/inhouse_requisition_edit.php?otableid=" . urlencode($otableId));
+            header("Location: ../views/inhouse_requisition.php");
             exit();
         }
     }
@@ -252,7 +262,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $dbConn = getDBConnection();
     $controller = new InhouseController($dbConn);
 
-    if ($_POST['action'] === 'update') {
+    if ($_POST['action'] === 'update' || $_POST['action'] === 'post') {
         $controller->updateRequest();
     } elseif ($_POST['action'] === 'cancel') {
         $controller->cancelRequest();
