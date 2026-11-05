@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-  //* DOM Elements *//
+  
+  //* DOM Elements CALENDAR *//
   const datePickerBtn = document.getElementById("datePickerBtn");
   const calendarDropdown = document.getElementById("calendarDropdown");
   const selectedDateRangeText = document.getElementById(
@@ -197,6 +198,57 @@ document.addEventListener("DOMContentLoaded", () => {
 
     return dayDiv;
   }
+
+  // --- TABLE HEADER SORTING FUNCTIONALITY WITH ICONS ---
+  const tableHeaders = document.querySelectorAll(".global_table thead th");
+  
+  tableHeaders.forEach((th, index) => {
+    if (th.classList.contains("global-floating-action")) return;
+
+    th.style.cursor = "pointer";
+    th.style.userSelect = "none";
+    
+    const originalText = th.textContent.trim();
+    th.innerHTML = `${originalText} <span class="sort-icon" style="opacity: 0.5; margin-left: 5px; font-size: 11px;">↕</span>`;
+
+    let ascending = true;
+
+    th.addEventListener("click", () => {
+      const tbody = document.querySelector(".global_table tbody");
+      const rows = Array.from(tbody.querySelectorAll("tr[data-header-id]"));
+
+      if (rows.length === 0) return;
+
+      tableHeaders.forEach(otherTh => {
+        if (otherTh !== th && !otherTh.classList.contains("global-floating-action")) {
+          const txt = otherTh.textContent.replace(/[↕▲▼]/g, "").trim();
+          otherTh.innerHTML = `${txt} <span class="sort-icon" style="opacity: 1; margin-left: 5px; font-size: 11px;">↕</span>`;
+        }
+      });
+
+      rows.sort((rowA, rowB) => {
+        const cellA = rowA.querySelectorAll("td")[index]?.textContent.trim() || "";
+        const cellB = rowB.querySelectorAll("td")[index]?.textContent.trim() || "";
+
+        const numA = parseFloat(cellA.replace(/[^0-9.-]+/g, ""));
+        const numB = parseFloat(cellB.replace(/[^0-9.-]+/g, ""));
+
+        if (!isNaN(numA) && !isNaN(numB) && cellA !== "" && cellB !== "") {
+          return ascending ? numA - numB : numB - numA;
+        }
+
+        return ascending 
+          ? cellA.localeCompare(cellB, undefined, { numeric: true, sensitivity: 'base' }) 
+          : cellB.localeCompare(cellA, undefined, { numeric: true, sensitivity: 'base' });
+      });
+
+      th.innerHTML = `${originalText} <span class="sort-icon" style="margin-left: 5px; font-size: 11px; color: var(--White);">${ascending ? '▲' : '▼'}</span>`;
+
+      ascending = !ascending;
+
+      rows.forEach(row => tbody.appendChild(row));
+    });
+  });
 
   // --- TABLE SEARCH & FILTER LOGIC WITH DEBOUNCE ---
   let searchTimeout;
@@ -396,6 +448,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   headerRows.forEach((row) => {
     row.addEventListener("click", () => {
+      if (row.classList.contains("row_cancelled")) return;
       headerRows.forEach((r) => r.classList.remove("selected_row"));
       row.classList.add("selected_row");
 
