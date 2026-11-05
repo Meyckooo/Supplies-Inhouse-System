@@ -180,15 +180,32 @@ $headers = $inhouseController->getInhouseHeader();
                                                 ?>
                                             </td>
                                             <td class="action_cell global-floating-action">
-                                                <a href="inhouse_requisition_edit.php?otableid=<?php echo htmlspecialchars($row['otableid']); ?>" class="btn-tool-tip btn_edit <?php echo $isCancelled ? 'disabled_action' : ''; ?>"><span>Edit</span></a>
+                                                <!-- Edit Button -->
+                                                <a href="inhouse_requisition_edit.php?otableid=<?php echo htmlspecialchars($row['otableid']); ?>"
+                                                    class="btn-tool-tip btn_edit <?php echo $isCancelled ? 'disabled_action' : ''; ?>"
+                                                    data-ostatus="<?php echo htmlspecialchars($row['ostatus']); ?>">
+                                                    <span>Edit</span>
+                                                </a>
+
+                                                <!-- View Button -->
                                                 <a href="inhouse_requisition_view.php?otableid=<?php echo htmlspecialchars($row['otableid']); ?>" class="btn-tool-tip btn_view"><span>View</span></a>
-                                                <a href="#" data-otableid="<?php echo htmlspecialchars($row['otableid']); ?>" class="btn-tool-tip btn_print btn_direct_print <?php echo $isCancelled ? 'disabled_action' : ''; ?>"><span>Print</span></a>
+
+                                                <!-- Print Button -->
+                                                <a href="#" data-otableid="<?php echo htmlspecialchars($row['otableid']); ?>"
+                                                    class="btn-tool-tip btn_print btn_direct_print <?php echo $isCancelled ? 'disabled_action' : ''; ?>">
+                                                    <span>Print</span>
+                                                </a>
 
                                                 <!-- Cancel Form & Trigger Button -->
                                                 <form action="../controller/inhouse_controller.php" method="POST" class="cancel-form" style="display:inline;">
                                                     <input type="hidden" name="action" value="cancel">
                                                     <input type="hidden" name="otableid" value="<?php echo htmlspecialchars($row['otableid']); ?>">
-                                                    <button type="button" class="btn-tool-tip btn_cancel btn_cancel_request <?php echo $isCancelled ? 'disabled_action' : ''; ?>" <?php echo $isCancelled ? 'disabled' : ''; ?>><span>Cancel</span></button>
+                                                    <button type="button"
+                                                        class="btn-tool-tip btn_cancel btn_cancel_request <?php echo $isCancelled ? 'disabled_action' : ''; ?>"
+                                                        data-ostatus="<?php echo htmlspecialchars($row['ostatus']); ?>"
+                                                        <?php echo $isCancelled ? 'disabled' : ''; ?>>
+                                                        <span>Cancel</span>
+                                                    </button>
                                                 </form>
                                             </td>
                                         </tr>
@@ -246,10 +263,47 @@ $headers = $inhouseController->getInhouseHeader();
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // Attach SweetAlert confirmation prompt to all cancel buttons
+            document.querySelectorAll(".btn_edit").forEach(button => {
+                button.addEventListener("click", function(e) {
+                    const ostatus = parseInt(this.getAttribute("data-ostatus") || 0);
+
+                    if (ostatus !== 2) {
+                        e.preventDefault();
+                        let message = 'Already Posted';
+                        if (ostatus === 3) {
+                            message = 'This requisition is cancelled and cannot be edited.';
+                        }
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Action Denied',
+                            text: message,
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            });
+
             document.querySelectorAll(".btn_cancel_request").forEach(button => {
                 button.addEventListener("click", function(e) {
                     e.preventDefault();
+                    const ostatus = parseInt(this.getAttribute("data-ostatus") || 0);
+
+                    if (ostatus !== 2) {
+                        let message = 'Already Posted';
+                        if (ostatus === 3) {
+                            message = 'This requisition is already cancelled.';
+                        }
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Action Denied',
+                            text: message,
+                            confirmButtonText: 'OK'
+                        });
+                        return;
+                    }
+
                     const form = this.closest("form");
 
                     Swal.fire({

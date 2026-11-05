@@ -46,8 +46,6 @@ class InhouseModel
         $stmt->close();
         return $details;
     }
-
-    // public function addInhouseRequestHeader(array $data): int | false
     
     public function addInhouseRequestHeader(array $data)
     {
@@ -195,7 +193,6 @@ class InhouseModel
         throw new Exception("Prepare failed for details: " . $this->db->error);
     }
 
-
     public function getCurrentCompany(): array
     {
         $query = "SELECT * FROM tbl_ihsup_location";
@@ -263,24 +260,30 @@ class InhouseModel
         $this->db->begin_transaction();
 
         try {
-            // 1. Update Header Details
-            $headerQuery = "UPDATE tbl_ihsup_header SET 
-                                oapprover_id = ?, 
-                                oremarks = ? 
-                            WHERE otableid = ?";
+            // 1. Update Header Details dynamically including ostatus if set
+            $approverId = isset($headerData['approverId']) ? (int)$headerData['approverId'] : null;
+            $remarks = $headerData['remarks'] ?? null;
+            $hasStatus = isset($headerData['ostatus']);
 
-            if ($stmt = $this->db->prepare($headerQuery)) {
-                $approverId = isset($headerData['approverId']) ? (int)$headerData['approverId'] : null;
-                $remarks = $headerData['remarks'] ?? null;
-
+            if ($hasStatus) {
+                $ostatus = (int)$headerData['ostatus'];
+                $headerQuery = "UPDATE tbl_ihsup_header SET oapprover_id = ?, oremarks = ?, ostatus = ? WHERE otableid = ?";
+                $stmt = $this->db->prepare($headerQuery);
+                $stmt->bind_param("isii", $approverId, $remarks, $ostatus, $otableId);
+            } else {
+                $headerQuery = "UPDATE tbl_ihsup_header SET oapprover_id = ?, oremarks = ? WHERE otableid = ?";
+                $stmt = $this->db->prepare($headerQuery);
                 $stmt->bind_param("isi", $approverId, $remarks, $otableId);
+            }
+
+            if ($stmt) {
                 $stmt->execute();
                 $stmt->close();
             } else {
                 throw new Exception("Prepare failed for header update: " . $this->db->error);
             }
 
-            // 2. Delete database detail rows that were removed from the UI table (via '×' button)
+            // 2. Delete database detail rows that were removed from the UI table
             $submittedDetailIds = [];
             if (!empty($detailsData)) {
                 foreach ($detailsData as $item) {
@@ -302,7 +305,6 @@ class InhouseModel
                     $delStmt->close();
                 }
             } else {
-                // If all items were removed from the UI
                 $deleteAllSql = "DELETE FROM tbl_ihsup_details WHERE oparentid = ?";
                 if ($delAllStmt = $this->db->prepare($deleteAllSql)) {
                     $parentIdInt = (int)$otableId;
@@ -312,7 +314,7 @@ class InhouseModel
                 }
             }
 
-            // Process Details (Update existing or Insert new)
+            // 3. Process Details (Update existing or Insert new)
             if (!empty($detailsData)) {
                 foreach ($detailsData as $item) {
                     $detailId   = isset($item['detail_id']) && !empty($item['detail_id']) ? (int)$item['detail_id'] : null;
@@ -326,13 +328,11 @@ class InhouseModel
                     $unitPrice  = isset($item['unit_price']) ? (float)$item['unit_price'] : 0.00;
                     $conId      = isset($item['consign_id']) ? (int)$item['consign_id'] : null;
 
-                    // Map string type to integer (SUPPLIES = 1, INHOUSE = 2, PRNT = 3)
                     $rawType    = $item['type'] ?? 'SUPPLIES';
                     $typeMap    = ['SUPPLIES' => 1, 'INHOUSE' => 2, 'PRNT' => 3];
                     $type       = is_numeric($rawType) ? (int)$rawType : ($typeMap[strtoupper($rawType)] ?? 1);
 
                     if ($detailId) {
-                        // Update existing detail row by its unique primary key 
                         $updateDetailSql = "UPDATE tbl_ihsup_details SET 
                                             oreq_qty = ?, ounitprice = ?, otype = ? 
                                             WHERE otableid = ? AND oparentid = ?";
@@ -344,7 +344,6 @@ class InhouseModel
                             throw new Exception("Prepare failed for detail update: " . $this->db->error);
                         }
                     } else {
-                        // Insert new item 
                         $insertDetailSql = "INSERT INTO tbl_ihsup_details (
                             oparentid, oitemcode, obarcode, oitemdesc, oitemno, 
                             ounit, oreq_qty, ounitprice, ocon_id, otype
