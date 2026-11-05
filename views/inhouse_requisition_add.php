@@ -287,8 +287,8 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                                     </div>
 
                                     <div class="form_group">
-                                        <label>Odometer</label>
-                                        <input type="number" name="odometer" class="global_input" value="">
+                                        <label>Odometer *</label>
+                                        <input type="number" name="odometer" class="global_input" value="0" min="0" >
                                     </div>
 
                                     <div class="form_group">
@@ -421,7 +421,7 @@ $plateNumbers = $inhouseController->getPlateNumbers();
                     const itemRows = document.querySelectorAll('.ir_add_display_tbl tbody tr');
 
                     if (itemRows.length === 0) {
-                        e.preventDefault(); 
+                        e.preventDefault();
 
                         Swal.fire({
                             icon: 'warning',

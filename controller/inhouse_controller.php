@@ -71,7 +71,7 @@ class InhouseController
                 'prioLvl' => isset($formData['prioLvl']) ? (int)$formData['prioLvl'] : 2,
                 'subPurpose' => $formData['sub_purpose'] ?? '',
                 'plateNo' => $formData['plate_no'] ?? null,
-                'odometer' => isset($formData['odometer']) ? (int)$formData['odometer'] : null,
+                'odometer' => isset($formData['odometer']) && $formData['odometer'] !== '' ? (int)$formData['odometer'] : 0,
                 'attachment' => $attachmentName,
             ];
 
@@ -190,6 +190,34 @@ class InhouseController
             exit();
         }
     }
+
+    public function cancelRequest(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'cancel') {
+            $otableId = $_POST['otableid'] ?? null;
+            $cancelBy = $_SESSION['user_name'] ?? 'System';
+
+            if (!$otableId) {
+                $_SESSION['error_message'] = "Invalid Requisition ID for cancellation.";
+                header("Location: ../views/inhouse_requisition.php");
+                exit();
+            }
+
+            try {
+                $model = new InhouseModel($this->dbConn);
+                $success = $model->cancelInhouseRequest($otableId, $cancelBy);
+
+                if ($success) {
+                    $_SESSION['success_message'] = "Requisition cancelled successfully!";
+                }
+            } catch (Exception $e) {
+                $_SESSION['error_message'] = "Cancellation Error: " . $e->getMessage();
+            }
+
+            header("Location: ../views/inhouse_requisition.php");
+            exit();
+        }
+    }
 }
 
 // --- AJAX DETAILS ENDPOINT HANDLER ---
@@ -218,10 +246,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $controller = new InhouseController($dbConn);
 
     if ($_POST['action'] === 'update') {
-        // Route to update method
         $controller->updateRequest();
+    } elseif ($_POST['action'] === 'cancel') {
+        $controller->cancelRequest();
     } else {
-        // Route to add/save method
         $success = $controller->addInhouseRequest($_POST, $_FILES);
 
         if ($success) {

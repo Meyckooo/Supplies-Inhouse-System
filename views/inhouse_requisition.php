@@ -159,7 +159,7 @@ $headers = $inhouseController->getInhouseHeader();
                                                         echo '<span class="global_status status_pending">Saved</span>';
                                                         break;
                                                     case 3:
-                                                        echo '<span class="global_status status_cancelled">Cancelled</span>';
+                                                        echo '<span class="global_status status_deleted">Cancelled</span>';
                                                         break;
                                                     case 4:
                                                         echo '<span class="global_status status_save_approved">Saved Approved</span>';
@@ -178,7 +178,13 @@ $headers = $inhouseController->getInhouseHeader();
                                                 <a href="inhouse_requisition_edit.php?otableid=<?php echo htmlspecialchars($row['otableid']); ?>" class="btn-tool-tip btn_edit"><span>Edit</span></a>
                                                 <a href="inhouse_requisition_view.php?otableid=<?php echo htmlspecialchars($row['otableid']); ?>" class="btn-tool-tip btn_view"><span>View</span></a>
                                                 <a class="btn-tool-tip btn_print"><span>Print</span></a>
-                                                <a class="btn-tool-tip btn_cancel"><span>Cancel</span></a>
+
+                                                <!-- Cancel Form & Trigger Button -->
+                                                <form action="../controller/inhouse_controller.php" method="POST" class="cancel-form">
+                                                    <input type="hidden" name="action" value="cancel">
+                                                    <input type="hidden" name="otableid" value="<?php echo htmlspecialchars($row['otableid']); ?>">
+                                                    <button type="button" class="btn-tool-tip btn_cancel btn_cancel_request"><span>Cancel</span></button>
+                                                </form>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -228,6 +234,58 @@ $headers = $inhouseController->getInhouseHeader();
     <script src="<?php echo $base_path ?>assets/js/inhouse_requisition.js"></script>
     <script src="<?php echo $base_path ?>assets/js/sidebar_button.js"></script>
     <script src="<?php echo $base_path ?>assets/js/ph_time.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Attach SweetAlert confirmation prompt to all cancel buttons
+            document.querySelectorAll(".btn_cancel_request").forEach(button => {
+                button.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    const form = this.closest("form");
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "Do you want to cancel this requisition?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, cancel it!',
+                        cancelButtonText: 'No, keep it'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+
+            // Handle session success/error alerts after redirect
+            <?php if (isset($_SESSION['success_message'])): ?>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: '<?php echo htmlspecialchars($_SESSION['success_message'], ENT_QUOTES); ?>',
+                    timer: 2500,
+                    timerProgressBar: true,
+                    showConfirmButton: true,
+                    confirmButtonText: 'OK'
+                });
+                <?php unset($_SESSION['success_message']); ?>
+            <?php endif; ?>
+
+            <?php if (isset($_SESSION['error_message'])): ?>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Action Failed',
+                    text: '<?php echo htmlspecialchars($_SESSION['error_message'], ENT_QUOTES); ?>',
+                    showConfirmButton: true,
+                    confirmButtonText: 'OK'
+                });
+                <?php unset($_SESSION['error_message']); ?>
+            <?php endif; ?>
+        });
+    </script>
 </body>
 
 </html>
