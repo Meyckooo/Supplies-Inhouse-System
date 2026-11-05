@@ -2430,8 +2430,9 @@ line-height: 27px;
 }
 
 .global_status.status_approved, .global_status.status_active {
-  background-color: #d1fae5;
-  color: var(--dGreen);
+  background-color: var(--White);
+  color: #060606;
+  box-shadow: 0 0 3px rgba(0 0 0/0.5);
 }
 
 .global_status.status_save_approved, .global_status.status_active {
