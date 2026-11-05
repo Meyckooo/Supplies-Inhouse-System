@@ -2433,6 +2433,11 @@ line-height: 27px;
   color: var(--wRed);
 }
 
+.global_status.status_deleted, .global_status.status_inactive {
+  background-color: #4d4d4dcc;
+  color: var(--White);
+}
+
 .action_cell {
   display: flex;
   gap: 6px;
