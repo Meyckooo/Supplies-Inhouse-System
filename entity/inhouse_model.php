@@ -47,7 +47,9 @@ class InhouseModel
         return $details;
     }
 
-    public function addInhouseRequestHeader(array $data): int | false
+    // public function addInhouseRequestHeader(array $data): int | false
+    
+    public function addInhouseRequestHeader(array $data)
     {
         $query = "INSERT INTO tbl_ihsup_header (
                     odepartment, oapprover, oapprover_id, osection, 
