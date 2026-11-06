@@ -1681,7 +1681,7 @@ line-height: 27px;
 }
 
 .has-submenu.open > a .submenu-arrow {
-    transform: rotate(180deg) scale(1.4);
+    transform: rotate(180deg) scale(2);
     transition: transform 0.3s ease;
 }
 
@@ -1690,9 +1690,9 @@ line-height: 27px;
     cursor: pointer;
     padding: 5px;
     position: absolute;
-    right: 0;
+    right: 5px;
     top: 7px;
-    transform: scale(1.4);
+    transform: scale(2);
     pointer-events: auto !important;
 }
 
