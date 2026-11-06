@@ -57,7 +57,13 @@ document.addEventListener('DOMContentLoaded', function() {
             'user_permission_account.php'
         ],
         'inhouse_requisition.php': [
-            'inhouse_requisition_add.php'
+            'inhouse_requisition_add.php',
+            'inhouse_requisition_edit.php',
+            'inhouse_requisition_view.php'
+        ],
+        'inhouse_approval.php': [
+            'inhouse_approval_edit.php',
+            'inhouse_approval_view.php'
         ]
     };
 

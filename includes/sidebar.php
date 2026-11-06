@@ -102,10 +102,13 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
 
                 <ul class="sub-menu list-unstyled ps-3 mt-2">
                     <li class="menu-item mb-1">
-                        <a href="<?php echo BASE_URL; ?>views/inhouse_requisition.php" class="menu-link">Requisition</a>
+                        <a href="<?php echo BASE_URL; ?>views/inhouse_requisition.php" class="menu-link"
+                        data-subpages="inhouse_requisition_add.php, inhouse_requisition_edit.php, inhouse_requisition_view.php"
+                        >Requisition</a>
                     </li>
                     <li class="menu-item mb-1">
-                        <a href="<?php echo BASE_URL; ?>views/inhouse_approval.php" class="menu-link">Approval</a>
+                        <a href="<?php echo BASE_URL; ?>views/inhouse_approval.php" class="menu-link" 
+                        data-subpages="inhouse_approval_edit.php, inhouse_approval_view.php">Approval</a>
                     </li>
                     <!-- Nested Submenu  -->
                     <li class="menu-item mb-1 has-submenu">
@@ -133,7 +136,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
                                 <a href="<?php echo BASE_URL; ?>views/ihsup_adjustment.php" class="menu-link">adjust</a>
                             </li>
                             <li class="menu-item mb-1">
-                                <a href="<?php echo BASE_URL; ?>views/supplies_receiving.php" class="menu-link">blank</a>
+                                <a href="#" class="menu-link">blank</a>
                             </li>
                         </ul>
                     </li>
